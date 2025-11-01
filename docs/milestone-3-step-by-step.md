@@ -14,28 +14,28 @@
   - [x] Implement `type SystemClock struct{}` with `Now()` returning `time.Now().UTC()`
   - [x] Provide a `NewSystemClock()` constructor for clarity
 
-- [ ] 3: Add HTTP router and middleware (`internal/http`)
-  - [ ] Add dependencies:
-    - [ ] `github.com/go-chi/chi/v5`
-    - [ ] `github.com/go-chi/cors`
-  - [ ] Implement `func NewRouter(cfg config.Config, dbConn *sql.DB, clk clock.Clock, logger *slog.Logger) http.Handler`
-    - [ ] Base router: `chi.NewRouter()`
-    - [ ] Middleware:
-      - [ ] `middleware.RequestID` (unique per request)
-      - [ ] `middleware.RealIP`
-      - [ ] `middleware.Recoverer`
-      - [ ] Request logging middleware using `slog` (method, path, status, duration, request ID)
-      - [ ] `cors.Handler` with:
-        - [ ] `AllowedOrigins`: from `cfg.AllowedOrigins` (default `*` in dev, explicit in prod)
-        - [ ] `AllowedMethods`: `GET,POST,PUT,PATCH,DELETE,OPTIONS`
-        - [ ] `AllowedHeaders`: common headers (`Accept, Authorization, Content-Type, X-Request-ID`)
-        - [ ] `ExposedHeaders`: `X-Request-ID`
-        - [ ] `AllowCredentials`: false (tighten later as needed)
-        - [ ] `MaxAge`: 300
-    - [ ] Routes:
-      - [ ] `GET /healthz`: returns JSON `{ "ok": true, "db": "up|down", "time": <utc now> }`
-        - [ ] Use a short timeout (e.g., 1s) to ping the DB via `db.Health`
-        - [ ] `200 OK` when up, `503 Service Unavailable` when DB down
+- [x] 3: Add HTTP router and middleware (`internal/http`)
+  - [x] Add dependencies:
+    - [x] `github.com/go-chi/chi/v5`
+    - [x] `github.com/go-chi/cors`
+  - [x] Implement `func NewRouter(cfg config.Config, dbConn *sql.DB, clk clock.Clock, logger *slog.Logger) http.Handler`
+    - [x] Base router: `chi.NewRouter()`
+    - [x] Middleware:
+      - [x] `middleware.RequestID` (unique per request)
+      - [x] `middleware.RealIP`
+      - [x] `middleware.Recoverer`
+      - [x] Request logging middleware using `slog` (method, path, status, duration, request ID)
+      - [x] `cors.Handler` with:
+        - [x] `AllowedOrigins`: from `cfg.AllowedOrigins` (default `*` in dev, explicit in prod)
+        - [x] `AllowedMethods`: `GET,POST,PUT,PATCH,DELETE,OPTIONS`
+        - [x] `AllowedHeaders`: common headers (`Accept, Authorization, Content-Type, X-Request-ID`)
+        - [x] `ExposedHeaders`: `X-Request-ID`
+        - [x] `AllowCredentials`: false (tighten later as needed)
+        - [x] `MaxAge`: 300
+    - [x] Routes:
+      - [x] `GET /healthz`: returns JSON `{ "ok": true, "db": "up|down", "time": <utc now> }`
+        - [x] Use a short timeout (e.g., 1s) to ping the DB via `db.Health`
+        - [x] `200 OK` when up, `503 Service Unavailable` when DB down
 
 - [ ] 4: Serve static files in production
   - [ ] If `cfg.Env == "production"` and `cfg.StaticDir` exists:
