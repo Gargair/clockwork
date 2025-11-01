@@ -5,10 +5,10 @@
    - [x] Add dependency in `server/go.mod` and pin a recent version of `github.com/pressly/goose/v3`.
    - [x] Plan to use the CLI for day-to-day ops; optional Go runner can be added later for in-app auto-migrate in dev.
 
-- [ ] 2: Create migrations directory and baseline scripts
-   - [ ] Create `server/migrations/`.
-   - [ ] Establish naming convention: `YYYYMMDD_\d{4}_*.sql` (e.g., `20250115_0001_init.sql`, `20250115_0002_indexes.sql`).
-   - [ ] Add a README comment at top of the directory explaining how to create/apply/roll back migrations.
+- [x] 2: Create migrations directory and baseline scripts
+  - [x] Create `server/migrations/`.
+  - [x] Establish naming convention: `YYYYMMDD_\d{4}_*.sql` (e.g., `20250115_0001_init.sql`, `20250115_0002_indexes.sql`).
+  - [x] Add a README comment at top of the directory explaining how to create/apply/roll back migrations.
 
 - [ ] 3: Define initial schema migration (tables + constraints)
    - [ ] Create `YYYYMMDD_0001_init.sql` implementing the tables from `docs/domain-model.md`:
