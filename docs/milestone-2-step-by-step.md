@@ -66,9 +66,9 @@
   - [x] Production safety: default `DB_AUTO_MIGRATE=false`.
   - [x] Add readiness wait with backoff if DB is not yet available in local compose.
 
-- [ ] 12: Update docs and CI notes
-   - [ ] Add a short section to `docs/development.md` explaining how to start Postgres, set `DATABASE_URL`, and run migrations/tests.
-   - [ ] CI: keep DB-backed tests under the `integration` tag so baseline CI (`go test ./...`) continues to pass without a DB service; integration tests can be wired later when adding services/handlers.
+- [x] 12: Update docs and CI notes
+  - [x] Add a short section to `docs/development.md` explaining how to start Postgres, set `DATABASE_URL`, and run migrations/tests.
+  - [x] CI: keep DB-backed tests under the `integration` tag so baseline CI (`go test ./...`) continues to pass without a DB service; integration tests can be wired later when adding services/handlers.
 
 - [ ] 13: Acceptance checklist
    - [ ] `docker compose up` starts a healthy local Postgres.
