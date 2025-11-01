@@ -51,10 +51,10 @@
    - [x] Inspect `*pgconn.PgError` codes (e.g., 23505 unique violation, 23503 foreign key)
    - [x] Map to `repository.ErrDuplicate`, `repository.ErrForeignKeyViolation`, or pass through
 
-- [ ] 4: Test utilities for integration tests (tag: `integration`)
-  - [ ] Helper to open DB from `DATABASE_URL` (reuse `internal/db.Open`)
-  - [ ] `truncateAll(t *testing.T, db *sql.DB)` that deletes from `time_entry`, `category`, `project` in the right order
-  - [ ] Small builders for domain entities (generate UUIDs, names) to keep tests readable
+- [x] 4: Test utilities for integration tests (tag: `integration`)
+  - [x] Helper to open DB from `DATABASE_URL` (reuse `internal/db.Open`)
+  - [x] `truncateAll(t *testing.T, db *sql.DB)` that deletes from `time_entry`, `category`, `project` in the right order
+  - [x] Small builders for domain entities (generate UUIDs, names) to keep tests readable
 
 - [ ] 5: ProjectRepository integration tests (`server/internal/repository/postgres/project_repository_integration_test.go`)
   - [ ] `Create` then `GetByID` returns same fields
