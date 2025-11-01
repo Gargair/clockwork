@@ -78,15 +78,15 @@
     npm run lint && npm run format
     ```
 
-- [ ] 6: Continuous Integration (GitHub Actions)
-  - [ ] Create `.github/workflows/ci.yml` with two jobs: `server` and `client`
-    - [ ] Server job: `ubuntu-latest`
-    - [ ] Setup Go 1.22+
-    - [ ] Run `go test ./...` and `go build ./...`
-    - [ ] Client job: `ubuntu-latest`
-    - [ ] Setup Node.js 20+
-    - [ ] Run `npm ci` and `npm run build` in `client/`
-  - [ ] Trigger on `pull_request` and `push` to main branches
+- [X] 6: Continuous Integration (GitHub Actions)
+  - [X] Create `.github/workflows/ci.yml` with two jobs: `server` and `client`
+    - [X] Server job: `ubuntu-latest`
+    - [X] Setup Go 1.25+
+    - [X] Run `go test ./...` and `go build ./...`
+    - [X] Client job: `ubuntu-latest`
+    - [X] Setup Node.js 25+
+    - [X] Run `npm ci` and `npm run build` in `client/`
+  - [X] Trigger on `pull_request` and `push` to main branches
 
 - [ ] 7: Local verification and first commit
   - [ ] Run locally
