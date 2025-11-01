@@ -5,6 +5,7 @@ go 1.25
 require (
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/pressly/goose/v3 v3.18.0
+	github.com/google/uuid v1.6.0
 )
 
 require (

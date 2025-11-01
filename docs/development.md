@@ -46,3 +46,8 @@
   - Up: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" up`
   - Down: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" down`
 
+## Integration tests
+- Ensure Postgres is running and `DATABASE_URL` is set (see above)
+- Run integration tests (PowerShell):
+  - `go test ./server/... -tags=integration`
+

@@ -49,13 +49,13 @@
    - [X] Set `DATABASE_URL` (PowerShell): `$env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable"`
    - [X] Run `goose up` as above and verify it reports to the latest migration.
 
-- [ ] 10: Add a minimal smoke test (round-trip)
-   - [ ] Create `server/internal/db/db_smoke_test.go` flagged as an integration test (e.g., build tag `integration`).
-   - [ ] Test outline:
-     - [ ] Connect using `DATABASE_URL` and `db.Open`.
-     - [ ] Insert a row into `project` with a generated UUID and name.
-     - [ ] Read it back by ID and assert fields match; clean up by deleting the row.
-   - [ ] Document how to run it locally: `go test ./server/... -tags=integration` (with DB running and `DATABASE_URL` set).
+- [x] 10: Add a minimal smoke test (round-trip)
+  - [x] Create `server/internal/db/db_smoke_test.go` flagged as an integration test (e.g., build tag `integration`).
+  - [x] Test outline:
+    - [x] Connect using `DATABASE_URL` and `db.Open`.
+    - [x] Insert a row into `project` with a generated UUID and name.
+    - [x] Read it back by ID and assert fields match; clean up by deleting the row.
+  - [x] Document how to run it locally: `go test ./server/... -tags=integration` (with DB running and `DATABASE_URL` set).
 
 - [ ] 11: Wire automatic migrations on server startup (config gated)
    - [ ] Add `DB_AUTO_MIGRATE` (or `AUTO_MIGRATE`) boolean to `internal/config.Config` with default `false`.
