@@ -23,3 +23,15 @@
   - Run PostgreSQL locally (e.g., Docker) and set `DATABASE_URL`
   - Create a dev database and run migrations
 
+## Database (local)
+- Start Postgres with Docker Compose:
+  - `docker compose up -d postgres`
+- Default connection URL (PowerShell):
+  - `$env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable"`
+- Change external port without editing compose (uses env var in ports mapping):
+  - PowerShell: `$env:POSTGRES_PORT = 5433`
+  - Then start: `docker compose up -d postgres`
+  - Update URL accordingly: `$env:DATABASE_URL = "postgres://postgres:postgres@localhost:$env:POSTGRES_PORT/clockwork?sslmode=disable"`
+- Stop and remove the container (data persists in the named volume):
+  - `docker compose down`
+

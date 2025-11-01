@@ -24,9 +24,9 @@
     - [x] Indexes: `category(project_id)`, `category(parent_category_id)`, `time_entry(category_id, started_at)`
     - [x] Optional partial index to accelerate active timer queries: `CREATE INDEX IF NOT EXISTS time_entry_active_idx ON time_entry (category_id) WHERE stopped_at IS NULL;`
 
-- [ ] 5: Add local Postgres via Docker
-   - [ ] Add a minimal `docker-compose.yml` at the repo root with a `postgres` service (e.g., image `postgres:16`, user/password/db from env, healthcheck, and a named volume).
-   - [ ] Document default connection URL (e.g., `postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable`).
+- [x] 5: Add local Postgres via Docker
+  - [x] Add a minimal `docker-compose.yml` at the repo root with a `postgres` service (e.g., image `postgres:16`, user/password/db from env, healthcheck, and a named volume).
+  - [x] Document default connection URL (e.g., `postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable`).
 
 - [ ] 6: Implement typed configuration for database connection
    - [ ] In `server/internal/config`, add a `Config` struct with `DatabaseURL string` and loader that reads `DATABASE_URL` (and validates it).
