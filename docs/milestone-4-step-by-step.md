@@ -84,12 +84,12 @@
   - [x] Add a short note to `docs/development.md` about running repository integration tests (`go test ./server/... -tags=integration`)
   - [x] Ensure `docker compose up -d postgres` and `DATABASE_URL` instructions are referenced
 
-- [ ] 10: Acceptance checklist (map to Implementation Plan)
-  - [ ] Domain entities defined with explicit types in `internal/domain`
-  - [ ] Repository interfaces defined with explicit parameter/return types
-  - [ ] Postgres implementations for Project/Category/TimeEntry complete
-  - [ ] Error mapping from Postgres → repository errors implemented
-  - [ ] Integration tests for all three repositories pass locally (`-tags=integration`)
+- [X] 10: Acceptance checklist (map to Implementation Plan)
+  - [x] Domain entities defined with explicit types in `internal/domain`
+  - [x] Repository interfaces defined with explicit parameter/return types
+  - [x] Postgres implementations for Project/Category/TimeEntry complete
+  - [x] Error mapping from Postgres → repository errors implemented
+  - [x] Integration tests for all three repositories pass locally (`-tags=integration`)
 
 ### Notes for M4
 - Keep business rules (e.g., single active timer, category move restrictions) in services (Milestone 5), not in repositories. Repositories should be thin data mappers with clear, explicit APIs.
