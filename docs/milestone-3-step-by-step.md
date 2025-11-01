@@ -1,13 +1,13 @@
 ## Milestone 3: Step-by-step implementation plan
 
-- [ ] 1: Extend server configuration (`internal/config`)
-  - [ ] Add fields to `Config` with sensible defaults and validation:
-    - [ ] `Port int` (env `PORT`, default `8080`)
-    - [ ] `Env string` (env `ENV`, values: `development|production`, default `development`)
-    - [ ] `StaticDir string` (env `STATIC_DIR`, default `client/dist`)
-    - [ ] `AllowedOrigins []string` (env `ALLOWED_ORIGINS`, CSV; default `*` in dev, empty in prod)
-  - [ ] Update `Load()` to parse and validate new fields (port > 0, known env)
-  - [ ] Document env vars in `docs/development.md` briefly
+ - [x] 1: Extend server configuration (`internal/config`)
+  - [x] Add fields to `Config` with sensible defaults and validation:
+    - [x] `Port int` (env `PORT`, default `8080`)
+    - [x] `Env string` (env `ENV`, values: `development|production`, default `development`)
+    - [x] `StaticDir string` (env `STATIC_DIR`, default `client/dist`)
+    - [x] `AllowedOrigins []string` (env `ALLOWED_ORIGINS`, CSV; default `*` in dev, empty in prod)
+  - [x] Update `Load()` to parse and validate new fields (port > 0, known env)
+  - [x] Document env vars in `docs/development.md` briefly
 
 - [ ] 2: Add a clock abstraction (`internal/clock`)
   - [ ] Define `type Clock interface { Now() time.Time }`

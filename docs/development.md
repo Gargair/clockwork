@@ -46,6 +46,15 @@
   - Up: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" up`
   - Down: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" down`
 
+## Server configuration (environment variables)
+- `DATABASE_URL` (required): Postgres connection string
+- `DB_AUTO_MIGRATE` (default `false`): Run migrations on startup
+- `MIGRATIONS_DIR` (default `server/migrations`): Path to SQL migrations
+- `PORT` (default `8080`): HTTP port to bind
+- `ENV` (default `development`): `development` or `production`
+- `STATIC_DIR` (default `client/dist`): Path to built client assets (served in production)
+- `ALLOWED_ORIGINS` (CSV): CORS allowed origins; defaults to `*` in development when unset
+
 ## Integration tests
 - Ensure Postgres is running and `DATABASE_URL` is set (see above)
 - Run integration tests (PowerShell):

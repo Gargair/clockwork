@@ -18,6 +18,14 @@ type Config struct {
 	AutoMigrate bool `env:"DB_AUTO_MIGRATE" envDefault:"false"`
 	// MigrationsDir is the directory containing goose SQL migrations.
 	MigrationsDir string `env:"MIGRATIONS_DIR" envDefault:"server/migrations"`
+	// Port is the HTTP server port to bind.
+	Port int `env:"PORT" envDefault:"8080"`
+	// Env indicates the environment: development or production.
+	Env string `env:"ENV" envDefault:"development"`
+	// StaticDir is the directory containing built client assets.
+	StaticDir string `env:"STATIC_DIR" envDefault:"client/dist"`
+	// AllowedOrigins lists origins allowed by CORS. CSV. Default depends on Env.
+	AllowedOrigins []string `env:"ALLOWED_ORIGINS" envSeparator:","`
 }
 
 // Load reads configuration from environment (and optional .env) and validates it.
@@ -31,6 +39,16 @@ func Load() (Config, error) {
 	}
 	if err := validateDatabaseURL(cfg.DatabaseURL); err != nil {
 		return Config{}, fmt.Errorf("invalid DATABASE_URL: %w", err)
+	}
+	if err := validateEnv(cfg.Env); err != nil {
+		return Config{}, err
+	}
+	if cfg.Port <= 0 {
+		return Config{}, errors.New("PORT must be > 0")
+	}
+	// Default CORS origins: '*' in development when not explicitly set.
+	if len(cfg.AllowedOrigins) == 0 && cfg.Env == "development" {
+		cfg.AllowedOrigins = []string{"*"}
 	}
 	return cfg, nil
 }
@@ -52,4 +70,14 @@ func validateDatabaseURL(databaseURL string) error {
 		return errors.New("database name is required in URL path")
 	}
 	return nil
+}
+
+// validateEnv ensures environment string is one of the supported values.
+func validateEnv(env string) error {
+	switch env {
+	case "development", "production":
+		return nil
+	default:
+		return fmt.Errorf("ENV must be one of 'development' or 'production', got %q", env)
+	}
 }
