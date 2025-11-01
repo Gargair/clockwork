@@ -1,5 +1,3 @@
 module github.com/Gargair/clockwork/server
 
-go 1.22
-
-
+go 1.25
