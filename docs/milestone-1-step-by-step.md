@@ -1,10 +1,10 @@
 ## Milestone 1: Step-by-step implementation plan
 
-- [X] Confirm repository context: `https://github.com/Gargair/clockwork`
+- [X] 0: Confirm repository context: `https://github.com/Gargair/clockwork`
   - [X] Clone the repo and checkout the working branch
   - [X] Pull latest changes from `main`
 
-- [X] Initialize repository layout and shared configs
+- [X] 1: Initialize repository layout and shared configs
   - [X] Create top-level directories per architecture
     - [X] `client/`
     - [X] `server/`
@@ -14,32 +14,32 @@
     - [X] `.editorconfig` (UTF-8, LF, 2 spaces for TS/JS, tabs/spaces per language as preferred)
     - [X] Confirm `docs/` remains source of truth for dev workflow
 
-- [ ] Scaffold the client (Vite + React + TypeScript)
-  - [ ] Create the app skeleton non-interactively
+- [X] 2: Scaffold the client (Vite + React + TypeScript)
+  - [X] Create the app skeleton non-interactively
     ```bash
     npm create vite@latest client -- --template react-ts
     ```
-  - [ ] Inside `client/`, install baseline deps
+  - [X] Inside `client/`, install baseline deps
     ```bash
     cd client
     npm i react-router-dom
     npm i -D @types/react-router-dom eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks prettier eslint-config-prettier eslint-plugin-prettier
     ```
-  - [ ] Configure TypeScript strictness in `client/tsconfig.json`
-    - [ ] "strict": true
-    - [ ] "noImplicitAny": true
-    - [ ] "noUncheckedIndexedAccess": true
-  - [ ] Add ESLint config `client/.eslintrc.cjs` (TS + React + Prettier)
-  - [ ] Add Prettier config `client/.prettierrc` and `client/.prettierignore`
-  - [ ] Add basic router and layout
-    - [ ] `client/src/app/App.tsx` (shell with header/footer and an outlet)
-    - [ ] Wire router in `client/src/main.tsx` with a root `App` route and a placeholder `Home` page
-  - [ ] Update `client/package.json` scripts
-    - [ ] `dev`, `build`, `preview` (from Vite)
-    - [ ] `lint`: eslint "src/**/*.{ts,tsx}"
-    - [ ] `format`: prettier --write "src/**/*.{ts,tsx,css,json,md}"
+  - [X] Configure TypeScript strictness in `client/tsconfig.json`
+    - [X] "strict": true
+    - [X] "noImplicitAny": true
+    - [X] "noUncheckedIndexedAccess": true
+  - [X] Add ESLint config `client/.eslintrc.cjs` (TS + React + Prettier)
+  - [X] Add Prettier config `client/.prettierrc` and `client/.prettierignore`
+  - [X] Add basic router and layout
+    - [X] `client/src/app/App.tsx` (shell with header/footer and an outlet)
+    - [X] Wire router in `client/src/main.tsx` with a root `App` route and a placeholder `Home` page
+  - [X] Update `client/package.json` scripts
+    - [X] `dev`, `build`, `preview` (from Vite)
+    - [X] `lint`: eslint "src/**/*.{ts,tsx}"
+    - [X] `format`: prettier --write "src/**/*.{ts,tsx,css,json,md}"
 
-- [ ] Scaffold the server (Go module and package skeletons)
+- [ ] 3: Scaffold the server (Go module and package skeletons)
   - [ ] Create module and folder structure
     ```bash
     mkdir -p server/cmd/server
@@ -63,14 +63,14 @@
     go build ./...
     ```
 
-- [ ] Set up Go linting (`golangci-lint`)
+- [ ] 4: Set up Go linting (`golangci-lint`)
   - [ ] Add `server/.golangci.yml` with sensible defaults (gosimple, govet, staticcheck, errcheck)
   - [ ] Local run (optional during M1)
     ```bash
     golangci-lint run ./...
     ```
 
-- [ ] Set up JavaScript/TypeScript linting and formatting
+- [ ] 5: Set up JavaScript/TypeScript linting and formatting
   - [ ] Ensure ESLint + Prettier are configured (from step 2)
   - [ ] Verify locally
     ```bash
@@ -78,7 +78,7 @@
     npm run lint && npm run format
     ```
 
-- [ ] Continuous Integration (GitHub Actions)
+- [ ] 6: Continuous Integration (GitHub Actions)
   - [ ] Create `.github/workflows/ci.yml` with two jobs: `server` and `client`
     - [ ] Server job: `ubuntu-latest`
     - [ ] Setup Go 1.22+
@@ -88,7 +88,7 @@
     - [ ] Run `npm ci` and `npm run build` in `client/`
   - [ ] Trigger on `pull_request` and `push` to main branches
 
-- [ ] Local verification and first commit
+- [ ] 7: Local verification and first commit
   - [ ] Run locally
     ```bash
     # Server
