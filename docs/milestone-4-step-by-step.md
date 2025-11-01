@@ -69,12 +69,12 @@
   - [x] `Update` can change `name`/`description`/`parentCategoryID` but not `projectID`
   - [x] `ListByProject` returns only categories in that project
 
-- [ ] 7: TimeEntryRepository integration tests (`.../timeentry_repository_integration_test.go`)
-  - [ ] `Create` inserts an active entry (with `stopped_at = NULL`)
-  - [ ] `FindActive` returns the created entry; when stopped, returns `nil`
-  - [ ] `Stop` sets `stopped_at` and `duration_seconds`; `GetByID` reflects changes
-  - [ ] `ListByCategory` returns entries in descending `started_at` (define and test an order)
-  - [ ] `ListByCategoryAndRange` filters by inclusive range
+ - [x] 7: TimeEntryRepository integration tests (`.../timeentry_repository_integration_test.go`)
+  - [x] `Create` inserts an active entry (with `stopped_at = NULL`)
+  - [x] `FindActive` returns the created entry; when stopped, returns `nil`
+  - [x] `Stop` sets `stopped_at` and `duration_seconds`; `GetByID` reflects changes
+  - [x] `ListByCategory` returns entries in descending `started_at` (define and test an order)
+  - [x] `ListByCategoryAndRange` filters by inclusive range
 
 - [ ] 8: Wire repositories where helpful (non-invasive)
   - [ ] Add constructors to a central wiring point if needed (e.g., later in services or handlers)
