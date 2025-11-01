@@ -76,9 +76,9 @@
   - [x] `ListByCategory` returns entries in descending `started_at` (define and test an order)
   - [x] `ListByCategoryAndRange` filters by inclusive range
 
-- [ ] 8: Wire repositories where helpful (non-invasive)
-  - [ ] Add constructors to a central wiring point if needed (e.g., later in services or handlers)
-  - [ ] Do not expose repositories via HTTP yet (reserved for Milestone 6)
+ - [x] 8: Wire repositories where helpful (non-invasive)
+  - [x] Add constructors to a central wiring point if needed (e.g., later in services or handlers)
+  - [x] Do not expose repositories via HTTP yet (reserved for Milestone 6)
 
 - [ ] 9: Docs and developer workflow
   - [ ] Add a short note to `docs/development.md` about running repository integration tests (`go test ./server/... -tags=integration`)
