@@ -33,23 +33,23 @@
    - [x] `Stop(ctx context.Context, id uuid.UUID, stoppedAt time.Time, durationSeconds *int32) (domain.TimeEntry, error)`
   - [x] Ensure explicit parameter and return types for all methods
 
-- [ ] 3: Create Postgres adapters in `server/internal/repository/postgres`
-  - [ ] Layout
-    - [ ] `postgres/project_repository.go`
-    - [ ] `postgres/category_repository.go`
-    - [ ] `postgres/timeentry_repository.go`
-    - [ ] `postgres/errors.go` (translate PG errors → repository errors)
-  - [ ] Constructors (explicit types):
-    - [ ] `func NewProjectRepository(db *sql.DB) ProjectRepository`
-    - [ ] `func NewCategoryRepository(db *sql.DB) CategoryRepository`
-    - [ ] `func NewTimeEntryRepository(db *sql.DB) TimeEntryRepository`
-  - [ ] Implement SQL using `database/sql` with the `pgx` driver (already in use)
-    - [ ] Use explicit column lists in `INSERT`/`UPDATE`
-    - [ ] Use `RETURNING` to map rows back to domain types
-    - [ ] Set/update timestamps (`updated_at = now()`) in SQL
-  - [ ] Error mapping in `errors.go`
-    - [ ] Inspect `*pgconn.PgError` codes (e.g., 23505 unique violation, 23503 foreign key)
-    - [ ] Map to `repository.ErrDuplicate`, `repository.ErrForeignKeyViolation`, or pass through
+- [x] 3: Create Postgres adapters in `server/internal/repository/postgres`
+  - [x] Layout
+   - [x] `postgres/project_repository.go`
+   - [x] `postgres/category_repository.go`
+   - [x] `postgres/timeentry_repository.go`
+   - [x] `postgres/errors.go` (translate PG errors → repository errors)
+  - [x] Constructors (explicit types):
+   - [x] `func NewProjectRepository(db *sql.DB) ProjectRepository`
+   - [x] `func NewCategoryRepository(db *sql.DB) CategoryRepository`
+   - [x] `func NewTimeEntryRepository(db *sql.DB) TimeEntryRepository`
+  - [x] Implement SQL using `database/sql` with the `pgx` driver (already in use)
+   - [x] Use explicit column lists in `INSERT`/`UPDATE`
+   - [x] Use `RETURNING` to map rows back to domain types
+   - [x] Set/update timestamps (`updated_at = now()`) in SQL
+  - [x] Error mapping in `errors.go`
+   - [x] Inspect `*pgconn.PgError` codes (e.g., 23505 unique violation, 23503 foreign key)
+   - [x] Map to `repository.ErrDuplicate`, `repository.ErrForeignKeyViolation`, or pass through
 
 - [ ] 4: Test utilities for integration tests (tag: `integration`)
   - [ ] Helper to open DB from `DATABASE_URL` (reuse `internal/db.Open`)
