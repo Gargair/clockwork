@@ -62,12 +62,12 @@
   - [x] `Update` changes `name`/`description` and bumps `updated_at`
   - [x] `Delete` removes the row; `GetByID` → `ErrNotFound`
 
-- [ ] 6: CategoryRepository integration tests (`.../category_repository_integration_test.go`)
-  - [ ] `Create` with valid `project_id` succeeds
-  - [ ] Unique `(project_id, name)` enforced → duplicate insert maps to `ErrDuplicate`
-  - [ ] Parent/child relationships: `ListChildren` returns children; deleting parent sets children `parent_category_id` to `NULL`
-  - [ ] `Update` can change `name`/`description`/`parentCategoryID` but not `projectID`
-  - [ ] `ListByProject` returns only categories in that project
+ - [x] 6: CategoryRepository integration tests (`.../category_repository_integration_test.go`)
+  - [x] `Create` with valid `project_id` succeeds
+  - [x] Unique `(project_id, name)` enforced → duplicate insert maps to `ErrDuplicate`
+  - [x] Parent/child relationships: `ListChildren` returns children; deleting parent sets children `parent_category_id` to `NULL`
+  - [x] `Update` can change `name`/`description`/`parentCategoryID` but not `projectID`
+  - [x] `ListByProject` returns only categories in that project
 
 - [ ] 7: TimeEntryRepository integration tests (`.../timeentry_repository_integration_test.go`)
   - [ ] `Create` inserts an active entry (with `stopped_at = NULL`)

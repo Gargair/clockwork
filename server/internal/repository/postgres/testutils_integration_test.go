@@ -15,6 +15,8 @@ import (
 	"github.com/google/uuid"
 )
 
+const CreateFailedErrorMessage = "Create %s failed: %v"
+
 // OpenDBFromEnv opens a Postgres connection using DATABASE_URL.
 // Skips the test if DATABASE_URL is not set.
 func OpenDBFromEnv(t *testing.T) *sql.DB {

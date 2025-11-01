@@ -11,8 +11,6 @@ import (
 	repo "github.com/Gargair/clockwork/server/internal/repository/postgres"
 )
 
-const CreateFailedErrorMessage = "Create failed: %v"
-
 func TestProjectRepositoryCreateAndGetByIDIntegration(t *testing.T) {
 	db := OpenDBFromEnv(t)
 	t.Cleanup(func() { _ = db.Close() })
@@ -26,7 +24,7 @@ func TestProjectRepositoryCreateAndGetByIDIntegration(t *testing.T) {
 
 	created, err := r.Create(ctx, toCreate)
 	if err != nil {
-		t.Fatalf(CreateFailedErrorMessage, err)
+		t.Fatalf(CreateFailedErrorMessage, "project", err)
 	}
 	if created.ID != toCreate.ID || created.Name != toCreate.Name {
 		t.Fatalf("Created mismatch: got %+v", created)
@@ -89,7 +87,7 @@ func TestProjectRepositoryUpdateIntegration(t *testing.T) {
 	orig := NewProject("proj-update", nil)
 	created, err := r.Create(ctx, orig)
 	if err != nil {
-		t.Fatalf(CreateFailedErrorMessage, err)
+		t.Fatalf(CreateFailedErrorMessage, "project", err)
 	}
 
 	// Small sleep to ensure updated_at can advance
@@ -122,7 +120,7 @@ func TestProjectRepositoryDeleteIntegration(t *testing.T) {
 	p := NewProject("proj-delete", nil)
 	created, err := r.Create(ctx, p)
 	if err != nil {
-		t.Fatalf(CreateFailedErrorMessage, err)
+		t.Fatalf(CreateFailedErrorMessage, "project", err)
 	}
 	if err := r.Delete(ctx, created.ID); err != nil {
 		t.Fatalf("Delete failed: %v", err)
