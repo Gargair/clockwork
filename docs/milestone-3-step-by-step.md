@@ -55,20 +55,20 @@
   - [x] Implement graceful shutdown on `SIGINT/SIGTERM` with a 10s timeout context
   - [x] Log startup details (env, port, static enabled, migrations applied)
 
-- [ ] 6: Local verification
-  - [ ] Start Postgres (from Milestone 2): `docker compose up -d postgres`
-  - [ ] Set env and run the server
+- [X] 6: Local verification
+  - [X] Start Postgres (from Milestone 2): `docker compose up -d postgres`
+  - [X] Set env and run the server
     ```powershell
     cd server
     $env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable"
     $env:PORT = "8080"
     go run ./cmd/server
     ```
-  - [ ] Health check returns 200 and `db: "up"`
+  - [X] Health check returns 200 and `db: "up"`
     ```powershell
     curl http://localhost:8080/healthz
     ```
-  - [ ] (Optional) Verify static serving in production mode
+  - [X] (Optional) Verify static serving in production mode
     ```powershell
     # Build client assets
     cd client
@@ -85,10 +85,10 @@
     Start-Process "http://localhost:8080/"
     ```
 
-- [ ] 7: Acceptance checklist (map to Implementation Plan)
-  - [ ] Server starts and logs env/port
-  - [ ] `GET /healthz` returns `200 OK` with `{ ok: true, db: "up" }` when DB reachable
-  - [ ] In production mode with built assets present, server serves the SPA (index and assets)
+- [X] 7: Acceptance checklist (map to Implementation Plan)
+  - [X] Server starts and logs env/port
+  - [X] `GET /healthz` returns `200 OK` with `{ ok: true, db: "up" }` when DB reachable
+  - [X] In production mode with built assets present, server serves the SPA (index and assets)
 
 ### Notes for M3
 - Keep handlers minimal; business logic lands in services in later milestones
