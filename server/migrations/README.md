@@ -35,6 +35,16 @@ go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations pos
 go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" status
 ```
 
+### Wrapper script
+Alternatively, use the helper script:
+
+```powershell
+scripts/goose.ps1 create init sql
+scripts/goose.ps1 up
+scripts/goose.ps1 down
+scripts/goose.ps1 status
+```
+
 ## Notes
 - Do not modify applied migrations; create a new migration instead.
 - Step 3 will introduce the initial schema; Step 4 adds indexes.

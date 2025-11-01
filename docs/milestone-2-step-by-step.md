@@ -37,12 +37,12 @@
   - [x] Configure pool settings (max open/idle conns, conn max lifetime) suitable for dev.
   - [x] Add a simple `Ping`/`Health` helper.
 
-- [ ] 8: Add migration commands (developer workflow)
-   - [ ] Provide scripts/commands to run migrations locally using goose:
-     - [ ] Create: `go run github.com/pressly/goose/v3/cmd/goose@latest create init sql`
-     - [ ] Up: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" up`
-     - [ ] Down (careful): `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" down`
-   - [ ] Optionally add `make` or `npm` scripts to wrap these commands for convenience and CI.
+- [x] 8: Add migration commands (developer workflow)
+  - [x] Provide scripts/commands to run migrations locally using goose:
+    - [x] Create: `go run github.com/pressly/goose/v3/cmd/goose@latest create init sql`
+    - [x] Up: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" up`
+    - [x] Down (careful): `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" down`
+  - [x] Optionally add script wrapper for convenience: `scripts/goose.ps1`
 
 - [ ] 9: Bring up database and apply migrations
    - [ ] `docker compose up -d postgres`

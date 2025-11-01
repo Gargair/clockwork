@@ -35,3 +35,14 @@
 - Stop and remove the container (data persists in the named volume):
   - `docker compose down`
 
+## Migrations
+- Wrapper script (PowerShell):
+  - Create: `scripts/goose.ps1 create init sql`
+  - Up: `scripts/goose.ps1 up`
+  - Down: `scripts/goose.ps1 down`
+  - Status: `scripts/goose.ps1 status`
+- Direct commands (alternative):
+  - Create: `go run github.com/pressly/goose/v3/cmd/goose@latest create <name> sql -dir ./server/migrations`
+  - Up: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" up`
+  - Down: `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" down`
+
