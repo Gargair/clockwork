@@ -3,7 +3,7 @@
 All project documentation resides in the docs/ directory.
 
 Start here:
-- docs/README.md
+- [docs/README.md](docs/README.md)
 
 See also: LICENSE
 

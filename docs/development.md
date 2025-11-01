@@ -58,5 +58,6 @@
 ## Integration tests
 - Ensure Postgres is running and `DATABASE_URL` is set (see above)
 - Run integration tests (PowerShell):
-  - `go test ./server/... -tags=integration`
+  - `cd server; go test ./... -tags=integration`
+ - Repository integration tests live under `server/internal/repository/postgres` and are gated with the `integration` build tag.
 
