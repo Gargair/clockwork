@@ -70,10 +70,10 @@
   - [x] Add a short section to `docs/development.md` explaining how to start Postgres, set `DATABASE_URL`, and run migrations/tests.
   - [x] CI: keep DB-backed tests under the `integration` tag so baseline CI (`go test ./...`) continues to pass without a DB service; integration tests can be wired later when adding services/handlers.
 
-- [ ] 13: Acceptance checklist
-   - [ ] `docker compose up` starts a healthy local Postgres.
-   - [ ] `goose up` applies `YYYYMMDD0001` and `YYYYMMDD0002` cleanly on a fresh database.
-   - [ ] `go run ./...` (server build) still succeeds.
-   - [ ] Integration smoke test passes locally against the running DB.
+- [X] 13: Acceptance checklist
+   - [X] `docker compose up` starts a healthy local Postgres.
+   - [X] `goose up` applies `YYYYMMDD0001` and `YYYYMMDD0002` cleanly on a fresh database.
+  - [x] `go run ./...` (server build) still succeeds.
+   - [X] Integration smoke test passes locally against the running DB.
 
 
