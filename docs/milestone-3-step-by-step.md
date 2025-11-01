@@ -37,12 +37,12 @@
         - [x] Use a short timeout (e.g., 1s) to ping the DB via `db.Health`
         - [x] `200 OK` when up, `503 Service Unavailable` when DB down
 
-- [ ] 4: Serve static files in production
-  - [ ] If `cfg.Env == "production"` and `cfg.StaticDir` exists:
-    - [ ] Mount `http.FileServer` at `/` to serve files under `cfg.StaticDir`
-    - [ ] Add SPA fallback for unknown GET routes to `index.html`
-    - [ ] Cache headers: long cache for hashed assets under `assets/`; `no-store` for `index.html`
-  - [ ] In development, skip static serving (handled by Vite dev server)
+- [x] 4: Serve static files in production
+  - [x] If `cfg.Env == "production"` and `cfg.StaticDir` exists:
+    - [x] Mount file server at `/` to serve files under `cfg.StaticDir`
+    - [x] Add SPA fallback for unknown GET routes to `index.html`
+    - [x] Cache headers: long cache for hashed assets under `assets/`; `no-store` for `index.html`
+  - [x] In development, skip static serving (handled by Vite dev server)
 
 - [ ] 5: Wire HTTP server in `cmd/server/main.go`
   - [ ] Initialize `slog` logger

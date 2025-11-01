@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log/slog"
 	stdhttp "net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -35,6 +36,13 @@ func NewRouter(cfg config.Config, dbConn *sql.DB, clk clock.Clock, logger *slog.
 
 	// Health check
 	r.Method("GET", "/healthz", HealthzHandler{db: dbConn, clk: clk})
+
+	// Static files (production only)
+	if cfg.Env == "production" {
+		if _, err := os.Stat(cfg.StaticDir); err == nil {
+			r.Handle("/*", NewStaticHandler(cfg.StaticDir))
+		}
+	}
 
 	return r
 }
