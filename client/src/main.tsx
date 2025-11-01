@@ -6,19 +6,17 @@ import Home from './pages/Home.tsx';
 
 const root = document.getElementById('app');
 if (!root) {
-	throw new Error('Root element #app not found');
+  throw new Error('Root element #app not found');
 }
 
 ReactDOM.createRoot(root).render(
-	<React.StrictMode>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<App />}>
-					<Route index element={<Home />} />
-				</Route>
-			</Routes>
-		</BrowserRouter>
-	</React.StrictMode>,
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route index element={<Home />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>,
 );
-
-

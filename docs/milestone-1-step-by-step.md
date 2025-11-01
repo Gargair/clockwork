@@ -63,16 +63,16 @@
     go build ./...
     ```
 
-- [ ] 4: Set up Go linting (`golangci-lint`)
-  - [ ] Add `server/.golangci.yml` with sensible defaults (gosimple, govet, staticcheck, errcheck)
-  - [ ] Local run (optional during M1)
+- [X] 4: Set up Go linting (`golangci-lint`)
+  - [X] Add `server/.golangci.yml` with sensible defaults (gosimple, govet, staticcheck, errcheck)
+  - [X] Local run (optional during M1)
     ```bash
     golangci-lint run ./...
     ```
 
-- [ ] 5: Set up JavaScript/TypeScript linting and formatting
-  - [ ] Ensure ESLint + Prettier are configured (from step 2)
-  - [ ] Verify locally
+- [X] 5: Set up JavaScript/TypeScript linting and formatting
+  - [X] Ensure ESLint + Prettier are configured (from step 2)
+  - [X] Verify locally
     ```bash
     cd client
     npm run lint && npm run format
