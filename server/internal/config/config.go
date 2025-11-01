@@ -1,42 +1,38 @@
 package config
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"net/url"
-	"os"
 	"strings"
-)
 
-// DefaultDatabaseURL is a convenient local default for developers using Docker Compose.
-// It is used only when DATABASE_URL is not set (and not provided via .env).
-const DefaultDatabaseURL string = "postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable"
+	"github.com/caarlos0/env/v11"
+	"github.com/joho/godotenv"
+)
 
 // Config holds typed server configuration.
 type Config struct {
 	// DatabaseURL is the PostgreSQL connection string.
-	DatabaseURL string
+	DatabaseURL string `env:"DATABASE_URL" required:"true"`
+	// AutoMigrate controls whether the server runs DB migrations on startup.
+	AutoMigrate bool `env:"DB_AUTO_MIGRATE" envDefault:"false"`
+	// MigrationsDir is the directory containing goose SQL migrations.
+	MigrationsDir string `env:"MIGRATIONS_DIR" envDefault:"server/migrations"`
 }
 
 // Load reads configuration from environment (and optional .env) and validates it.
-// Precedence: env var → .env → DefaultDatabaseURL.
 func Load() (Config, error) {
-	databaseURL := strings.TrimSpace(os.Getenv("DATABASE_URL"))
-	if databaseURL == "" {
-		if v := readDotEnvVar("DATABASE_URL"); v != "" {
-			databaseURL = v
-		}
-	}
-	if databaseURL == "" {
-		databaseURL = DefaultDatabaseURL
-	}
+	// Load .env for local dev; no-op if missing
+	_ = godotenv.Load()
 
-	if err := validateDatabaseURL(databaseURL); err != nil {
+	var cfg Config
+	if err := env.Parse(&cfg); err != nil {
+		return Config{}, err
+	}
+	if err := validateDatabaseURL(cfg.DatabaseURL); err != nil {
 		return Config{}, fmt.Errorf("invalid DATABASE_URL: %w", err)
 	}
-
-	return Config{DatabaseURL: databaseURL}, nil
+	return cfg, nil
 }
 
 // validateDatabaseURL ensures the DSN is a parseable postgres URL with host and db name.
@@ -56,35 +52,4 @@ func validateDatabaseURL(databaseURL string) error {
 		return errors.New("database name is required in URL path")
 	}
 	return nil
-}
-
-// readDotEnvVar is a minimal .env reader for a single variable.
-// It returns the value for key if found in a local .env file (same CWD), otherwise "".
-func readDotEnvVar(key string) string {
-	f, err := os.Open(".env")
-	if err != nil {
-		return ""
-	}
-	defer func() { _ = f.Close() }()
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if line == "" || strings.HasPrefix(line, "#") {
-			continue
-		}
-		name, value, ok := strings.Cut(line, "=")
-		if !ok {
-			continue
-		}
-		name = strings.TrimSpace(name)
-		if name != key {
-			continue
-		}
-		value = strings.TrimSpace(value)
-		// Remove optional surrounding quotes
-		value = strings.Trim(value, "\"'")
-		return value
-	}
-	return ""
 }

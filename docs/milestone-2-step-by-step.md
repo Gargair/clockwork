@@ -57,14 +57,14 @@
     - [x] Read it back by ID and assert fields match; clean up by deleting the row.
   - [x] Document how to run it locally: `go test ./server/... -tags=integration` (with DB running and `DATABASE_URL` set).
 
-- [ ] 11: Wire automatic migrations on server startup (config gated)
-   - [ ] Add `DB_AUTO_MIGRATE` (or `AUTO_MIGRATE`) boolean to `internal/config.Config` with default `false`.
-   - [ ] Add `MIGRATIONS_DIR` to config with default `server/migrations` (allow override for containers/CI).
-   - [ ] Implement `internal/db/migrate.go` with `RunMigrations(ctx, databaseURL, migrationsDir) error` using `goose` (`sql.Open`/`goose.SetDialect("postgres")`/`goose.Up`).
-   - [ ] Optionally support embedded migrations via `go:embed` and `goose.WithBaseFS` to avoid filesystem path issues in containers.
-   - [ ] In `cmd/server/main.go`, before starting the HTTP server, if `DB_AUTO_MIGRATE` is true: open a connection and run `RunMigrations`; log from/to version; fail fast on error.
-   - [ ] Production safety: keep default `DB_AUTO_MIGRATE=false`; document enabling only for dev/staging or controlled prod rollouts.
-   - [ ] Ensure retries/backoff or readiness wait if DB is not yet available in local compose.
+- [x] 11: Wire automatic migrations on server startup (config gated)
+  - [x] Add `DB_AUTO_MIGRATE` (or `AUTO_MIGRATE`) boolean to `internal/config.Config` with default `false`.
+  - [x] Add `MIGRATIONS_DIR` to config with default `server/migrations` (allow override for containers/CI).
+  - [x] Implement `internal/db/migrate.go` with `RunMigrations(ctx, databaseURL, migrationsDir)` using `goose`.
+  - [ ] Optionally support embedded migrations via `go:embed` and `goose.WithBaseFS` to avoid filesystem path issues in containers.
+  - [x] In `cmd/server/main.go`, before starting the HTTP server, if `DB_AUTO_MIGRATE` is true: run `RunMigrations`; log from/to version; fail fast on error.
+  - [x] Production safety: default `DB_AUTO_MIGRATE=false`.
+  - [x] Add readiness wait with backoff if DB is not yet available in local compose.
 
 - [ ] 12: Update docs and CI notes
    - [ ] Add a short section to `docs/development.md` explaining how to start Postgres, set `DATABASE_URL`, and run migrations/tests.
