@@ -56,11 +56,11 @@
   - [x] `truncateAll(t *testing.T, db *sql.DB)` that deletes from `time_entry`, `category`, `project` in the right order
   - [x] Small builders for domain entities (generate UUIDs, names) to keep tests readable
 
-- [ ] 5: ProjectRepository integration tests (`server/internal/repository/postgres/project_repository_integration_test.go`)
-  - [ ] `Create` then `GetByID` returns same fields
-  - [ ] `List` returns created projects
-  - [ ] `Update` changes `name`/`description` and bumps `updated_at`
-  - [ ] `Delete` removes the row; `GetByID` → `ErrNotFound`
+ - [x] 5: ProjectRepository integration tests (`server/internal/repository/postgres/project_repository_integration_test.go`)
+  - [x] `Create` then `GetByID` returns same fields
+  - [x] `List` returns created projects
+  - [x] `Update` changes `name`/`description` and bumps `updated_at`
+  - [x] `Delete` removes the row; `GetByID` → `ErrNotFound`
 
 - [ ] 6: CategoryRepository integration tests (`.../category_repository_integration_test.go`)
   - [ ] `Create` with valid `project_id` succeeds
