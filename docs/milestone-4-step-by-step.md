@@ -8,30 +8,30 @@
   - [x] Import explicit dependencies: `github.com/google/uuid`, `time`
   - [x] Keep domain free of DB concerns; no JSON/DB tags yet (DTOs can be added later if needed)
 
-- [ ] 2: Define repository interfaces in `server/internal/repository/repository.go`
-  - [ ] Add package-level errors (explicit vars) for common conditions (e.g., `ErrNotFound`, `ErrDuplicate`, `ErrForeignKeyViolation`)
-  - [ ] `ProjectRepository` (CRUD + list)
-    - [ ] `Create(ctx context.Context, project domain.Project) (domain.Project, error)`
-    - [ ] `GetByID(ctx context.Context, id uuid.UUID) (domain.Project, error)`
-    - [ ] `List(ctx context.Context) ([]domain.Project, error)`
-    - [ ] `Update(ctx context.Context, id uuid.UUID, name string, description *string) (domain.Project, error)`
-    - [ ] `Delete(ctx context.Context, id uuid.UUID) error`
-  - [ ] `CategoryRepository`
-    - [ ] `Create(ctx context.Context, category domain.Category) (domain.Category, error)`
-    - [ ] `GetByID(ctx context.Context, id uuid.UUID) (domain.Category, error)`
-    - [ ] `ListByProject(ctx context.Context, projectID uuid.UUID) ([]domain.Category, error)`
-    - [ ] `ListChildren(ctx context.Context, parentID uuid.UUID) ([]domain.Category, error)`
-    - [ ] `Update(ctx context.Context, id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error)`
-    - [ ] `Delete(ctx context.Context, id uuid.UUID) error`
-    - [ ] Note: Do not allow changing `ProjectID` via repository Update (service-level invariant)
-  - [ ] `TimeEntryRepository`
-    - [ ] `Create(ctx context.Context, entry domain.TimeEntry) (domain.TimeEntry, error)`
-    - [ ] `GetByID(ctx context.Context, id uuid.UUID) (domain.TimeEntry, error)`
-    - [ ] `ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]domain.TimeEntry, error)`
-    - [ ] `ListByCategoryAndRange(ctx context.Context, categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error)`
-    - [ ] `FindActive(ctx context.Context) (*domain.TimeEntry, error)`
-    - [ ] `Stop(ctx context.Context, id uuid.UUID, stoppedAt time.Time, durationSeconds *int32) (domain.TimeEntry, error)`
-  - [ ] Ensure explicit parameter and return types for all methods
+- [x] 2: Define repository interfaces in `server/internal/repository/repository.go`
+  - [x] Add package-level errors (explicit vars) for common conditions (e.g., `ErrNotFound`, `ErrDuplicate`, `ErrForeignKeyViolation`)
+  - [x] `ProjectRepository` (CRUD + list)
+   - [x] `Create(ctx context.Context, project domain.Project) (domain.Project, error)`
+   - [x] `GetByID(ctx context.Context, id uuid.UUID) (domain.Project, error)`
+   - [x] `List(ctx context.Context) ([]domain.Project, error)`
+   - [x] `Update(ctx context.Context, id uuid.UUID, name string, description *string) (domain.Project, error)`
+   - [x] `Delete(ctx context.Context, id uuid.UUID) error`
+  - [x] `CategoryRepository`
+   - [x] `Create(ctx context.Context, category domain.Category) (domain.Category, error)`
+   - [x] `GetByID(ctx context.Context, id uuid.UUID) (domain.Category, error)`
+   - [x] `ListByProject(ctx context.Context, projectID uuid.UUID) ([]domain.Category, error)`
+   - [x] `ListChildren(ctx context.Context, parentID uuid.UUID) ([]domain.Category, error)`
+   - [x] `Update(ctx context.Context, id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error)`
+   - [x] `Delete(ctx context.Context, id uuid.UUID) error`
+   - [x] Note: Do not allow changing `ProjectID` via repository Update (service-level invariant)
+  - [x] `TimeEntryRepository`
+   - [x] `Create(ctx context.Context, entry domain.TimeEntry) (domain.TimeEntry, error)`
+   - [x] `GetByID(ctx context.Context, id uuid.UUID) (domain.TimeEntry, error)`
+   - [x] `ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]domain.TimeEntry, error)`
+   - [x] `ListByCategoryAndRange(ctx context.Context, categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error)`
+   - [x] `FindActive(ctx context.Context) (*domain.TimeEntry, error)`
+   - [x] `Stop(ctx context.Context, id uuid.UUID, stoppedAt time.Time, durationSeconds *int32) (domain.TimeEntry, error)`
+  - [x] Ensure explicit parameter and return types for all methods
 
 - [ ] 3: Create Postgres adapters in `server/internal/repository/postgres`
   - [ ] Layout
