@@ -44,16 +44,16 @@
     - [x] Cache headers: long cache for hashed assets under `assets/`; `no-store` for `index.html`
   - [x] In development, skip static serving (handled by Vite dev server)
 
-- [ ] 5: Wire HTTP server in `cmd/server/main.go`
-  - [ ] Initialize `slog` logger
-    - [ ] JSON handler in production; text handler in development
-  - [ ] Load config and run migrations when `cfg.AutoMigrate` is true (already present)
-  - [ ] Open DB connection: `db.Open(ctx, cfg.DatabaseURL)`; defer `Close()`
-  - [ ] Create router: `http.NewRouter(cfg, dbConn, clock.NewSystemClock(), logger)`
-  - [ ] Configure `http.Server` with timeouts (`ReadHeaderTimeout`, `ReadTimeout`, `WriteTimeout`, `IdleTimeout`)
-  - [ ] Start server on `fmt.Sprintf(":%d", cfg.Port)` in a goroutine
-  - [ ] Implement graceful shutdown on `SIGINT/SIGTERM` with a 10s timeout context
-  - [ ] Log startup details (env, port, static enabled, migrations applied)
+- [x] 5: Wire HTTP server in `cmd/server/main.go`
+  - [x] Initialize `slog` logger
+    - [x] JSON handler in production; text handler in development
+  - [x] Load config and run migrations when `cfg.AutoMigrate` is true (already present)
+  - [x] Open DB connection: `db.Open(ctx, cfg.DatabaseURL)`; defer `Close()`
+  - [x] Create router: `http.NewRouter(cfg, dbConn, clock.NewSystemClock(), logger)`
+  - [x] Configure `http.Server` with timeouts (`ReadHeaderTimeout`, `ReadTimeout`, `WriteTimeout`, `IdleTimeout`)
+  - [x] Start server on `fmt.Sprintf(":%d", cfg.Port)` in a goroutine
+  - [x] Implement graceful shutdown on `SIGINT/SIGTERM` with a 10s timeout context
+  - [x] Log startup details (env, port, static enabled, migrations applied)
 
 - [ ] 6: Local verification
   - [ ] Start Postgres (from Milestone 2): `docker compose up -d postgres`
