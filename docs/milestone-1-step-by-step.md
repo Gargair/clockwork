@@ -89,7 +89,7 @@
   - [X] Trigger on `pull_request` and `push` to main branches
 
 - [ ] 7: Local verification and first commit
-  - [ ] Run locally
+  - [X] Run locally
     ```bash
     # Server
     cd server && go test ./... && go build ./...
@@ -97,8 +97,8 @@
     # Client
     cd ../client && npm install && npm run build
     ```
-  - [ ] Commit structured scaffolding
-    - [ ] Include `client/`, `server/`, `.github/workflows/ci.yml`, `.gitignore`, `.editorconfig`, and lint configs
+  - [X] Commit structured scaffolding
+    - [X] Include `client/`, `server/`, `.github/workflows/ci.yml`, `.gitignore`, `.editorconfig`, and lint configs
   - [ ] Push and confirm CI passes
 
 ### Notes and conventions for M1
@@ -108,9 +108,9 @@
 - Do not introduce DB or migrations yet (Milestone 2)
 
 ### Verification checklist (maps to acceptance)
-- [ ] Server: `go test ./...` passes
-- [ ] Server: `go build ./...` succeeds
-- [ ] Client: `npm run build` succeeds
+- [X] Server: `go test ./...` passes
+- [X] Server: `go build ./...` succeeds
+- [X] Client: `npm run build` succeeds
 - [ ] CI: Both jobs complete successfully on PR and push
 
 
