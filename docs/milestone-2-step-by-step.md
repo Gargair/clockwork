@@ -32,10 +32,10 @@
   - [x] In `server/internal/config`, add a `Config` struct with `DatabaseURL string` and loader that reads `DATABASE_URL` (and validates it).
   - [x] Provide sane defaults for local dev (optional): allow `.env` support or fall back to `postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable`.
 
-- [ ] 7: Implement connection pool in `internal/db`
-   - [ ] In `server/internal/db`, implement a constructor (e.g., `Open(ctx context.Context, databaseURL string) (*sql.DB, error)`) using `database/sql` and `pgx` driver.
-   - [ ] Configure pool settings (max open/idle conns, conn max lifetime) suitable for dev.
-   - [ ] Add a simple `Ping`/`Health` helper.
+- [x] 7: Implement connection pool in `internal/db`
+  - [x] In `server/internal/db`, implement a constructor (e.g., `Open(ctx context.Context, databaseURL string) (*sql.DB, error)`) using `database/sql` and `pgx` driver.
+  - [x] Configure pool settings (max open/idle conns, conn max lifetime) suitable for dev.
+  - [x] Add a simple `Ping`/`Health` helper.
 
 - [ ] 8: Add migration commands (developer workflow)
    - [ ] Provide scripts/commands to run migrations locally using goose:
