@@ -80,9 +80,9 @@
   - [x] Add constructors to a central wiring point if needed (e.g., later in services or handlers)
   - [x] Do not expose repositories via HTTP yet (reserved for Milestone 6)
 
-- [ ] 9: Docs and developer workflow
-  - [ ] Add a short note to `docs/development.md` about running repository integration tests (`go test ./server/... -tags=integration`)
-  - [ ] Ensure `docker compose up -d postgres` and `DATABASE_URL` instructions are referenced
+ - [x] 9: Docs and developer workflow
+  - [x] Add a short note to `docs/development.md` about running repository integration tests (`go test ./server/... -tags=integration`)
+  - [x] Ensure `docker compose up -d postgres` and `DATABASE_URL` instructions are referenced
 
 - [ ] 10: Acceptance checklist (map to Implementation Plan)
   - [ ] Domain entities defined with explicit types in `internal/domain`
