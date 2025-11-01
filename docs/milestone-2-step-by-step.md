@@ -18,11 +18,11 @@
   - [x] FKs: `category.project_id` (on delete restrict), `category.parent_category_id` (on delete set null), `time_entry.category_id` (on delete restrict)
   - [x] Basic audit columns default to `now()` where appropriate.
 
-- [ ] 4: Add indexes and uniqueness in a follow-up migration
-   - [ ] Create `YYYYMMDD_0002_indexes.sql` with:
-     - [ ] Unique `(project_id, name)` on `category` to prevent duplicate names within a project
-     - [ ] Indexes: `category(project_id)`, `category(parent_category_id)`, `time_entry(category_id, started_at)`
-     - [ ] Optional partial index to accelerate active timer queries: `CREATE INDEX IF NOT EXISTS time_entry_active_idx ON time_entry (category_id) WHERE stopped_at IS NULL;`
+- [x] 4: Add indexes and uniqueness in a follow-up migration
+  - [x] Create `YYYYMMDD_0002_indexes.sql` with:
+    - [x] Unique `(project_id, name)` on `category` to prevent duplicate names within a project
+    - [x] Indexes: `category(project_id)`, `category(parent_category_id)`, `time_entry(category_id, started_at)`
+    - [x] Optional partial index to accelerate active timer queries: `CREATE INDEX IF NOT EXISTS time_entry_active_idx ON time_entry (category_id) WHERE stopped_at IS NULL;`
 
 - [ ] 5: Add local Postgres via Docker
    - [ ] Add a minimal `docker-compose.yml` at the repo root with a `postgres` service (e.g., image `postgres:16`, user/password/db from env, healthcheck, and a named volume).
