@@ -21,6 +21,10 @@ See the detailed guide for this milestone: [milestone-1-step-by-step.md](milesto
   - `internal/db` connection pool; typed config with `DATABASE_URL`
 - **Acceptance**: Migrations apply cleanly; local DB up via Docker; simple round‑trip smoke test succeeds.
 
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-2-step-by-step.md](milestone-2-step-by-step.md).
+
 ## Milestone 3: Server foundations
 - **Scope**: HTTP server setup, middleware, static file serving, health check.
 - **Deliverables**:
