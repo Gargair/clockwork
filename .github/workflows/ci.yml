@@ -54,11 +54,13 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:18
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: postgrespw
           POSTGRES_DB: clockwork
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=5s
@@ -66,7 +68,7 @@ jobs:
           --health-retries=20
 
     env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgrespw@localhost:5432/clockwork?sslmode=disable
 
     steps:
       - uses: actions/checkout@v4
