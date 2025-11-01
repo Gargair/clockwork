@@ -7,11 +7,11 @@
 
 - [x] 2: Create migrations directory and baseline scripts
   - [x] Create `server/migrations/`.
-  - [x] Establish naming convention: `YYYYMMDD_\d{4}_*.sql` (e.g., `20250115_0001_init.sql`, `20250115_0002_indexes.sql`).
+  - [x] Establish naming convention: `YYYYMMDD\d{4}_*.sql` (e.g., `202501150001_init.sql`, `202501150002_indexes.sql`).
   - [x] Add a README comment at top of the directory explaining how to create/apply/roll back migrations.
 
 - [x] 3: Define initial schema migration (tables + constraints)
-  - [x] Create `YYYYMMDD_0001_init.sql` implementing the tables from `docs/domain-model.md`:
+  - [x] Create `YYYYMMDD0001_init.sql` implementing the tables from `docs/domain-model.md`:
     - [x] `project (id uuid pk, name text not null, description text, created_at timestamptz not null, updated_at timestamptz not null)`
     - [x] `category (id uuid pk, project_id uuid not null fk → project.id, parent_category_id uuid null fk → category.id on delete set null, name text not null, description text, created_at timestamptz not null, updated_at timestamptz not null)`
     - [x] `time_entry (id uuid pk, category_id uuid not null fk → category.id, started_at timestamptz not null, stopped_at timestamptz null, duration_seconds integer null, created_at timestamptz not null, updated_at timestamptz not null)`
@@ -19,7 +19,7 @@
   - [x] Basic audit columns default to `now()` where appropriate.
 
 - [x] 4: Add indexes and uniqueness in a follow-up migration
-  - [x] Create `YYYYMMDD_0002_indexes.sql` with:
+  - [x] Create `YYYYMMDD0002_indexes.sql` with:
     - [x] Unique `(project_id, name)` on `category` to prevent duplicate names within a project
     - [x] Indexes: `category(project_id)`, `category(parent_category_id)`, `time_entry(category_id, started_at)`
     - [x] Optional partial index to accelerate active timer queries: `CREATE INDEX IF NOT EXISTS time_entry_active_idx ON time_entry (category_id) WHERE stopped_at IS NULL;`
@@ -44,10 +44,10 @@
     - [x] Down (careful): `go run github.com/pressly/goose/v3/cmd/goose@latest -dir ./server/migrations postgres "$env:DATABASE_URL" down`
   - [x] Optionally add script wrapper for convenience: `scripts/goose.ps1`
 
-- [ ] 9: Bring up database and apply migrations
-   - [ ] `docker compose up -d postgres`
-   - [ ] Set `DATABASE_URL` (PowerShell): `$env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable"`
-   - [ ] Run `goose up` as above and verify it reports to the latest migration.
+- [X] 9: Bring up database and apply migrations
+   - [X] `docker compose up -d postgres`
+   - [X] Set `DATABASE_URL` (PowerShell): `$env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable"`
+   - [X] Run `goose up` as above and verify it reports to the latest migration.
 
 - [ ] 10: Add a minimal smoke test (round-trip)
    - [ ] Create `server/internal/db/db_smoke_test.go` flagged as an integration test (e.g., build tag `integration`).
@@ -72,7 +72,7 @@
 
 - [ ] 13: Acceptance checklist
    - [ ] `docker compose up` starts a healthy local Postgres.
-   - [ ] `goose up` applies `YYYYMMDD_0001` and `YYYYMMDD_0002` cleanly on a fresh database.
+   - [ ] `goose up` applies `YYYYMMDD0001` and `YYYYMMDD0002` cleanly on a fresh database.
    - [ ] `go run ./...` (server build) still succeeds.
    - [ ] Integration smoke test passes locally against the running DB.
 

@@ -3,10 +3,10 @@
 This directory contains SQL migrations managed by `pressly/goose` v3.
 
 ## Naming convention
-- Files are named: `YYYYMMDD_NNNN_description.sql`
+- Files are named: `YYYYMMDDNNNN_description.sql`
   - `YYYYMMDD` is the UTC date.
   - `NNNN` is a 4-digit sequence starting at `0001` for the day.
-  - Example: `20250115_0001_init.sql`, `20250115_0002_indexes.sql`.
+  - Example: `202501150001_init.sql`, `202501150002_indexes.sql`.
 
 ## Common commands (PowerShell)
 Set your database URL (example for local Postgres):
