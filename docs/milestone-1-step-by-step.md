@@ -99,7 +99,7 @@
     ```
   - [X] Commit structured scaffolding
     - [X] Include `client/`, `server/`, `.github/workflows/ci.yml`, `.gitignore`, `.editorconfig`, and lint configs
-  - [ ] Push and confirm CI passes
+  - [X] Push and confirm CI passes
 
 ### Notes and conventions for M1
 - Keep server packages as empty, compilable placeholders; actual HTTP wiring lands in Milestone 3
@@ -111,6 +111,6 @@
 - [X] Server: `go test ./...` passes
 - [X] Server: `go build ./...` succeeds
 - [X] Client: `npm run build` succeeds
-- [ ] CI: Both jobs complete successfully on PR and push
+- [X] CI: Both jobs complete successfully on PR and push
 
 
