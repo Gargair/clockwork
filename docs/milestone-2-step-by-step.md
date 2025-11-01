@@ -28,9 +28,9 @@
   - [x] Add a minimal `docker-compose.yml` at the repo root with a `postgres` service (e.g., image `postgres:16`, user/password/db from env, healthcheck, and a named volume).
   - [x] Document default connection URL (e.g., `postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable`).
 
-- [ ] 6: Implement typed configuration for database connection
-   - [ ] In `server/internal/config`, add a `Config` struct with `DatabaseURL string` and loader that reads `DATABASE_URL` (and validates it).
-   - [ ] Provide sane defaults for local dev (optional): allow `.env` support or fall back to `postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable`.
+- [x] 6: Implement typed configuration for database connection
+  - [x] In `server/internal/config`, add a `Config` struct with `DatabaseURL string` and loader that reads `DATABASE_URL` (and validates it).
+  - [x] Provide sane defaults for local dev (optional): allow `.env` support or fall back to `postgres://postgres:postgres@localhost:5432/clockwork?sslmode=disable`.
 
 - [ ] 7: Implement connection pool in `internal/db`
    - [ ] In `server/internal/db`, implement a constructor (e.g., `Open(ctx context.Context, databaseURL string) (*sql.DB, error)`) using `database/sql` and `pgx` driver.
