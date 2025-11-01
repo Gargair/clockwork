@@ -39,8 +39,8 @@
     - [X] `lint`: eslint "src/**/*.{ts,tsx}"
     - [X] `format`: prettier --write "src/**/*.{ts,tsx,css,json,md}"
 
-- [ ] 3: Scaffold the server (Go module and package skeletons)
-  - [ ] Create module and folder structure
+- [X] 3: Scaffold the server (Go module and package skeletons)
+  - [X] Create module and folder structure
     ```bash
     mkdir -p server/cmd/server
     mkdir -p server/internal/{config,http,service,repository,db,domain,clock}
@@ -48,16 +48,16 @@
     go mod init github.com/Gargair/clockwork/server
     go fmt ./...
     ```
-  - [ ] Add minimal compilable placeholders
-    - [ ] `server/cmd/server/main.go` with `package main` and empty `main()`
-    - [ ] `server/internal/config/config.go` with package `config`
-    - [ ] `server/internal/http/http.go` with package `http`
-    - [ ] `server/internal/service/service.go` with package `service`
-    - [ ] `server/internal/repository/repository.go` with package `repository`
-    - [ ] `server/internal/db/db.go` with package `db`
-    - [ ] `server/internal/domain/domain.go` with package `domain`
-    - [ ] `server/internal/clock/clock.go` with package `clock`
-  - [ ] Verify module builds
+  - [X] Add minimal compilable placeholders
+    - [X] `server/cmd/server/main.go` with `package main` and empty `main()`
+    - [X] `server/internal/config/config.go` with package `config`
+    - [X] `server/internal/http/http.go` with package `http`
+    - [X] `server/internal/service/service.go` with package `service`
+    - [X] `server/internal/repository/repository.go` with package `repository`
+    - [X] `server/internal/db/db.go` with package `db`
+    - [X] `server/internal/domain/domain.go` with package `domain`
+    - [X] `server/internal/clock/clock.go` with package `clock`
+  - [X] Verify module builds
     ```bash
     cd server
     go build ./...
