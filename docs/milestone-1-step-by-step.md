@@ -1,18 +1,18 @@
 ## Milestone 1: Step-by-step implementation plan
 
-- [ ] Confirm repository context: `https://github.com/Gargair/clockwork`
-  - [ ] Clone the repo and checkout the working branch
-  - [ ] Pull latest changes from `main`
+- [X] Confirm repository context: `https://github.com/Gargair/clockwork`
+  - [X] Clone the repo and checkout the working branch
+  - [X] Pull latest changes from `main`
 
-- [ ] Initialize repository layout and shared configs
-  - [ ] Create top-level directories per architecture
-    - [ ] `client/`
-    - [ ] `server/`
-    - [ ] `.github/workflows/`
-  - [ ] Add root configs
-    - [ ] `.gitignore` (Go, Node, OS/IDE ignores)
-    - [ ] `.editorconfig` (UTF-8, LF, 2 spaces for TS/JS, tabs/spaces per language as preferred)
-    - [ ] Confirm `docs/` remains source of truth for dev workflow
+- [X] Initialize repository layout and shared configs
+  - [X] Create top-level directories per architecture
+    - [X] `client/`
+    - [X] `server/`
+    - [X] `.github/workflows/`
+  - [X] Add root configs
+    - [X] `.gitignore` (Go, Node, OS/IDE ignores)
+    - [X] `.editorconfig` (UTF-8, LF, 2 spaces for TS/JS, tabs/spaces per language as preferred)
+    - [X] Confirm `docs/` remains source of truth for dev workflow
 
 - [ ] Scaffold the client (Vite + React + TypeScript)
   - [ ] Create the app skeleton non-interactively
