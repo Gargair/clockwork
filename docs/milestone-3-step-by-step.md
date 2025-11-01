@@ -9,10 +9,10 @@
   - [x] Update `Load()` to parse and validate new fields (port > 0, known env)
   - [x] Document env vars in `docs/development.md` briefly
 
-- [ ] 2: Add a clock abstraction (`internal/clock`)
-  - [ ] Define `type Clock interface { Now() time.Time }`
-  - [ ] Implement `type SystemClock struct{}` with `Now()` returning `time.Now().UTC()`
-  - [ ] Provide a `NewSystemClock()` constructor for clarity
+ - [x] 2: Add a clock abstraction (`internal/clock`)
+  - [x] Define `type Clock interface { Now() time.Time }`
+  - [x] Implement `type SystemClock struct{}` with `Now()` returning `time.Now().UTC()`
+  - [x] Provide a `NewSystemClock()` constructor for clarity
 
 - [ ] 3: Add HTTP router and middleware (`internal/http`)
   - [ ] Add dependencies:
