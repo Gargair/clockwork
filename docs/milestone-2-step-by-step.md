@@ -10,13 +10,13 @@
   - [x] Establish naming convention: `YYYYMMDD_\d{4}_*.sql` (e.g., `20250115_0001_init.sql`, `20250115_0002_indexes.sql`).
   - [x] Add a README comment at top of the directory explaining how to create/apply/roll back migrations.
 
-- [ ] 3: Define initial schema migration (tables + constraints)
-   - [ ] Create `YYYYMMDD_0001_init.sql` implementing the tables from `docs/domain-model.md`:
-     - [ ] `project (id uuid pk, name text not null, description text, created_at timestamptz not null, updated_at timestamptz not null)`
-     - [ ] `category (id uuid pk, project_id uuid not null fk → project.id, parent_category_id uuid null fk → category.id on delete set null, name text not null, description text, created_at timestamptz not null, updated_at timestamptz not null)`
-     - [ ] `time_entry (id uuid pk, category_id uuid not null fk → category.id, started_at timestamptz not null, stopped_at timestamptz null, duration_seconds integer null, created_at timestamptz not null, updated_at timestamptz not null)`
-     - [ ] FKs: `category.project_id` (on delete restrict), `category.parent_category_id` (on delete set null), `time_entry.category_id` (on delete restrict)
-     - [ ] Basic audit columns default to `now()` where appropriate.
+- [x] 3: Define initial schema migration (tables + constraints)
+  - [x] Create `YYYYMMDD_0001_init.sql` implementing the tables from `docs/domain-model.md`:
+    - [x] `project (id uuid pk, name text not null, description text, created_at timestamptz not null, updated_at timestamptz not null)`
+    - [x] `category (id uuid pk, project_id uuid not null fk → project.id, parent_category_id uuid null fk → category.id on delete set null, name text not null, description text, created_at timestamptz not null, updated_at timestamptz not null)`
+    - [x] `time_entry (id uuid pk, category_id uuid not null fk → category.id, started_at timestamptz not null, stopped_at timestamptz null, duration_seconds integer null, created_at timestamptz not null, updated_at timestamptz not null)`
+  - [x] FKs: `category.project_id` (on delete restrict), `category.parent_category_id` (on delete set null), `time_entry.category_id` (on delete restrict)
+  - [x] Basic audit columns default to `now()` where appropriate.
 
 - [ ] 4: Add indexes and uniqueness in a follow-up migration
    - [ ] Create `YYYYMMDD_0002_indexes.sql` with:
