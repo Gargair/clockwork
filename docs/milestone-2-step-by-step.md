@@ -1,9 +1,9 @@
 ## Milestone 2: Step-by-step implementation plan
 
-- [ ] 1: Select migration tooling and add dependencies
-   - [ ] Choose `pressly/goose` for SQL-first migrations and simple CLI/Go API integration.
-   - [ ] Add dependency in `server/go.mod` and pin a recent version of `github.com/pressly/goose/v3`.
-   - [ ] Plan to use the CLI for day-to-day ops; optional Go runner can be added later for in-app auto-migrate in dev.
+ - [x] 1: Select migration tooling and add dependencies
+   - [x] Choose `pressly/goose` for SQL-first migrations and simple CLI/Go API integration.
+   - [x] Add dependency in `server/go.mod` and pin a recent version of `github.com/pressly/goose/v3`.
+   - [x] Plan to use the CLI for day-to-day ops; optional Go runner can be added later for in-app auto-migrate in dev.
 
 - [ ] 2: Create migrations directory and baseline scripts
    - [ ] Create `server/migrations/`.
