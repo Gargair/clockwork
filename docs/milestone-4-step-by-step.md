@@ -1,12 +1,12 @@
 ## Milestone 4: Step-by-step implementation plan
 
-- [ ] 1: Define domain entities in `server/internal/domain`
-  - [ ] Add explicit types reflecting the schema in `docs/domain-model.md`:
-    - [ ] `type Project struct { ID uuid.UUID; Name string; Description *string; CreatedAt time.Time; UpdatedAt time.Time }`
-    - [ ] `type Category struct { ID uuid.UUID; ProjectID uuid.UUID; ParentCategoryID *uuid.UUID; Name string; Description *string; CreatedAt time.Time; UpdatedAt time.Time }`
-    - [ ] `type TimeEntry struct { ID uuid.UUID; CategoryID uuid.UUID; StartedAt time.Time; StoppedAt *time.Time; DurationSeconds *int32; CreatedAt time.Time; UpdatedAt time.Time }`
-  - [ ] Import explicit dependencies: `github.com/google/uuid`, `time`
-  - [ ] Keep domain free of DB concerns; no JSON/DB tags yet (DTOs can be added later if needed)
+ - [x] 1: Define domain entities in `server/internal/domain`
+  - [x] Add explicit types reflecting the schema in `docs/domain-model.md`:
+  - [x] `type Project struct { ID uuid.UUID; Name string; Description *string; CreatedAt time.Time; UpdatedAt time.Time }`
+  - [x] `type Category struct { ID uuid.UUID; ProjectID uuid.UUID; ParentCategoryID *uuid.UUID; Name string; Description *string; CreatedAt time.Time; UpdatedAt time.Time }`
+  - [x] `type TimeEntry struct { ID uuid.UUID; CategoryID uuid.UUID; StartedAt time.Time; StoppedAt *time.Time; DurationSeconds *int32; CreatedAt time.Time; UpdatedAt time.Time }`
+  - [x] Import explicit dependencies: `github.com/google/uuid`, `time`
+  - [x] Keep domain free of DB concerns; no JSON/DB tags yet (DTOs can be added later if needed)
 
 - [ ] 2: Define repository interfaces in `server/internal/repository/repository.go`
   - [ ] Add package-level errors (explicit vars) for common conditions (e.g., `ErrNotFound`, `ErrDuplicate`, `ErrForeignKeyViolation`)
