@@ -64,15 +64,11 @@ func TestProjectHandlerCreateHappyPath(t *testing.T) {
 	}
 	h := NewProjectHandler(f, slog.Default())
 
-	r := chi.NewRouter()
-	r.Route(projectRoute, h.RegisterRoutes)
+	r := mountRoutes(projectRoute, h.RegisterRoutes)
 
 	body := ProjectCreateRequest{Name: "Proj A"}
-	data, _ := json.Marshal(body)
-
-	req := httptest.NewRequest(stdhttp.MethodPost, projectRoute, bytes.NewReader(data))
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+	data := mustJSON(t, body)
+	w := doRequest(r, stdhttp.MethodPost, projectRoute, data, nil)
 
 	if w.Code != stdhttp.StatusCreated {
 		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusCreated, w.Code)
@@ -102,12 +98,9 @@ func TestProjectHandlerListHappyPath(t *testing.T) {
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
 	h := NewProjectHandler(f, slog.Default())
-	r := chi.NewRouter()
-	r.Route(projectRoute, h.RegisterRoutes)
+	r := mountRoutes(projectRoute, h.RegisterRoutes)
 
-	req := httptest.NewRequest(stdhttp.MethodGet, projectRoute, nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+	w := doRequest(r, stdhttp.MethodGet, projectRoute, nil, nil)
 
 	if w.Code != stdhttp.StatusOK {
 		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
