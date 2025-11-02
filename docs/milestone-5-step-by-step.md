@@ -1,12 +1,12 @@
 ## Milestone 5: Step-by-step implementation plan
 
- - [ ] 1: Establish service package structure and common errors
-  - [ ] Create `server/internal/service/errors.go`
-  - [ ] Define explicit error variables (public, for handler mapping later):
-   - [ ] `var ErrNoActiveTimer = errors.New("service: no active timer")`
-   - [ ] `var ErrCategoryCycle = errors.New("service: category cycle detected")`
-   - [ ] `var ErrCrossProjectParent = errors.New("service: parent category belongs to a different project")`
-   - [ ] `var ErrInvalidParent = errors.New("service: invalid parent category")`
+ - [x] 1: Establish service package structure and common errors
+  - [x] Create `server/internal/service/errors.go`
+  - [x] Define explicit error variables (public, for handler mapping later):
+   - [x] `var ErrNoActiveTimer = errors.New("service: no active timer")`
+   - [x] `var ErrCategoryCycle = errors.New("service: category cycle detected")`
+   - [x] `var ErrCrossProjectParent = errors.New("service: parent category belongs to a different project")`
+   - [x] `var ErrInvalidParent = errors.New("service: invalid parent category")`
 
  - [ ] 2: Define service interfaces and constructors in `server/internal/service/service.go`
   - [ ] Add interfaces with explicit parameter and return types and context:
