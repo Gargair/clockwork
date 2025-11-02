@@ -12,16 +12,16 @@
   - [x] `writeError(w http.ResponseWriter, r *http.Request, status int, code, msg string)`
   - [x] `parseUUID(str string) (uuid.UUID, error)` and `parseTimeRFC3339(str string) (time.Time, error)`
 
- - [ ] 2: Define consistent error mapping from services to HTTP
-  - [ ] Create `server/internal/http/errors.go` with:
-   - [ ] `type apiErrorCode string`
-   - [ ] Map `service.ErrInvalidProjectName` → `400 Bad Request`
-   - [ ] Map `service.ErrInvalidParent`, `service.ErrCrossProjectParent` → `400 Bad Request`
-   - [ ] Map `service.ErrCategoryCycle` → `409 Conflict`
-   - [ ] Map `service.ErrNoActiveTimer` (on stop) → `409 Conflict`
-   - [ ] Repository not found → `404 Not Found`
-   - [ ] Unknown → `500 Internal Server Error`
-  - [ ] Ensure `writeError` includes `X-Request-ID` value in `ErrorResponse.requestId`
+ - [X] 2: Define consistent error mapping from services to HTTP
+  - [x] Create `server/internal/http/errors.go` with:
+  - [x] `type apiErrorCode string`
+  - [x] Map `service.ErrInvalidProjectName` → `400 Bad Request`
+  - [x] Map `service.ErrInvalidParent`, `service.ErrCrossProjectParent` → `400 Bad Request`
+  - [x] Map `service.ErrCategoryCycle` → `409 Conflict`
+  - [x] Map `service.ErrNoActiveTimer` (on stop) → `409 Conflict`
+  - [x] Repository not found → `404 Not Found`
+  - [x] Unknown → `500 Internal Server Error`
+  - [x] Ensure `writeError` includes `X-Request-ID` value in `ErrorResponse.requestId`
 
  - [ ] 3: Implement `ProjectHandler`
   - [ ] Add `server/internal/http/project_handler.go` with methods using `service.ProjectService`:
