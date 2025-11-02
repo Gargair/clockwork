@@ -87,12 +87,12 @@
   - [x] Expand `docs/api.md` with example request/response bodies for all endpoints
   - [x] Note validation rules (UUIDs, RFC3339 times) and error codes
 
- - [ ] 10: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] `ProjectHandler`, `CategoryHandler`, and `TimeHandler` implemented with explicit types
-  - [ ] Error mapping consistent and documented; structured `ErrorResponse` returned
-  - [ ] Routes registered under `/api/*` and served by `NewRouter`
-  - [ ] Handler tests cover happy paths and error cases and pass: `cd server; go test ./...`
-  - [ ] `docs/api.md` reflects implemented behavior with examples
+ - [X] 10: Acceptance checklist (aligns with Implementation Plan)
+  - [x] `ProjectHandler`, `CategoryHandler`, and `TimeHandler` implemented with explicit types
+  - [x] Error mapping consistent and documented; structured `ErrorResponse` returned
+  - [x] Routes registered under `/api/*` and served by `NewRouter`
+  - [x] Handler tests cover happy paths and error cases and pass: `cd server; go test ./...`
+  - [x] `docs/api.md` reflects implemented behavior with examples
 
 ### Notes for M6
 - Prefer explicit types and annotations for all public handler APIs and DTOs.
