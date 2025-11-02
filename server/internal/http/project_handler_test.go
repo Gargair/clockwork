@@ -365,5 +365,122 @@ func TestProjectHandlerDeleteHappyPath(t *testing.T) {
 	}
 }
 
+func TestProjectHandlerUpdateInvalidJSON(t *testing.T) {
+	f := &fakeProjectService{
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		getFn:    func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		listFn:   func() ([]domain.Project, error) { return nil, nil },
+		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
+		deleteFn: func(id uuid.UUID) error { return nil },
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route(projectRoute, h.RegisterRoutes)
+
+	id := uuid.New().String()
+	body := []byte(`{"name":"Proj","bogus":true}`)
+	w := doRequest(r, stdhttp.MethodPatch, projectRoute+"/"+id, body, nil)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf(invalidJsonErrorMessage, err)
+	}
+	if errResp.Code != string(codeInvalidJSON) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+}
+
+func TestProjectHandlerDeleteInvalidUUID(t *testing.T) {
+	f := &fakeProjectService{
+		deleteFn: func(id uuid.UUID) error { return nil },
+		getFn:    func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		listFn:   func() ([]domain.Project, error) { return nil, nil },
+		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := mountRoutes(projectRoute, h.RegisterRoutes)
+	w := doRequest(r, stdhttp.MethodDelete, projectRoute+"/not-a-uuid", nil, nil)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+}
+
+func TestProjectHandlerDeleteNotFoundMaps404(t *testing.T) {
+	f := &fakeProjectService{
+		deleteFn: func(id uuid.UUID) error { return repository.ErrNotFound },
+		getFn:    func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		listFn:   func() ([]domain.Project, error) { return nil, nil },
+		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := mountRoutes(projectRoute, h.RegisterRoutes)
+
+	id := uuid.New().String()
+	w := doRequest(r, stdhttp.MethodDelete, projectRoute+"/"+id, nil, nil)
+	if w.Code != stdhttp.StatusNotFound {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
+	}
+}
+
+func TestProjectHandlerCreateUnknownRepoErrorMaps500Internal(t *testing.T) {
+	f := &fakeProjectService{
+		createFn: func(name string, description *string) (domain.Project, error) {
+			return domain.Project{}, repository.ErrDuplicate
+		},
+		listFn: func() ([]domain.Project, error) { return nil, nil },
+		getFn:  func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		deleteFn: func(id uuid.UUID) error { return nil },
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route(projectRoute, h.RegisterRoutes)
+
+	body := mustJSON(t, ProjectCreateRequest{Name: "X"})
+	w := doRequest(r, stdhttp.MethodPost, projectRoute, body, nil)
+	if w.Code != stdhttp.StatusInternalServerError {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusInternalServerError, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf(invalidJsonErrorMessage, err)
+	}
+	if errResp.Code != string(codeInternal) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+}
+
+func TestProjectHandlerListUnknownErrorMaps500(t *testing.T) {
+	f := &fakeProjectService{
+		listFn:   func() ([]domain.Project, error) { return nil, repository.ErrDuplicate },
+		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
+		getFn:    func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		deleteFn: func(id uuid.UUID) error { return nil },
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := mountRoutes(projectRoute, h.RegisterRoutes)
+	w := doRequest(r, stdhttp.MethodGet, projectRoute, nil, nil)
+	if w.Code != stdhttp.StatusInternalServerError {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusInternalServerError, w.Code)
+	}
+}
+
 // helpers
 func ptr[T any](v T) *T { return &v }

@@ -193,6 +193,105 @@ func TestCategoryHandlerGetNotFound(t *testing.T) {
 	}
 }
 
+func TestCategoryHandlerCreateInvalidParentMaps400(t *testing.T) {
+	f := &fakeCategoryService{
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, service.ErrInvalidParent
+		},
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+		getFn:           func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		deleteFn:       func(id uuid.UUID) error { return nil },
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+
+	projectID := uuid.New().String()
+	parentID := uuid.New().String()
+	body := CategoryCreateRequest{Name: "X", ParentCategoryID: &parentID}
+	data, _ := json.Marshal(body)
+	req := httptest.NewRequest(stdhttp.MethodPost, sprintf(categoriesRoute, projectID), bytes.NewReader(data))
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if errResp.Code != string(codeInvalidParent) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+}
+
+func TestCategoryHandlerDeleteNotFoundMaps404(t *testing.T) {
+	f := &fakeCategoryService{
+		deleteFn:        func(id uuid.UUID) error { return repository.ErrNotFound },
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		getFn: func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+	projectID := uuid.New().String()
+	id := uuid.New().String()
+	req := httptest.NewRequest(stdhttp.MethodDelete, sprintf(categoriesRoute+"/%s", projectID, id), nil)
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	rctx.URLParams.Add(categoryIdParam, id)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusNotFound {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
+	}
+}
+
+func TestCategoryHandlerListUnknownErrorMaps500(t *testing.T) {
+	f := &fakeCategoryService{
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, repository.ErrDuplicate },
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		getFn: func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		deleteFn:       func(id uuid.UUID) error { return nil },
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+	projectID := uuid.New().String()
+	req := httptest.NewRequest(stdhttp.MethodGet, sprintf(categoriesRoute, projectID), nil)
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusInternalServerError {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusInternalServerError, w.Code)
+	}
+}
+
 func TestCategoryHandlerListHappyPath(t *testing.T) {
 	now := time.Now().UTC()
 	f := &fakeCategoryService{
@@ -345,6 +444,146 @@ func TestCategoryHandlerInvalidUUIDsReturn400(t *testing.T) {
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {
 		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+}
+
+func TestCategoryHandlerUpdateInvalidUUIDReturns400(t *testing.T) {
+	f := &fakeCategoryService{
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+		getFn:           func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		deleteFn:       func(id uuid.UUID) error { return nil },
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+
+	projectID := uuid.New().String()
+	body := CategoryUpdateRequest{Name: ptr("X")}
+	data, _ := json.Marshal(body)
+	req := httptest.NewRequest(stdhttp.MethodPatch, sprintf(categoriesRoute+"/%s", projectID, invalidId), bytes.NewReader(data))
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	rctx.URLParams.Add(categoryIdParam, invalidId)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+}
+
+func TestCategoryHandlerDeleteInvalidUUIDReturns400(t *testing.T) {
+	f := &fakeCategoryService{
+		deleteFn:        func(id uuid.UUID) error { return nil },
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+		getFn:           func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+
+	projectID := uuid.New().String()
+	req := httptest.NewRequest(stdhttp.MethodDelete, sprintf(categoriesRoute+"/%s", projectID, invalidId), nil)
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	rctx.URLParams.Add(categoryIdParam, invalidId)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+}
+
+func TestCategoryHandlerCreateUnknownFieldInvalidJSON(t *testing.T) {
+	f := &fakeCategoryService{
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+		getFn:           func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		deleteFn:       func(id uuid.UUID) error { return nil },
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+
+	projectID := uuid.New().String()
+	body := []byte(`{"name":"A","bogus":true}`)
+	req := httptest.NewRequest(stdhttp.MethodPost, sprintf(categoriesRoute, projectID), bytes.NewReader(body))
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if errResp.Code != string(codeInvalidJSON) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+}
+
+func TestCategoryHandlerUpdateUnknownFieldInvalidJSON(t *testing.T) {
+	f := &fakeCategoryService{
+		updateFn: func(id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		listByProjectFn: func(projectID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+		getFn:           func(id uuid.UUID) (domain.Category, error) { return domain.Category{}, nil },
+		createFn: func(projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error) {
+			return domain.Category{}, nil
+		},
+		deleteFn:       func(id uuid.UUID) error { return nil },
+		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
+	}
+	h := NewCategoryHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+
+	projectID := uuid.New().String()
+	id := uuid.New().String()
+	body := []byte(`{"name":"A","bogus":true}`)
+	req := httptest.NewRequest(stdhttp.MethodPatch, sprintf(categoriesRoute+"/%s", projectID, id), bytes.NewReader(body))
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add(projectIdParam, projectID)
+	rctx.URLParams.Add(categoryIdParam, id)
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if errResp.Code != string(codeInvalidJSON) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
 	}
 }
 

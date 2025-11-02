@@ -13,9 +13,11 @@ import (
 	"log/slog"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/google/uuid"
 
 	"github.com/Gargair/clockwork/server/internal/domain"
+	"github.com/Gargair/clockwork/server/internal/repository"
 	"github.com/Gargair/clockwork/server/internal/service"
 )
 
@@ -80,6 +82,58 @@ func TestTimeHandlerStartCreated(t *testing.T) {
 	}
 	if resp.CategoryID.String() != body.CategoryID {
 		t.Fatalf("expected category echo, got %s", resp.CategoryID)
+	}
+}
+
+func TestTimeHandlerStartInvalidJSON(t *testing.T) {
+	f := &fakeTimeService{
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	body := []byte(`{"categoryId":"` + uuid.New().String() + `","bogus":1}`)
+	req := httptest.NewRequest(stdhttp.MethodPost, timeRoute+"/start", bytes.NewReader(body))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf(invalidJsonErrorMessage, err)
+	}
+	if errResp.Code != string(codeInvalidJSON) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+}
+
+func TestTimeHandlerStartInvalidCategoryID(t *testing.T) {
+	f := &fakeTimeService{
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	body := mustJSON(t, TimeStartRequest{CategoryID: "not-a-uuid"})
+	w := doRequest(r, stdhttp.MethodPost, timeRoute+"/start", body, nil)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
 	}
 }
 
@@ -279,4 +333,88 @@ func TestTimeHandlerEntriesParsingValidation(t *testing.T) {
 	}
 	// ensure JSON is valid
 	_, _ = io.ReadAll(w.Body)
+}
+
+func TestTimeHandlerStartCategoryNotFoundMaps404(t *testing.T) {
+	f := &fakeTimeService{
+		startFn: func(categoryID uuid.UUID) (domain.TimeEntry, error) {
+			return domain.TimeEntry{}, repository.ErrNotFound
+		},
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	body := mustJSON(t, TimeStartRequest{CategoryID: uuid.New().String()})
+	w := doRequest(r, stdhttp.MethodPost, timeRoute+"/start", body, nil)
+	if w.Code != stdhttp.StatusNotFound {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
+	}
+}
+
+func TestTimeHandlerEntriesServiceErrorMaps500(t *testing.T) {
+	f := &fakeTimeService{
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, repository.ErrDuplicate },
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, repository.ErrDuplicate
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	catID := uuid.New().String()
+	w := doRequest(r, stdhttp.MethodGet, categoryEntriesRoute+catID, nil, nil)
+	if w.Code != stdhttp.StatusInternalServerError {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusInternalServerError, w.Code)
+	}
+}
+
+func TestTimeHandlerStopServiceErrorMaps500(t *testing.T) {
+	f := &fakeTimeService{
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, repository.ErrForeignKeyViolation },
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	w := doRequest(r, stdhttp.MethodPost, timeRoute+"/stop", nil, nil)
+	if w.Code != stdhttp.StatusInternalServerError {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusInternalServerError, w.Code)
+	}
+}
+
+func TestTimeHandlerActiveServiceErrorMaps500(t *testing.T) {
+	f := &fakeTimeService{
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, repository.ErrDuplicate },
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	w := doRequest(r, stdhttp.MethodGet, timeRoute+"/active", nil, nil)
+	if w.Code != stdhttp.StatusInternalServerError {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusInternalServerError, w.Code)
+	}
 }
