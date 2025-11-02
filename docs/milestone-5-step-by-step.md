@@ -73,9 +73,9 @@
   - [x] Map repository errors to service semantics where appropriate (e.g., `repository.ErrNotFound` → pass-through for Get/Delete)
   - [x] Ensure all public functions return explicit errors from `errors.go` for invariant violations
 
- - [ ] 9: Light wiring for future handlers (no HTTP yet)
-  - [ ] Provide simple factory in `service/service.go` or a small `service/wire.go` with constructors
-  - [ ] Do not register HTTP routes (reserved for Milestone 6)
+ - [x] 9: Light wiring for future handlers (no HTTP yet)
+  - [x] Provide simple factory in `service/service.go` or a small `service/wire.go` with constructors
+  - [x] Do not register HTTP routes (reserved for Milestone 6)
 
  - [ ] 10: Documentation and developer workflow
   - [ ] Add a note to `docs/development.md` about running service unit tests (`go test ./server/...`)
