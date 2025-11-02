@@ -8,15 +8,15 @@
    - [x] `var ErrCrossProjectParent = errors.New("service: parent category belongs to a different project")`
    - [x] `var ErrInvalidParent = errors.New("service: invalid parent category")`
 
- - [ ] 2: Define service interfaces and constructors in `server/internal/service/service.go`
-  - [ ] Add interfaces with explicit parameter and return types and context:
-   - [ ] `type ProjectService interface { Create(ctx context.Context, name string, description *string) (domain.Project, error); Update(ctx context.Context, id uuid.UUID, name string, description *string) (domain.Project, error); Delete(ctx context.Context, id uuid.UUID) error; GetByID(ctx context.Context, id uuid.UUID) (domain.Project, error); List(ctx context.Context) ([]domain.Project, error) }`
-   - [ ] `type CategoryService interface { Create(ctx context.Context, projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error); Update(ctx context.Context, id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error); Delete(ctx context.Context, id uuid.UUID) error; GetByID(ctx context.Context, id uuid.UUID) (domain.Category, error); ListByProject(ctx context.Context, projectID uuid.UUID) ([]domain.Category, error); ListChildren(ctx context.Context, parentID uuid.UUID) ([]domain.Category, error) }`
-   - [ ] `type TimeTrackingService interface { Start(ctx context.Context, categoryID uuid.UUID) (domain.TimeEntry, error); StopActive(ctx context.Context) (domain.TimeEntry, error); GetActive(ctx context.Context) (*domain.TimeEntry, error); ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]domain.TimeEntry, error); ListByCategoryAndRange(ctx context.Context, categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) }`
-  - [ ] Define concrete constructors that accept dependencies explicitly:
-   - [ ] `func NewProjectService(repo repository.ProjectRepository) ProjectService`
-   - [ ] `func NewCategoryService(repo repository.CategoryRepository) CategoryService`
-   - [ ] `func NewTimeTrackingService(repo repository.TimeEntryRepository, categoryRepo repository.CategoryRepository, clk clock.Clock) TimeTrackingService`
+ - [x] 2: Define service interfaces and constructors in `server/internal/service/service.go`
+  - [x] Add interfaces with explicit parameter and return types and context:
+   - [x] `type ProjectService interface { Create(ctx context.Context, name string, description *string) (domain.Project, error); Update(ctx context.Context, id uuid.UUID, name string, description *string) (domain.Project, error); Delete(ctx context.Context, id uuid.UUID) error; GetByID(ctx context.Context, id uuid.UUID) (domain.Project, error); List(ctx context.Context) ([]domain.Project, error) }`
+   - [x] `type CategoryService interface { Create(ctx context.Context, projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error); Update(ctx context.Context, id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error); Delete(ctx context.Context, id uuid.UUID) error; GetByID(ctx context.Context, id uuid.UUID) (domain.Category, error); ListByProject(ctx context.Context, projectID uuid.UUID) ([]domain.Category, error); ListChildren(ctx context.Context, parentID uuid.UUID) ([]domain.Category, error) }`
+   - [x] `type TimeTrackingService interface { Start(ctx context.Context, categoryID uuid.UUID) (domain.TimeEntry, error); StopActive(ctx context.Context) (domain.TimeEntry, error); GetActive(ctx context.Context) (*domain.TimeEntry, error); ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]domain.TimeEntry, error); ListByCategoryAndRange(ctx context.Context, categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) }`
+  - [x] Define concrete constructors that accept dependencies explicitly:
+   - [x] `func NewProjectService(repo repository.ProjectRepository) ProjectService`
+   - [x] `func NewCategoryService(repo repository.CategoryRepository) CategoryService`
+   - [x] `func NewTimeTrackingService(repo repository.TimeEntryRepository, categoryRepo repository.CategoryRepository, clk clock.Clock) TimeTrackingService`
 
  - [ ] 3: Implement `ProjectService` in `server/internal/service/project_service.go`
   - [ ] Validate `name` is non-empty after `strings.TrimSpace`
