@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"log/slog"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
@@ -60,7 +62,7 @@ func TestTimeHandlerStartCreated(t *testing.T) {
 			return nil, nil
 		},
 	}
-	h := NewTimeHandler(f)
+	h := NewTimeHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(timeRoute, h.RegisterRoutes)
 
@@ -91,7 +93,7 @@ func TestTimeHandlerStopNoActive(t *testing.T) {
 			return nil, nil
 		},
 	}
-	h := NewTimeHandler(f)
+	h := NewTimeHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(timeRoute, h.RegisterRoutes)
 
@@ -120,7 +122,7 @@ func TestTimeHandlerActiveNoneReturnsNull(t *testing.T) {
 			return nil, nil
 		},
 	}
-	h := NewTimeHandler(f)
+	h := NewTimeHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(timeRoute, h.RegisterRoutes)
 
@@ -156,7 +158,7 @@ func TestTimeHandlerEntriesParsingValidation(t *testing.T) {
 		stopActiveFn: func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
 		startFn:      func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
 	}
-	h := NewTimeHandler(f)
+	h := NewTimeHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(timeRoute, h.RegisterRoutes)
 

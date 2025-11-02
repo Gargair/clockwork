@@ -112,9 +112,9 @@ func newTestMux(ps service.ProjectService, cs service.CategoryService, ts servic
 	r.Use(loggingMiddleware(slog.Default()))
 
 	api := chi.NewRouter()
-	projH := NewProjectHandler(ps)
-	catH := NewCategoryHandler(cs)
-	timeH := NewTimeHandler(ts)
+	projH := NewProjectHandler(ps, slog.Default())
+	catH := NewCategoryHandler(cs, slog.Default())
+	timeH := NewTimeHandler(ts, slog.Default())
 
 	projectsR := chi.NewRouter()
 	projH.RegisterRoutes(projectsR)

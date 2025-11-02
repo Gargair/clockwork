@@ -38,7 +38,7 @@ func NewRouter(cfg config.Config, dbConn *sql.DB, clk clock.Clock, logger *slog.
 	r.Method("GET", "/healthz", HealthzHandler{db: dbConn, clk: clk})
 
 	// API routes
-	r.Route("/api", ApiHandler{db: dbConn, clk: clk}.mountAPI)
+	r.Route("/api", ApiHandler{db: dbConn, clk: clk, logger: logger}.mountAPI)
 
 	// Static files (production only)
 	if cfg.Env == "production" {

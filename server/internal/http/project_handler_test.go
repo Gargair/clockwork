@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"log/slog"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
@@ -57,7 +59,7 @@ func TestProjectHandlerCreateHappyPath(t *testing.T) {
 		},
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
@@ -96,7 +98,7 @@ func TestProjectHandlerListHappyPath(t *testing.T) {
 		},
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
@@ -126,7 +128,7 @@ func TestProjectHandlerGetByIDInvalidUUID(t *testing.T) {
 		},
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
@@ -148,7 +150,7 @@ func TestProjectHandlerGetByIDNotFound(t *testing.T) {
 		},
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
@@ -172,7 +174,7 @@ func TestProjectHandlerUpdateHappyPath(t *testing.T) {
 		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
@@ -197,7 +199,7 @@ func TestProjectHandlerUpdateInvalidUUID(t *testing.T) {
 		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
@@ -221,7 +223,7 @@ func TestProjectHandlerUpdateEmptyName(t *testing.T) {
 		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
 		deleteFn: func(id uuid.UUID) error { return nil },
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
@@ -246,7 +248,7 @@ func TestProjectHandlerDeleteHappyPath(t *testing.T) {
 			return domain.Project{}, nil
 		},
 	}
-	h := NewProjectHandler(f)
+	h := NewProjectHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 

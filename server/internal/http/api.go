@@ -3,6 +3,8 @@ package http
 import (
 	"database/sql"
 
+	"log/slog"
+
 	"github.com/Gargair/clockwork/server/internal/clock"
 	"github.com/Gargair/clockwork/server/internal/repository"
 	repo_pg "github.com/Gargair/clockwork/server/internal/repository/postgres"
@@ -12,8 +14,9 @@ import (
 
 // HealthzHandler serves the /healthz route.
 type ApiHandler struct {
-	db  *sql.DB
-	clk clock.Clock
+	db     *sql.DB
+	clk    clock.Clock
+	logger *slog.Logger
 }
 
 func (h ApiHandler) mountAPI(api chi.Router) {
@@ -30,9 +33,9 @@ func (h ApiHandler) mountAPI(api chi.Router) {
 	}, h.clk)
 
 	// Handlers
-	projH := NewProjectHandler(svcs.Projects)
-	catH := NewCategoryHandler(svcs.Categories)
-	timeH := NewTimeHandler(svcs.Time)
+	projH := NewProjectHandler(svcs.Projects, h.logger)
+	catH := NewCategoryHandler(svcs.Categories, h.logger)
+	timeH := NewTimeHandler(svcs.Time, h.logger)
 
 	// /api/projects
 	api.Route("/projects", func(rp chi.Router) {

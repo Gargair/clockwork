@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"log/slog"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
@@ -62,7 +64,7 @@ func TestCategoryHandlerCreateWithValidParentSameProject(t *testing.T) {
 		deleteFn:       func(id uuid.UUID) error { return nil },
 		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
 	}
-	h := NewCategoryHandler(f)
+	h := NewCategoryHandler(f, slog.Default())
 
 	r := chi.NewRouter()
 	projectID := uuid.New()
@@ -98,7 +100,7 @@ func TestCategoryHandlerCreateCrossProjectParent(t *testing.T) {
 		deleteFn:       func(id uuid.UUID) error { return nil },
 		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
 	}
-	h := NewCategoryHandler(f)
+	h := NewCategoryHandler(f, slog.Default())
 
 	r := chi.NewRouter()
 	projectID := uuid.New()
@@ -133,7 +135,7 @@ func TestCategoryHandlerUpdateCycle(t *testing.T) {
 		deleteFn:        func(id uuid.UUID) error { return nil },
 		listChildrenFn:  func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
 	}
-	h := NewCategoryHandler(f)
+	h := NewCategoryHandler(f, slog.Default())
 
 	r := chi.NewRouter()
 	projectID := uuid.New()
@@ -168,7 +170,7 @@ func TestCategoryHandlerGetNotFound(t *testing.T) {
 		deleteFn:       func(id uuid.UUID) error { return nil },
 		listChildrenFn: func(parentID uuid.UUID) ([]domain.Category, error) { return nil, nil },
 	}
-	h := NewCategoryHandler(f)
+	h := NewCategoryHandler(f, slog.Default())
 
 	r := chi.NewRouter()
 	projectID := uuid.New()

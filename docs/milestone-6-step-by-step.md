@@ -79,9 +79,9 @@
   - [x] Verify response schemas match `docs/api.md` (fields, casing, nullability)
   - [x] Command: `cd server; go test ./...` (no `-tags=integration` needed for handler tests)
 
- - [ ] 8: Logging and observability
-  - [ ] Ensure each handler logs at start/end with `X-Request-ID` and outcome
-  - [ ] Include `requestId` in all `ErrorResponse`s via `writeError`
+ - [X] 8: Logging and observability
+  - [x] Ensure each handler logs at start/end with `X-Request-ID` and outcome
+  - [x] Include `requestId` in all `ErrorResponse`s via `writeError`
 
  - [ ] 9: Documentation updates
   - [ ] Expand `docs/api.md` with example request/response bodies for all endpoints
