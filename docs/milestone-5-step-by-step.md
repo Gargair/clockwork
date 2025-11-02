@@ -18,10 +18,10 @@
    - [x] `func NewCategoryService(repo repository.CategoryRepository) CategoryService`
    - [x] `func NewTimeTrackingService(repo repository.TimeEntryRepository, categoryRepo repository.CategoryRepository, clk clock.Clock) TimeTrackingService`
 
- - [ ] 3: Implement `ProjectService` in `server/internal/service/project_service.go`
-  - [ ] Validate `name` is non-empty after `strings.TrimSpace`
-  - [ ] Implement pass-through CRUD/list using `repository.ProjectRepository`
-  - [ ] Keep timestamps DB-driven; avoid time logic here
+ - [x] 3: Implement `ProjectService` in `server/internal/service/project_service.go`
+  - [x] Validate `name` is non-empty after `strings.TrimSpace`
+  - [x] Implement pass-through CRUD/list using `repository.ProjectRepository`
+  - [x] Keep timestamps DB-driven; avoid time logic here
 
  - [ ] 4: Implement `CategoryService` in `server/internal/service/category_service.go`
   - [ ] On Create: if `parentCategoryID != nil`, fetch parent and assert:
