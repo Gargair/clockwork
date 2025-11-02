@@ -37,19 +37,19 @@
   - [x] Empty/whitespace name returns `400`
   - [x] Not found returns `404`
 
- - [ ] 4: Implement `CategoryHandler`
-  - [ ] Add `server/internal/http/category_handler.go` with `service.CategoryService`:
-   - [ ] `POST /api/projects/{projectId}/categories`
-   - [ ] `GET /api/projects/{projectId}/categories`
-   - [ ] `GET /api/projects/{projectId}/categories/{categoryId}`
-   - [ ] `PATCH /api/projects/{projectId}/categories/{categoryId}`
-   - [ ] `DELETE /api/projects/{projectId}/categories/{categoryId}`
-  - [ ] Validate `projectId`, `categoryId` UUIDs; map service errors per step 2
-  - [ ] Tests in `server/internal/http/category_handler_test.go`:
-   - [ ] Create with valid parent (same project) → `201`
-   - [ ] Cross-project parent → `400`
-   - [ ] Cycle on update → `409`
-   - [ ] Not found → `404`
+ - [X] 4: Implement `CategoryHandler`
+  - [x] Add `server/internal/http/category_handler.go` with `service.CategoryService`:
+   - [x] `POST /api/projects/{projectId}/categories`
+   - [x] `GET /api/projects/{projectId}/categories`
+   - [x] `GET /api/projects/{projectId}/categories/{categoryId}`
+   - [x] `PATCH /api/projects/{projectId}/categories/{categoryId}`
+   - [x] `DELETE /api/projects/{projectId}/categories/{categoryId}`
+  - [x] Validate `projectId`, `categoryId` UUIDs; map service errors per step 2
+  - [x] Tests in `server/internal/http/category_handler_test.go`:
+   - [x] Create with valid parent (same project) → `201`
+   - [x] Cross-project parent → `400`
+   - [x] Cycle on update → `409`
+   - [x] Not found → `404`
 
  - [ ] 5: Implement `TimeHandler`
   - [ ] Add `server/internal/http/time_handler.go` with `service.TimeTrackingService`:
