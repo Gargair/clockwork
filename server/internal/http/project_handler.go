@@ -24,15 +24,15 @@ func NewProjectHandler(svc service.ProjectService, logger *slog.Logger) ProjectH
 	return ProjectHandler{svc: svc, logger: logger}
 }
 
-const projectIdRoute = "/{projectId}"
+const projectIdRoute = "{projectId}"
 
 // RegisterRoutes mounts project routes under the provided router (expects base path to be set by caller).
 func (h ProjectHandler) RegisterRoutes(r chi.Router) {
 	r.Post("/", h.handleCreate)
 	r.Get("/", h.handleList)
-	r.Get(projectIdRoute, h.handleGetByID)
-	r.Patch(projectIdRoute, h.handleUpdate)
-	r.Delete(projectIdRoute, h.handleDelete)
+	r.Get("/"+projectIdRoute, h.handleGetByID)
+	r.Patch("/"+projectIdRoute, h.handleUpdate)
+	r.Delete("/"+projectIdRoute, h.handleDelete)
 }
 
 func (h ProjectHandler) handleCreate(w http.ResponseWriter, r *http.Request) {

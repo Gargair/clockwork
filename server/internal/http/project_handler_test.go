@@ -75,11 +75,11 @@ func TestProjectHandlerCreateHappyPath(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	if w.Code != stdhttp.StatusCreated {
-		t.Fatalf("expected 201, got %d", w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusCreated, w.Code)
 	}
 	var resp ProjectResponse
 	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
-		t.Fatalf("invalid JSON: %v", err)
+		t.Fatalf(invalidJsonErrorMessage, err)
 	}
 	if resp.Name != body.Name || resp.ID == uuid.Nil {
 		t.Fatalf("unexpected response: %+v", resp)
@@ -114,7 +114,7 @@ func TestProjectHandlerListHappyPath(t *testing.T) {
 	}
 	var resp []ProjectResponse
 	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
-		t.Fatalf("invalid JSON: %v", err)
+		t.Fatalf(invalidJsonErrorMessage, err)
 	}
 	if len(resp) != 1 || resp[0].Name != "A" {
 		t.Fatalf("unexpected list response: %+v", resp)
@@ -135,7 +135,7 @@ func TestProjectHandlerGetByIDInvalidUUID(t *testing.T) {
 	r := chi.NewRouter()
 	r.Route(projectRoute, h.RegisterRoutes)
 
-	req := httptest.NewRequest(stdhttp.MethodGet, "/api/projects/not-a-uuid", nil)
+	req := httptest.NewRequest(stdhttp.MethodGet, projectRoute+"/"+invalidId, nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {
@@ -195,7 +195,7 @@ func TestProjectHandlerGetByIDHappyPath(t *testing.T) {
 	}
 	var resp ProjectResponse
 	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
-		t.Fatalf("invalid JSON: %v", err)
+		t.Fatalf(invalidJsonErrorMessage, err)
 	}
 	if resp.ID.String() != id || resp.Name != "proj" {
 		t.Fatalf("unexpected body: %+v", resp)
@@ -228,7 +228,7 @@ func TestProjectHandlerCreateInvalidNameMapsErrorAndIncludesRequestID(t *testing
 	}
 	var errResp ErrorResponse
 	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
-		t.Fatalf("invalid JSON: %v", err)
+		t.Fatalf(invalidJsonErrorMessage, err)
 	}
 	if errResp.Code != string(codeInvalidProjectName) || errResp.RequestID == "" {
 		t.Fatalf("unexpected error response: %+v", errResp)
@@ -261,7 +261,7 @@ func TestProjectHandlerCreateUnknownFieldIsInvalidJSON(t *testing.T) {
 	}
 	var errResp ErrorResponse
 	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
-		t.Fatalf("invalid JSON: %v", err)
+		t.Fatalf(invalidJsonErrorMessage, err)
 	}
 	if errResp.Code != string(codeInvalidJSON) || errResp.RequestID == "" {
 		t.Fatalf("unexpected error response: %+v", errResp)
@@ -313,7 +313,7 @@ func TestProjectHandlerUpdateInvalidUUID(t *testing.T) {
 
 	body := ProjectUpdateRequest{Name: ptr("Updated")}
 	data, _ := json.Marshal(body)
-	req := httptest.NewRequest(stdhttp.MethodPatch, projectRoute+"/not-a-uuid", bytes.NewReader(data))
+	req := httptest.NewRequest(stdhttp.MethodPatch, projectRoute+"/"+invalidId, bytes.NewReader(data))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {

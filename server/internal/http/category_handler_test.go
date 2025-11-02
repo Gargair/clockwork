@@ -51,6 +51,7 @@ func (f *fakeCategoryService) ListChildren(_ context.Context, parentID uuid.UUID
 var _ service.CategoryService = (*fakeCategoryService)(nil)
 
 const categoriesRoute = "/api/projects/%s/categories"
+const invalidId = "not-a-uuid"
 
 func TestCategoryHandlerCreateWithValidParentSameProject(t *testing.T) {
 	now := time.Now().UTC()
@@ -79,7 +80,7 @@ func TestCategoryHandlerCreateWithValidParentSameProject(t *testing.T) {
 	req := httptest.NewRequest(stdhttp.MethodPost, sprintf(categoriesRoute, projectID.String()), bytes.NewReader(data))
 	// Inject path parameter for projectId since we're not using chi URL building here
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID.String())
+	rctx.URLParams.Add(projectIdParam, projectID.String())
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -114,7 +115,7 @@ func TestCategoryHandlerCreateCrossProjectParent(t *testing.T) {
 
 	req := httptest.NewRequest(stdhttp.MethodPost, sprintf(categoriesRoute, projectID.String()), bytes.NewReader(data))
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID.String())
+	rctx.URLParams.Add(projectIdParam, projectID.String())
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -148,8 +149,8 @@ func TestCategoryHandlerUpdateCycle(t *testing.T) {
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(stdhttp.MethodPatch, sprintf(categoriesRoute, projectID.String())+"/"+id, bytes.NewReader(data))
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID.String())
-	rctx.URLParams.Add("categoryId", id)
+	rctx.URLParams.Add(projectIdParam, projectID.String())
+	rctx.URLParams.Add(categoryIdParam, id)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -181,8 +182,8 @@ func TestCategoryHandlerGetNotFound(t *testing.T) {
 	id := uuid.New().String()
 	req := httptest.NewRequest(stdhttp.MethodGet, sprintf(categoriesRoute, projectID.String())+"/"+id, nil)
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID.String())
-	rctx.URLParams.Add("categoryId", id)
+	rctx.URLParams.Add(projectIdParam, projectID.String())
+	rctx.URLParams.Add(categoryIdParam, id)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -210,12 +211,12 @@ func TestCategoryHandlerListHappyPath(t *testing.T) {
 	}
 	h := NewCategoryHandler(f, slog.Default())
 	r := chi.NewRouter()
-	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+	r.Route(sprintf(categoriesRoute, projectIdRoute), h.RegisterRoutes)
 
 	projectID := uuid.New()
 	req := httptest.NewRequest(stdhttp.MethodGet, sprintf(categoriesRoute, projectID.String()), nil)
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID.String())
+	rctx.URLParams.Add(projectIdParam, projectID.String())
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -248,7 +249,7 @@ func TestCategoryHandlerUpdateCrossProjectParentMaps400(t *testing.T) {
 	h := NewCategoryHandler(f, slog.Default())
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
-	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+	r.Route(sprintf(categoriesRoute, projectIdRoute), h.RegisterRoutes)
 
 	projectID := uuid.New().String()
 	id := uuid.New().String()
@@ -256,8 +257,8 @@ func TestCategoryHandlerUpdateCrossProjectParentMaps400(t *testing.T) {
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(stdhttp.MethodPatch, sprintf(categoriesRoute+"/%s", projectID, id), bytes.NewReader(data))
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID)
-	rctx.URLParams.Add("categoryId", id)
+	rctx.URLParams.Add(projectIdParam, projectID)
+	rctx.URLParams.Add(categoryIdParam, id)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -289,14 +290,14 @@ func TestCategoryHandlerDeleteNoContent(t *testing.T) {
 	}
 	h := NewCategoryHandler(f, slog.Default())
 	r := chi.NewRouter()
-	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+	r.Route(sprintf(categoriesRoute, projectIdRoute), h.RegisterRoutes)
 
 	projectID := uuid.New().String()
 	id := uuid.New().String()
 	req := httptest.NewRequest(stdhttp.MethodDelete, sprintf(categoriesRoute+"/%s", projectID, id), nil)
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", projectID)
-	rctx.URLParams.Add("categoryId", id)
+	rctx.URLParams.Add(projectIdParam, projectID)
+	rctx.URLParams.Add(categoryIdParam, id)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 	w := httptest.NewRecorder()
@@ -321,12 +322,12 @@ func TestCategoryHandlerInvalidUUIDsReturn400(t *testing.T) {
 	}
 	h := NewCategoryHandler(f, slog.Default())
 	r := chi.NewRouter()
-	r.Route("/api/projects/{projectId}/categories", h.RegisterRoutes)
+	r.Route(sprintf(categoriesRoute, projectIdRoute), h.RegisterRoutes)
 
 	// invalid projectId on list
-	req := httptest.NewRequest(stdhttp.MethodGet, "/api/projects/not-a-uuid/categories", nil)
+	req := httptest.NewRequest(stdhttp.MethodGet, sprintf(categoriesRoute, invalidId), nil)
 	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", "not-a-uuid")
+	rctx.URLParams.Add(projectIdParam, invalidId)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
@@ -335,10 +336,10 @@ func TestCategoryHandlerInvalidUUIDsReturn400(t *testing.T) {
 	}
 
 	// invalid categoryId on get
-	req = httptest.NewRequest(stdhttp.MethodGet, sprintf(categoriesRoute+"/%s", uuid.Nil.String(), "not-a-uuid"), nil)
+	req = httptest.NewRequest(stdhttp.MethodGet, sprintf(categoriesRoute+"/%s", uuid.Nil.String(), invalidId), nil)
 	rctx = chi.NewRouteContext()
-	rctx.URLParams.Add("projectId", uuid.Nil.String())
-	rctx.URLParams.Add("categoryId", "not-a-uuid")
+	rctx.URLParams.Add(projectIdParam, uuid.Nil.String())
+	rctx.URLParams.Add(categoryIdParam, invalidId)
 	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)

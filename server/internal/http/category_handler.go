@@ -28,6 +28,7 @@ func NewCategoryHandler(svc service.CategoryService, logger *slog.Logger) Catego
 const (
 	projectIdParam  = "projectId"
 	categoryIdRoute = "/{categoryId}"
+	categoryIdParam = "categoryId"
 )
 
 // RegisterRoutes mounts category routes on the provided router (expects base path to be /api/projects/{projectId}/categories).
