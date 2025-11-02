@@ -23,19 +23,19 @@
   - [x] Unknown → `500 Internal Server Error`
   - [x] Ensure `writeError` includes `X-Request-ID` value in `ErrorResponse.requestId`
 
- - [ ] 3: Implement `ProjectHandler`
-  - [ ] Add `server/internal/http/project_handler.go` with methods using `service.ProjectService`:
-   - [ ] `POST /api/projects` → validate name, create → `201 Created` with `ProjectResponse`
-   - [ ] `GET /api/projects` → list → `200 OK` `[ProjectResponse]`
-   - [ ] `GET /api/projects/{projectId}` → `200 OK` or `404`
-   - [ ] `PATCH /api/projects/{projectId}` → validate, update → `200 OK`
-   - [ ] `DELETE /api/projects/{projectId}` → `204 No Content`
-  - [ ] Convert path params to `uuid.UUID`, handle invalid UUID as `400`
-  - [ ] Tests in `server/internal/http/project_handler_test.go` (httptest + fake service):
-   - [ ] Happy paths for all endpoints
-   - [ ] Invalid UUID returns `400`
-   - [ ] Empty/whitespace name returns `400`
-   - [ ] Not found returns `404`
+ - [X] 3: Implement `ProjectHandler`
+  - [x] Add `server/internal/http/project_handler.go` with methods using `service.ProjectService`:
+  - [x] `POST /api/projects` → validate name, create → `201 Created` with `ProjectResponse`
+  - [x] `GET /api/projects` → list → `200 OK` `[ProjectResponse]`
+  - [x] `GET /api/projects/{projectId}` → `200 OK` or `404`
+  - [x] `PATCH /api/projects/{projectId}` → validate, update → `200 OK`
+  - [x] `DELETE /api/projects/{projectId}` → `204 No Content`
+  - [x] Convert path params to `uuid.UUID`, handle invalid UUID as `400`
+  - [x] Tests in `server/internal/http/project_handler_test.go` (httptest + fake service):
+  - [x] Happy paths for all endpoints
+  - [x] Invalid UUID returns `400`
+  - [x] Empty/whitespace name returns `400`
+  - [x] Not found returns `404`
 
  - [ ] 4: Implement `CategoryHandler`
   - [ ] Add `server/internal/http/category_handler.go` with `service.CategoryService`:

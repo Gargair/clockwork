@@ -16,8 +16,15 @@ const (
 	codeCrossProjectParent apiErrorCode = "cross_project_parent"
 	codeCategoryCycle      apiErrorCode = "category_cycle"
 	codeNoActiveTimer      apiErrorCode = "no_active_timer"
+	codeInvalidJSON        apiErrorCode = "invalid_json"
+	codeInvalidID          apiErrorCode = "invalid_id"
 	codeNotFound           apiErrorCode = "not_found"
 	codeInternal           apiErrorCode = "internal"
+)
+
+const (
+	errInvalidJsonPayload = "invalid JSON payload"
+	errInvalidProjectId   = "invalid projectId"
 )
 
 // mapErrorToHTTP converts domain/service/repository errors into HTTP status and apiErrorCode.
