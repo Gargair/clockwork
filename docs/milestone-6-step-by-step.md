@@ -51,19 +51,19 @@
    - [x] Cycle on update → `409`
    - [x] Not found → `404`
 
- - [ ] 5: Implement `TimeHandler`
-  - [ ] Add `server/internal/http/time_handler.go` with `service.TimeTrackingService`:
-   - [ ] `POST /api/time/start` with body `{ "categoryId": "..." }` → `201 Created` returns `TimeEntryResponse`
-   - [ ] `POST /api/time/stop` → `200 OK` with final entry, or `409` if no active
-   - [ ] `GET /api/time/active` → `200 OK` with active or `200 OK` with `null` payload
-   - [ ] `GET /api/time/entries?projectId=&categoryId=&from=&to=` → `200 OK` list
-  - [ ] Parse `projectId`/`categoryId` as UUIDs; parse `from`/`to` as RFC3339
-  - [ ] If both `from` and `to` provided and `from > to`, return `400`
-  - [ ] Tests in `server/internal/http/time_handler_test.go`:
-   - [ ] Start returns `201` and echoes category
-   - [ ] Stop without active → `409` with error code
-   - [ ] Active returns `null` when none
-   - [ ] Entries filter parsing and validation
+ - [X] 5: Implement `TimeHandler`
+  - [x] Add `server/internal/http/time_handler.go` with `service.TimeTrackingService`:
+   - [x] `POST /api/time/start` with body `{ "categoryId": "..." }` → `201 Created` returns `TimeEntryResponse`
+   - [x] `POST /api/time/stop` → `200 OK` with final entry, or `409` if no active
+   - [x] `GET /api/time/active` → `200 OK` with active or `200 OK` with `null` payload
+   - [x] `GET /api/time/entries?projectId=&categoryId=&from=&to=` → `200 OK` list
+  - [x] Parse `projectId`/`categoryId` as UUIDs; parse `from`/`to` as RFC3339
+  - [x] If both `from` and `to` provided and `from > to`, return `400`
+  - [x] Tests in `server/internal/http/time_handler_test.go`:
+   - [x] Start returns `201` and echoes category
+   - [x] Stop without active → `409` with error code
+   - [x] Active returns `null` when none
+   - [x] Entries filter parsing and validation
 
  - [ ] 6: Wire routes into the main router
   - [ ] In `server/internal/http/http.go`, under `/api` mount sub-routers:

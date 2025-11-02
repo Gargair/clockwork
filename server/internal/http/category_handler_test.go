@@ -81,7 +81,7 @@ func TestCategoryHandlerCreateWithValidParentSameProject(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusCreated {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusCreated, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusCreated, w.Code)
 	}
 }
 
@@ -116,7 +116,7 @@ func TestCategoryHandlerCreateCrossProjectParent(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
 	}
 }
 
@@ -151,7 +151,7 @@ func TestCategoryHandlerUpdateCycle(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusConflict {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusConflict, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusConflict, w.Code)
 	}
 }
 
@@ -184,7 +184,7 @@ func TestCategoryHandlerGetNotFound(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusNotFound {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
 	}
 }
 

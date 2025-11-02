@@ -43,7 +43,6 @@ var _ service.ProjectService = (*fakeProjectService)(nil)
 // --- Tests ---
 
 const projectRoute = "/api/projects"
-const statisCodeFailedExpectationMessage = "expected %d, got %d"
 
 func TestProjectHandlerCreateHappyPath(t *testing.T) {
 	f := &fakeProjectService{
@@ -106,7 +105,7 @@ func TestProjectHandlerListHappyPath(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	if w.Code != stdhttp.StatusOK {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
 	}
 	var resp []ProjectResponse
 	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
@@ -135,7 +134,7 @@ func TestProjectHandlerGetByIDInvalidUUID(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
 	}
 }
 
@@ -158,7 +157,7 @@ func TestProjectHandlerGetByIDNotFound(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusNotFound {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
 	}
 }
 
@@ -184,7 +183,7 @@ func TestProjectHandlerUpdateHappyPath(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusOK {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
 	}
 }
 
@@ -208,7 +207,7 @@ func TestProjectHandlerUpdateInvalidUUID(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
 	}
 }
 
@@ -233,7 +232,7 @@ func TestProjectHandlerUpdateEmptyName(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusBadRequest {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
 	}
 }
 
@@ -256,7 +255,7 @@ func TestProjectHandlerDeleteHappyPath(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusNoContent {
-		t.Fatalf(statisCodeFailedExpectationMessage, stdhttp.StatusNoContent, w.Code)
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNoContent, w.Code)
 	}
 	if w.Body.Len() != 0 {
 		t.Fatalf("expected empty body on 204, got %q", w.Body.String())

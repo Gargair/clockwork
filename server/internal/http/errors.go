@@ -18,13 +18,18 @@ const (
 	codeNoActiveTimer      apiErrorCode = "no_active_timer"
 	codeInvalidJSON        apiErrorCode = "invalid_json"
 	codeInvalidID          apiErrorCode = "invalid_id"
+	codeInvalidTime        apiErrorCode = "invalid_time"
 	codeNotFound           apiErrorCode = "not_found"
 	codeInternal           apiErrorCode = "internal"
 )
 
 const (
-	errInvalidJsonPayload = "invalid JSON payload"
-	errInvalidProjectId   = "invalid projectId"
+	errInvalidJsonPayload              = "invalid JSON payload"
+	errInvalidProjectId                = "invalid projectId"
+	errInvalidCategoryId               = "invalid categoryId"
+	errInvalidTime                     = "invalid time"
+	errInvalidTimeRange                = "invalid time range"
+	statusCodeFailedExpectationMessage = "expected %d, got %d"
 )
 
 // mapErrorToHTTP converts domain/service/repository errors into HTTP status and apiErrorCode.
