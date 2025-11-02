@@ -1,0 +1,96 @@
+## Milestone 5: Step-by-step implementation plan
+
+ - [ ] 1: Establish service package structure and common errors
+  - [ ] Create `server/internal/service/errors.go`
+  - [ ] Define explicit error variables (public, for handler mapping later):
+   - [ ] `var ErrNoActiveTimer = errors.New("service: no active timer")`
+   - [ ] `var ErrCategoryCycle = errors.New("service: category cycle detected")`
+   - [ ] `var ErrCrossProjectParent = errors.New("service: parent category belongs to a different project")`
+   - [ ] `var ErrInvalidParent = errors.New("service: invalid parent category")`
+
+ - [ ] 2: Define service interfaces and constructors in `server/internal/service/service.go`
+  - [ ] Add interfaces with explicit parameter and return types and context:
+   - [ ] `type ProjectService interface { Create(ctx context.Context, name string, description *string) (domain.Project, error); Update(ctx context.Context, id uuid.UUID, name string, description *string) (domain.Project, error); Delete(ctx context.Context, id uuid.UUID) error; GetByID(ctx context.Context, id uuid.UUID) (domain.Project, error); List(ctx context.Context) ([]domain.Project, error) }`
+   - [ ] `type CategoryService interface { Create(ctx context.Context, projectID uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error); Update(ctx context.Context, id uuid.UUID, name string, description *string, parentCategoryID *uuid.UUID) (domain.Category, error); Delete(ctx context.Context, id uuid.UUID) error; GetByID(ctx context.Context, id uuid.UUID) (domain.Category, error); ListByProject(ctx context.Context, projectID uuid.UUID) ([]domain.Category, error); ListChildren(ctx context.Context, parentID uuid.UUID) ([]domain.Category, error) }`
+   - [ ] `type TimeTrackingService interface { Start(ctx context.Context, categoryID uuid.UUID) (domain.TimeEntry, error); StopActive(ctx context.Context) (domain.TimeEntry, error); GetActive(ctx context.Context) (*domain.TimeEntry, error); ListByCategory(ctx context.Context, categoryID uuid.UUID) ([]domain.TimeEntry, error); ListByCategoryAndRange(ctx context.Context, categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) }`
+  - [ ] Define concrete constructors that accept dependencies explicitly:
+   - [ ] `func NewProjectService(repo repository.ProjectRepository) ProjectService`
+   - [ ] `func NewCategoryService(repo repository.CategoryRepository) CategoryService`
+   - [ ] `func NewTimeTrackingService(repo repository.TimeEntryRepository, categoryRepo repository.CategoryRepository, clk clock.Clock) TimeTrackingService`
+
+ - [ ] 3: Implement `ProjectService` in `server/internal/service/project_service.go`
+  - [ ] Validate `name` is non-empty after `strings.TrimSpace`
+  - [ ] Implement pass-through CRUD/list using `repository.ProjectRepository`
+  - [ ] Keep timestamps DB-driven; avoid time logic here
+
+ - [ ] 4: Implement `CategoryService` in `server/internal/service/category_service.go`
+  - [ ] On Create: if `parentCategoryID != nil`, fetch parent and assert:
+   - [ ] Parent exists or return `ErrInvalidParent`
+   - [ ] `parent.ProjectID == projectID` else return `ErrCrossProjectParent`
+  - [ ] On Update (including potential parent change):
+   - [ ] Load current category to know `ProjectID`
+   - [ ] If parent provided, validate parent belongs to same project
+   - [ ] Detect cycles: parent cannot be the category itself or any of its descendants
+    - [ ] Fetch descendants via repeated `ListChildren` calls (BFS/DFS) and detect membership; if cycle → `ErrCategoryCycle`
+  - [ ] On Delete: call repository `Delete`; DB will `SET NULL` on children per schema
+  - [ ] Disallow cross-project moves implicitly by not exposing a way to change `ProjectID`
+
+ - [ ] 5: Implement `TimeTrackingService` in `server/internal/service/time_service.go`
+  - [ ] `Start`:
+   - [ ] Ensure category exists via `CategoryRepository.GetByID`
+    - [ ] Capture a single `now := clk.Now()`; if an active entry exists, stop it with `stoppedAt = now` and compute duration using `now`
+    - [ ] Create the new entry with `StartedAt = now`, `StoppedAt = nil`, `DurationSeconds = nil`
+  - [ ] `StopActive`:
+   - [ ] Look up active via `FindActive`; if nil, return `ErrNoActiveTimer`
+   - [ ] Compute `durationSeconds` = `int32(clk.Now().Sub(active.StartedAt).Seconds())`, clamp to `>=0`
+   - [ ] Call `repo.Stop(active.ID, stoppedAt, &durationSeconds)` and return updated entry
+  - [ ] `GetActive`, `ListByCategory`, `ListByCategoryAndRange`: thin pass-throughs to repository
+
+ - [ ] 6: Add explicit service-level types and wiring
+  - [ ] Define unexported structs `projectService`, `categoryService`, `timeTrackingService` implementing the interfaces
+  - [ ] Store required dependencies as fields with explicit types (e.g., repositories, `clock.Clock`)
+  - [ ] Add compile-time interface assertions: `var _ ProjectService = (*projectService)(nil)` (and similarly for others)
+
+ - [ ] 7: Unit tests (TDD) for invariants and edge cases in `server/internal/service`
+  - [ ] Create `clock_test.go` fake clock implementing `clock.Clock` with controllable `Now()`
+  - [ ] Create minimal in-memory fakes for repositories inside tests (hand-rolled) to avoid DB
+  - [ ] `ProjectService` tests:
+   - [ ] Reject empty/whitespace names
+   - [ ] Create → GetByID roundtrip passes through fields
+  - [ ] `CategoryService` tests:
+   - [ ] Create with parent in same project succeeds
+   - [ ] Create with parent from different project → `ErrCrossProjectParent`
+   - [ ] Update changing parent to descendant → `ErrCategoryCycle`
+   - [ ] Update name/description only succeeds
+  - [ ] `TimeTrackingService` tests:
+   - [ ] `Start` when no active exists creates active entry with exact `StartedAt`
+    - [ ] `Start` when active exists stops the previous entry and starts a new one; assert `prev.stoppedAt == new.startedAt` and equals fake clock `now`
+   - [ ] `StopActive` computes `durationSeconds` correctly with fake clock and clears active
+   - [ ] `GetActive` reflects state transitions
+  - [ ] Run: `go test ./server/...`
+
+ - [ ] 8: Cross-cutting error mapping and consistency
+  - [ ] Map repository errors to service semantics where appropriate (e.g., `repository.ErrNotFound` → pass-through for Get/Delete)
+  - [ ] Ensure all public functions return explicit errors from `errors.go` for invariant violations
+
+ - [ ] 9: Light wiring for future handlers (no HTTP yet)
+  - [ ] Provide simple factory in `service/service.go` or a small `service/wire.go` with constructors
+  - [ ] Do not register HTTP routes (reserved for Milestone 6)
+
+ - [ ] 10: Documentation and developer workflow
+  - [ ] Add a note to `docs/development.md` about running service unit tests (`go test ./server/...`)
+  - [ ] Reference invariants in `docs/domain-model.md` to keep behavior aligned
+
+ - [ ] 11: Acceptance checklist (aligns with Implementation Plan)
+  - [ ] Category tree constraints enforced in services (same project parent, no cycles)
+  - [ ] Single-active-timer invariant enforced in `TimeTrackingService`
+  - [ ] Auto-stop on `Start` uses the same timestamp as the new `StartedAt`
+  - [ ] Unit tests for invariants and edge cases pass locally: `go test ./server/...`
+  - [ ] Explicit types for all public service APIs and constructors
+
+### Notes for M5
+- Keep repositories as thin mappers; enforce business rules only in the services.
+- Use `clock.Clock` for all time decisions to make tests deterministic.
+- Prefer table-driven tests and descriptive test names. Avoid global state in fakes.
+
+
