@@ -83,9 +83,9 @@
   - [x] Ensure each handler logs at start/end with `X-Request-ID` and outcome
   - [x] Include `requestId` in all `ErrorResponse`s via `writeError`
 
- - [ ] 9: Documentation updates
-  - [ ] Expand `docs/api.md` with example request/response bodies for all endpoints
-  - [ ] Note validation rules (UUIDs, RFC3339 times) and error codes
+ - [X] 9: Documentation updates
+  - [x] Expand `docs/api.md` with example request/response bodies for all endpoints
+  - [x] Note validation rules (UUIDs, RFC3339 times) and error codes
 
  - [ ] 10: Acceptance checklist (aligns with Implementation Plan)
   - [ ] `ProjectHandler`, `CategoryHandler`, and `TimeHandler` implemented with explicit types
