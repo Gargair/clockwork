@@ -112,6 +112,71 @@ func TestTimeHandlerStopNoActive(t *testing.T) {
 	}
 }
 
+func TestTimeHandlerStopHappyPath(t *testing.T) {
+	now := time.Now().UTC()
+	f := &fakeTimeService{
+		stopActiveFn: func() (domain.TimeEntry, error) {
+			stopped := now
+			dur := int32(60)
+			return domain.TimeEntry{ID: uuid.New(), CategoryID: uuid.New(), StartedAt: now.Add(-time.Minute), StoppedAt: &stopped, DurationSeconds: &dur, CreatedAt: now, UpdatedAt: now}, nil
+		},
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	req := httptest.NewRequest(stdhttp.MethodPost, timeRoute+"/stop", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusOK {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
+	}
+	var resp TimeEntryResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf(invalidJsonErrorMessage, err)
+	}
+	if resp.StoppedAt == nil || resp.DurationSeconds == nil {
+		t.Fatalf("expected stopped entry with duration, got %+v", resp)
+	}
+}
+
+func TestTimeHandlerActiveHasEntry(t *testing.T) {
+	now := time.Now().UTC()
+	entry := domain.TimeEntry{ID: uuid.New(), CategoryID: uuid.New(), StartedAt: now, CreatedAt: now, UpdatedAt: now}
+	f := &fakeTimeService{
+		getActiveFn:      func() (*domain.TimeEntry, error) { return &entry, nil },
+		stopActiveFn:     func() (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		startFn:          func(categoryID uuid.UUID) (domain.TimeEntry, error) { return domain.TimeEntry{}, nil },
+		listByCategoryFn: func(categoryID uuid.UUID) ([]domain.TimeEntry, error) { return nil, nil },
+		listByCategoryAndRangeFn: func(categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
+			return nil, nil
+		},
+	}
+	h := NewTimeHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(timeRoute, h.RegisterRoutes)
+
+	req := httptest.NewRequest(stdhttp.MethodGet, timeRoute+"/active", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusOK {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
+	}
+	var resp TimeEntryResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf(invalidJsonErrorMessage, err)
+	}
+	if resp.ID == uuid.Nil || resp.CategoryID == uuid.Nil {
+		t.Fatalf("unexpected active entry: %+v", resp)
+	}
+}
+
 func TestTimeHandlerActiveNoneReturnsNull(t *testing.T) {
 	f := &fakeTimeService{
 		getActiveFn:      func() (*domain.TimeEntry, error) { return nil, nil },

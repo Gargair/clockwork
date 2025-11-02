@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	stdhttp "net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
 	"log/slog"
+
+	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -160,6 +163,111 @@ func TestProjectHandlerGetByIDNotFound(t *testing.T) {
 	r.ServeHTTP(w, req)
 	if w.Code != stdhttp.StatusNotFound {
 		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusNotFound, w.Code)
+	}
+}
+
+func TestProjectHandlerGetByIDHappyPath(t *testing.T) {
+	now := time.Now().UTC()
+	f := &fakeProjectService{
+		getFn: func(id uuid.UUID) (domain.Project, error) {
+			return domain.Project{ID: id, Name: "proj", CreatedAt: now, UpdatedAt: now}, nil
+		},
+		listFn:   func() ([]domain.Project, error) { return nil, nil },
+		createFn: func(name string, description *string) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		deleteFn: func(id uuid.UUID) error { return nil },
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Route(projectRoute, h.RegisterRoutes)
+
+	id := uuid.New().String()
+	req := httptest.NewRequest(stdhttp.MethodGet, fmt.Sprintf("%s/%s", projectRoute, id), nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusOK {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusOK, w.Code)
+	}
+	if ct := w.Header().Get("Content-Type"); ct != "application/json" {
+		t.Fatalf("expected Content-Type application/json, got %s", ct)
+	}
+	var resp ProjectResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if resp.ID.String() != id || resp.Name != "proj" {
+		t.Fatalf("unexpected body: %+v", resp)
+	}
+}
+
+func TestProjectHandlerCreateInvalidNameMapsErrorAndIncludesRequestID(t *testing.T) {
+	f := &fakeProjectService{
+		createFn: func(name string, description *string) (domain.Project, error) {
+			return domain.Project{}, service.ErrInvalidProjectName
+		},
+		listFn: func() ([]domain.Project, error) { return nil, nil },
+		getFn:  func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		deleteFn: func(id uuid.UUID) error { return nil },
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route(projectRoute, h.RegisterRoutes)
+
+	body := []byte(`{"name":"   "}`)
+	req := httptest.NewRequest(stdhttp.MethodPost, projectRoute, bytes.NewReader(body))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if errResp.Code != string(codeInvalidProjectName) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+}
+
+func TestProjectHandlerCreateUnknownFieldIsInvalidJSON(t *testing.T) {
+	f := &fakeProjectService{
+		createFn: func(name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		listFn: func() ([]domain.Project, error) { return nil, nil },
+		getFn:  func(id uuid.UUID) (domain.Project, error) { return domain.Project{}, nil },
+		updateFn: func(id uuid.UUID, name string, description *string) (domain.Project, error) {
+			return domain.Project{}, nil
+		},
+		deleteFn: func(id uuid.UUID) error { return nil },
+	}
+	h := NewProjectHandler(f, slog.Default())
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Route(projectRoute, h.RegisterRoutes)
+
+	body := []byte(`{"name":"proj","bogus":1}`)
+	req := httptest.NewRequest(stdhttp.MethodPost, projectRoute, bytes.NewReader(body))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != stdhttp.StatusBadRequest {
+		t.Fatalf(statusCodeFailedExpectationMessage, stdhttp.StatusBadRequest, w.Code)
+	}
+	var errResp ErrorResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if errResp.Code != string(codeInvalidJSON) || errResp.RequestID == "" {
+		t.Fatalf("unexpected error response: %+v", errResp)
+	}
+	if ct := w.Header().Get("Content-Type"); ct != "application/json" {
+		t.Fatalf("expected Content-Type application/json, got %s", ct)
 	}
 }
 
