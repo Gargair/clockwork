@@ -67,7 +67,7 @@
    - [x] `Start` when active exists stops the previous entry and starts a new one; assert `prev.stoppedAt == new.startedAt` and equals fake clock `now`
    - [x] `StopActive` computes `durationSeconds` correctly with fake clock and clears active
    - [x] `GetActive` reflects state transitions
-  - [x] Run: `go test ./server/...`
+  - [x] Run: `cd server; go test ./...`
 
  - [x] 8: Cross-cutting error mapping and consistency
   - [x] Map repository errors to service semantics where appropriate (e.g., `repository.ErrNotFound` → pass-through for Get/Delete)
@@ -78,15 +78,15 @@
   - [x] Do not register HTTP routes (reserved for Milestone 6)
 
  - [x] 10: Documentation and developer workflow
-  - [x] Add a note to `docs/development.md` about running service unit tests (`go test ./server/...`)
+  - [x] Add a note to `docs/development.md` about running service unit tests (`cd server; go test ./...`)
   - [x] Reference invariants in `docs/domain-model.md` to keep behavior aligned
 
- - [ ] 11: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] Category tree constraints enforced in services (same project parent, no cycles)
-  - [ ] Single-active-timer invariant enforced in `TimeTrackingService`
-  - [ ] Auto-stop on `Start` uses the same timestamp as the new `StartedAt`
-  - [ ] Unit tests for invariants and edge cases pass locally: `go test ./server/...`
-  - [ ] Explicit types for all public service APIs and constructors
+ - [x] 11: Acceptance checklist (aligns with Implementation Plan)
+  - [x] Category tree constraints enforced in services (same project parent, no cycles)
+  - [x] Single-active-timer invariant enforced in `TimeTrackingService`
+  - [x] Auto-stop on `Start` uses the same timestamp as the new `StartedAt`
+  - [x] Unit tests for invariants and edge cases pass locally: `cd server; go test ./...`
+  - [x] Explicit types for all public service APIs and constructors
 
 ### Notes for M5
 - Keep repositories as thin mappers; enforce business rules only in the services.
