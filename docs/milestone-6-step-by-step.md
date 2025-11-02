@@ -73,11 +73,11 @@
   - [x] Ensure JSON `Content-Type` responses and correct status codes
   - [x] Keep existing middleware (RequestID, logging, CORS) applied
 
- - [ ] 7: End-to-end handler tests (no DB) with fake services
-  - [ ] Provide minimal fake implementations of service interfaces within `_test.go`
-  - [ ] Use `httptest.NewRecorder` + real `chi.Mux`
-  - [ ] Verify response schemas match `docs/api.md` (fields, casing, nullability)
-  - [ ] Command: `cd server; go test ./...` (no `-tags=integration` needed for handler tests)
+ - [X] 7: End-to-end handler tests (no DB) with fake services
+  - [x] Provide minimal fake implementations of service interfaces within `_test.go`
+  - [x] Use `httptest.NewRecorder` + real `chi.Mux`
+  - [x] Verify response schemas match `docs/api.md` (fields, casing, nullability)
+  - [x] Command: `cd server; go test ./...` (no `-tags=integration` needed for handler tests)
 
  - [ ] 8: Logging and observability
   - [ ] Ensure each handler logs at start/end with `X-Request-ID` and outcome
