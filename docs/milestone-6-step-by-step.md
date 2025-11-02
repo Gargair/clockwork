@@ -65,13 +65,13 @@
    - [x] Active returns `null` when none
    - [x] Entries filter parsing and validation
 
- - [ ] 6: Wire routes into the main router
-  - [ ] In `server/internal/http/http.go`, under `/api` mount sub-routers:
-   - [ ] `/api/projects` → `ProjectHandler`
-   - [ ] `/api/projects/{projectId}/categories` → `CategoryHandler`
-   - [ ] `/api/time` → `TimeHandler`
-  - [ ] Ensure JSON `Content-Type` responses and correct status codes
-  - [ ] Keep existing middleware (RequestID, logging, CORS) applied
+ - [X] 6: Wire routes into the main router
+  - [x] In `server/internal/http/http.go`, under `/api` mount sub-routers:
+   - [x] `/api/projects` → `ProjectHandler`
+   - [x] `/api/projects/{projectId}/categories` → `CategoryHandler`
+   - [x] `/api/time` → `TimeHandler`
+  - [x] Ensure JSON `Content-Type` responses and correct status codes
+  - [x] Keep existing middleware (RequestID, logging, CORS) applied
 
  - [ ] 7: End-to-end handler tests (no DB) with fake services
   - [ ] Provide minimal fake implementations of service interfaces within `_test.go`
