@@ -91,6 +91,11 @@ jobs:
 
       - name: Run integration tests
         working-directory: server
-        run: go test ./... -tags=integration
+        run: go test ./... -tags=integration -coverprofile="coverage.out"
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 
