@@ -35,16 +35,16 @@
   - [x] On Delete: call repository `Delete`; DB will `SET NULL` on children per schema
   - [x] Disallow cross-project moves implicitly by not exposing a way to change `ProjectID`
 
- - [ ] 5: Implement `TimeTrackingService` in `server/internal/service/time_service.go`
-  - [ ] `Start`:
-   - [ ] Ensure category exists via `CategoryRepository.GetByID`
-    - [ ] Capture a single `now := clk.Now()`; if an active entry exists, stop it with `stoppedAt = now` and compute duration using `now`
-    - [ ] Create the new entry with `StartedAt = now`, `StoppedAt = nil`, `DurationSeconds = nil`
-  - [ ] `StopActive`:
-   - [ ] Look up active via `FindActive`; if nil, return `ErrNoActiveTimer`
-   - [ ] Compute `durationSeconds` = `int32(clk.Now().Sub(active.StartedAt).Seconds())`, clamp to `>=0`
-   - [ ] Call `repo.Stop(active.ID, stoppedAt, &durationSeconds)` and return updated entry
-  - [ ] `GetActive`, `ListByCategory`, `ListByCategoryAndRange`: thin pass-throughs to repository
+ - [x] 5: Implement `TimeTrackingService` in `server/internal/service/time_service.go`
+  - [x] `Start`:
+  - [x] Ensure category exists via `CategoryRepository.GetByID`
+  - [x] Capture a single `now := clk.Now()`; if an active entry exists, stop it with `stoppedAt = now` and compute duration using `now`
+  - [x] Create the new entry with `StartedAt = now`, `StoppedAt = nil`, `DurationSeconds = nil`
+  - [x] `StopActive`:
+  - [x] Look up active via `FindActive`; if nil, return `ErrNoActiveTimer`
+  - [x] Compute `durationSeconds` = `int32(clk.Now().Sub(active.StartedAt).Seconds())`, clamp to `>=0`
+  - [x] Call `repo.Stop(active.ID, stoppedAt, &durationSeconds)` and return updated entry
+  - [x] `GetActive`, `ListByCategory`, `ListByCategoryAndRange`: thin pass-throughs to repository
 
  - [ ] 6: Add explicit service-level types and wiring
   - [ ] Define unexported structs `projectService`, `categoryService`, `timeTrackingService` implementing the interfaces
