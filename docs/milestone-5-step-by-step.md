@@ -69,9 +69,9 @@
    - [x] `GetActive` reflects state transitions
   - [x] Run: `go test ./server/...`
 
- - [ ] 8: Cross-cutting error mapping and consistency
-  - [ ] Map repository errors to service semantics where appropriate (e.g., `repository.ErrNotFound` → pass-through for Get/Delete)
-  - [ ] Ensure all public functions return explicit errors from `errors.go` for invariant violations
+ - [x] 8: Cross-cutting error mapping and consistency
+  - [x] Map repository errors to service semantics where appropriate (e.g., `repository.ErrNotFound` → pass-through for Get/Delete)
+  - [x] Ensure all public functions return explicit errors from `errors.go` for invariant violations
 
  - [ ] 9: Light wiring for future handlers (no HTTP yet)
   - [ ] Provide simple factory in `service/service.go` or a small `service/wire.go` with constructors

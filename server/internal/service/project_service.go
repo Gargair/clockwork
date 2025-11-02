@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"strings"
 
 	"github.com/Gargair/clockwork/server/internal/domain"
@@ -17,7 +16,7 @@ type projectService struct {
 func (s *projectService) Create(ctx context.Context, name string, description *string) (domain.Project, error) {
 	trimmed := strings.TrimSpace(name)
 	if trimmed == "" {
-		return domain.Project{}, errors.New("service: project name cannot be empty")
+		return domain.Project{}, ErrInvalidProjectName
 	}
 	p := domain.Project{
 		ID:          uuid.New(),
@@ -30,7 +29,7 @@ func (s *projectService) Create(ctx context.Context, name string, description *s
 func (s *projectService) Update(ctx context.Context, id uuid.UUID, name string, description *string) (domain.Project, error) {
 	trimmed := strings.TrimSpace(name)
 	if trimmed == "" {
-		return domain.Project{}, errors.New("service: project name cannot be empty")
+		return domain.Project{}, ErrInvalidProjectName
 	}
 	return s.repo.Update(ctx, id, trimmed, description)
 }
