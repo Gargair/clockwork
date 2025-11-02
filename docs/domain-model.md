@@ -16,6 +16,16 @@
 - Categories form a tree within a project
 - Time is tracked only on categories
 
+### Service-enforced behavior
+- Categories:
+  - Parent category must belong to the same project as the child
+  - No cycles in the tree: a category’s parent cannot be itself or any of its descendants
+  - Project of a category is immutable (no cross-project moves)
+- Time tracking:
+  - Starting a timer auto-stops any previously active entry using the same timestamp for `stoppedAt` and the new entry’s `startedAt`
+  - Duration is computed on stop as `seconds(now - startedAt)` and clamped to be non-negative
+  - All time decisions are sourced from a `clock.Clock` to enable deterministic tests
+
 ## Database schema (UML/ER)
 
 ```mermaid

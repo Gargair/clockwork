@@ -77,9 +77,9 @@
   - [x] Provide simple factory in `service/service.go` or a small `service/wire.go` with constructors
   - [x] Do not register HTTP routes (reserved for Milestone 6)
 
- - [ ] 10: Documentation and developer workflow
-  - [ ] Add a note to `docs/development.md` about running service unit tests (`go test ./server/...`)
-  - [ ] Reference invariants in `docs/domain-model.md` to keep behavior aligned
+ - [x] 10: Documentation and developer workflow
+  - [x] Add a note to `docs/development.md` about running service unit tests (`go test ./server/...`)
+  - [x] Reference invariants in `docs/domain-model.md` to keep behavior aligned
 
  - [ ] 11: Acceptance checklist (aligns with Implementation Plan)
   - [ ] Category tree constraints enforced in services (same project parent, no cycles)
