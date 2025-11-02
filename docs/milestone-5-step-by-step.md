@@ -23,17 +23,17 @@
   - [x] Implement pass-through CRUD/list using `repository.ProjectRepository`
   - [x] Keep timestamps DB-driven; avoid time logic here
 
- - [ ] 4: Implement `CategoryService` in `server/internal/service/category_service.go`
-  - [ ] On Create: if `parentCategoryID != nil`, fetch parent and assert:
-   - [ ] Parent exists or return `ErrInvalidParent`
-   - [ ] `parent.ProjectID == projectID` else return `ErrCrossProjectParent`
-  - [ ] On Update (including potential parent change):
-   - [ ] Load current category to know `ProjectID`
-   - [ ] If parent provided, validate parent belongs to same project
-   - [ ] Detect cycles: parent cannot be the category itself or any of its descendants
-    - [ ] Fetch descendants via repeated `ListChildren` calls (BFS/DFS) and detect membership; if cycle → `ErrCategoryCycle`
-  - [ ] On Delete: call repository `Delete`; DB will `SET NULL` on children per schema
-  - [ ] Disallow cross-project moves implicitly by not exposing a way to change `ProjectID`
+ - [x] 4: Implement `CategoryService` in `server/internal/service/category_service.go`
+  - [x] On Create: if `parentCategoryID != nil`, fetch parent and assert:
+   - [x] Parent exists or return `ErrInvalidParent`
+   - [x] `parent.ProjectID == projectID` else return `ErrCrossProjectParent`
+  - [x] On Update (including potential parent change):
+   - [x] Load current category to know `ProjectID`
+   - [x] If parent provided, validate parent belongs to same project
+   - [x] Detect cycles: parent cannot be the category itself or any of its descendants
+   - [x] Fetch descendants via repeated `ListChildren` calls (BFS/DFS) and detect membership; if cycle → `ErrCategoryCycle`
+  - [x] On Delete: call repository `Delete`; DB will `SET NULL` on children per schema
+  - [x] Disallow cross-project moves implicitly by not exposing a way to change `ProjectID`
 
  - [ ] 5: Implement `TimeTrackingService` in `server/internal/service/time_service.go`
   - [ ] `Start`:
