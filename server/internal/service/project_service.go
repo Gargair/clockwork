@@ -46,3 +46,5 @@ func (s *projectService) GetByID(ctx context.Context, id uuid.UUID) (domain.Proj
 func (s *projectService) List(ctx context.Context) ([]domain.Project, error) {
 	return s.repo.List(ctx)
 }
+
+var _ ProjectService = (*projectService)(nil)

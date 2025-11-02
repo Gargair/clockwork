@@ -46,10 +46,10 @@
   - [x] Call `repo.Stop(active.ID, stoppedAt, &durationSeconds)` and return updated entry
   - [x] `GetActive`, `ListByCategory`, `ListByCategoryAndRange`: thin pass-throughs to repository
 
- - [ ] 6: Add explicit service-level types and wiring
-  - [ ] Define unexported structs `projectService`, `categoryService`, `timeTrackingService` implementing the interfaces
-  - [ ] Store required dependencies as fields with explicit types (e.g., repositories, `clock.Clock`)
-  - [ ] Add compile-time interface assertions: `var _ ProjectService = (*projectService)(nil)` (and similarly for others)
+ - [x] 6: Add explicit service-level types and wiring
+  - [x] Define unexported structs `projectService`, `categoryService`, `timeTrackingService` implementing the interfaces
+  - [x] Store required dependencies as fields with explicit types (e.g., repositories, `clock.Clock`)
+  - [x] Add compile-time interface assertions: `var _ ProjectService = (*projectService)(nil)` (and similarly for others)
 
  - [ ] 7: Unit tests (TDD) for invariants and edge cases in `server/internal/service`
   - [ ] Create `clock_test.go` fake clock implementing `clock.Clock` with controllable `Now()`

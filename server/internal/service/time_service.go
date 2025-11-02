@@ -77,3 +77,5 @@ func (s *timeTrackingService) ListByCategory(ctx context.Context, categoryID uui
 func (s *timeTrackingService) ListByCategoryAndRange(ctx context.Context, categoryID uuid.UUID, start time.Time, end time.Time) ([]domain.TimeEntry, error) {
 	return s.repo.ListByCategoryAndRange(ctx, categoryID, start, end)
 }
+
+var _ TimeTrackingService = (*timeTrackingService)(nil)

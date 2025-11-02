@@ -110,3 +110,5 @@ func (s *categoryService) isDescendant(ctx context.Context, rootID uuid.UUID, ca
 	}
 	return false, nil
 }
+
+var _ CategoryService = (*categoryService)(nil)

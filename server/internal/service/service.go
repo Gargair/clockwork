@@ -40,15 +40,15 @@ type TimeTrackingService interface {
 
 // NewProjectService constructs a ProjectService.
 func NewProjectService(repo repository.ProjectRepository) ProjectService {
-	return nil
+	return &projectService{repo: repo}
 }
 
 // NewCategoryService constructs a CategoryService.
 func NewCategoryService(repo repository.CategoryRepository) CategoryService {
-	return nil
+	return &categoryService{repo: repo}
 }
 
 // NewTimeTrackingService constructs a TimeTrackingService.
 func NewTimeTrackingService(repo repository.TimeEntryRepository, categoryRepo repository.CategoryRepository, clk clock.Clock) TimeTrackingService {
-	return nil
+	return &timeTrackingService{repo: repo, categoryRepo: categoryRepo, clk: clk}
 }
