@@ -1,16 +1,16 @@
 ## Milestone 6: Step-by-step implementation plan
 
- - [ ] 1: Establish handler scaffolding and shared HTTP helpers
-  - [ ] Create `server/internal/http/models.go` with explicit request/response types and JSON tags:
-   - [ ] Projects: `ProjectCreateRequest`, `ProjectUpdateRequest`, `ProjectResponse`
-   - [ ] Categories: `CategoryCreateRequest`, `CategoryUpdateRequest`, `CategoryResponse`
-   - [ ] Time: `TimeStartRequest`, `TimeEntryResponse`, `ActiveTimerResponse`
-   - [ ] Errors: `ErrorResponse { code string, message string, requestId string }`
-  - [ ] Create `server/internal/http/json.go` helpers:
-   - [ ] `decodeJSON(r *http.Request, dst any) error` (strict decoder: `DisallowUnknownFields`)
-   - [ ] `writeJSON(w http.ResponseWriter, status int, v any)`
-   - [ ] `writeError(w http.ResponseWriter, r *http.Request, status int, code, msg string)`
-   - [ ] `parseUUID(str string) (uuid.UUID, error)` and `parseTimeRFC3339(str string) (time.Time, error)`
+ - [x] 1: Establish handler scaffolding and shared HTTP helpers
+  - [x] Create `server/internal/http/models.go` with explicit request/response types and JSON tags:
+  - [x] Projects: `ProjectCreateRequest`, `ProjectUpdateRequest`, `ProjectResponse`
+  - [x] Categories: `CategoryCreateRequest`, `CategoryUpdateRequest`, `CategoryResponse`
+  - [x] Time: `TimeStartRequest`, `TimeEntryResponse`, `ActiveTimerResponse`
+  - [x] Errors: `ErrorResponse { code string, message string, requestId string }`
+  - [x] Create `server/internal/http/json.go` helpers:
+  - [x] `decodeJSON(r *http.Request, dst any) error` (strict decoder: `DisallowUnknownFields`)
+  - [x] `writeJSON(w http.ResponseWriter, status int, v any)`
+  - [x] `writeError(w http.ResponseWriter, r *http.Request, status int, code, msg string)`
+  - [x] `parseUUID(str string) (uuid.UUID, error)` and `parseTimeRFC3339(str string) (time.Time, error)`
 
  - [ ] 2: Define consistent error mapping from services to HTTP
   - [ ] Create `server/internal/http/errors.go` with:
