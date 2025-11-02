@@ -51,23 +51,23 @@
   - [x] Store required dependencies as fields with explicit types (e.g., repositories, `clock.Clock`)
   - [x] Add compile-time interface assertions: `var _ ProjectService = (*projectService)(nil)` (and similarly for others)
 
- - [ ] 7: Unit tests (TDD) for invariants and edge cases in `server/internal/service`
-  - [ ] Create `clock_test.go` fake clock implementing `clock.Clock` with controllable `Now()`
-  - [ ] Create minimal in-memory fakes for repositories inside tests (hand-rolled) to avoid DB
-  - [ ] `ProjectService` tests:
-   - [ ] Reject empty/whitespace names
-   - [ ] Create → GetByID roundtrip passes through fields
-  - [ ] `CategoryService` tests:
-   - [ ] Create with parent in same project succeeds
-   - [ ] Create with parent from different project → `ErrCrossProjectParent`
-   - [ ] Update changing parent to descendant → `ErrCategoryCycle`
-   - [ ] Update name/description only succeeds
-  - [ ] `TimeTrackingService` tests:
-   - [ ] `Start` when no active exists creates active entry with exact `StartedAt`
-    - [ ] `Start` when active exists stops the previous entry and starts a new one; assert `prev.stoppedAt == new.startedAt` and equals fake clock `now`
-   - [ ] `StopActive` computes `durationSeconds` correctly with fake clock and clears active
-   - [ ] `GetActive` reflects state transitions
-  - [ ] Run: `go test ./server/...`
+ - [x] 7: Unit tests (TDD) for invariants and edge cases in `server/internal/service`
+  - [x] Create `clock_test.go` fake clock implementing `clock.Clock` with controllable `Now()`
+  - [x] Create minimal in-memory fakes for repositories inside tests (hand-rolled) to avoid DB
+  - [x] `ProjectService` tests:
+   - [x] Reject empty/whitespace names
+   - [x] Create → GetByID roundtrip passes through fields
+  - [x] `CategoryService` tests:
+   - [x] Create with parent in same project succeeds
+   - [x] Create with parent from different project → `ErrCrossProjectParent`
+   - [x] Update changing parent to descendant → `ErrCategoryCycle`
+   - [x] Update name/description only succeeds
+  - [x] `TimeTrackingService` tests:
+   - [x] `Start` when no active exists creates active entry with exact `StartedAt`
+   - [x] `Start` when active exists stops the previous entry and starts a new one; assert `prev.stoppedAt == new.startedAt` and equals fake clock `now`
+   - [x] `StopActive` computes `durationSeconds` correctly with fake clock and clears active
+   - [x] `GetActive` reflects state transitions
+  - [x] Run: `go test ./server/...`
 
  - [ ] 8: Cross-cutting error mapping and consistency
   - [ ] Map repository errors to service semantics where appropriate (e.g., `repository.ErrNotFound` → pass-through for Get/Delete)

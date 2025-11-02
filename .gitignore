@@ -27,6 +27,7 @@ client/dist/
 server/bin/
 server/tmp/
 coverage.out
+coverage.html
 *.test
 *.exe
 *.exe~
