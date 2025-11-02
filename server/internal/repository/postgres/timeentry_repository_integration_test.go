@@ -1,14 +1,12 @@
 //go:build integration
 // +build integration
 
-package postgres_test
+package postgres
 
 import (
 	"context"
 	"testing"
 	"time"
-
-	repoimpl "github.com/Gargair/clockwork/server/internal/repository/postgres"
 )
 
 func TestTimeEntryRepositoryCreateAndFindActiveThenStopFlowIntegration(t *testing.T) {
@@ -17,9 +15,9 @@ func TestTimeEntryRepositoryCreateAndFindActiveThenStopFlowIntegration(t *testin
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
-	tr := repoimpl.NewTimeEntryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
+	tr := NewTimeEntryRepository(db)
 
 	p, err := pr.Create(ctx, NewProject("te-proj", nil))
 	if err != nil {
@@ -86,9 +84,9 @@ func TestTimeEntryRepositoryListByCategoryOrderDescIntegration(t *testing.T) {
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
-	tr := repoimpl.NewTimeEntryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
+	tr := NewTimeEntryRepository(db)
 
 	p, err := pr.Create(ctx, NewProject("order-proj", nil))
 	if err != nil {
@@ -133,9 +131,9 @@ func TestTimeEntryRepositoryListByCategoryAndRangeInclusiveIntegration(t *testin
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
-	tr := repoimpl.NewTimeEntryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
+	tr := NewTimeEntryRepository(db)
 
 	p, err := pr.Create(ctx, NewProject("range-proj", nil))
 	if err != nil {

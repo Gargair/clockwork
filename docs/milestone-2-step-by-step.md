@@ -55,7 +55,7 @@
     - [x] Connect using `DATABASE_URL` and `db.Open`.
     - [x] Insert a row into `project` with a generated UUID and name.
     - [x] Read it back by ID and assert fields match; clean up by deleting the row.
-  - [x] Document how to run it locally: `go test ./server/... -tags=integration` (with DB running and `DATABASE_URL` set).
+  - [x] Document how to run it locally: `cd server; go test ./... -tags=integration` (with DB running and `DATABASE_URL` set).
 
 - [x] 11: Wire automatic migrations on server startup (config gated)
   - [x] Add `DB_AUTO_MIGRATE` (or `AUTO_MIGRATE`) boolean to `internal/config.Config` with default `false`.

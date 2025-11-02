@@ -1,14 +1,12 @@
 //go:build integration
 // +build integration
 
-package postgres_test
+package postgres
 
 import (
 	"context"
 	"testing"
 	"time"
-
-	repo "github.com/Gargair/clockwork/server/internal/repository/postgres"
 )
 
 func TestProjectRepositoryCreateAndGetByIDIntegration(t *testing.T) {
@@ -16,7 +14,7 @@ func TestProjectRepositoryCreateAndGetByIDIntegration(t *testing.T) {
 	t.Cleanup(func() { _ = db.Close() })
 	TruncateAll(t, db)
 
-	r := repo.NewProjectRepository(db)
+	r := NewProjectRepository(db)
 	ctx := context.Background()
 
 	desc := "first project"
@@ -44,7 +42,7 @@ func TestProjectRepositoryListIntegration(t *testing.T) {
 	t.Cleanup(func() { _ = db.Close() })
 	TruncateAll(t, db)
 
-	r := repo.NewProjectRepository(db)
+	r := NewProjectRepository(db)
 	ctx := context.Background()
 
 	p1 := NewProject("proj-1", nil)
@@ -81,7 +79,7 @@ func TestProjectRepositoryUpdateIntegration(t *testing.T) {
 	t.Cleanup(func() { _ = db.Close() })
 	TruncateAll(t, db)
 
-	r := repo.NewProjectRepository(db)
+	r := NewProjectRepository(db)
 	ctx := context.Background()
 
 	orig := NewProject("proj-update", nil)
@@ -114,7 +112,7 @@ func TestProjectRepositoryDeleteIntegration(t *testing.T) {
 	t.Cleanup(func() { _ = db.Close() })
 	TruncateAll(t, db)
 
-	r := repo.NewProjectRepository(db)
+	r := NewProjectRepository(db)
 	ctx := context.Background()
 
 	p := NewProject("proj-delete", nil)

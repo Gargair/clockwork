@@ -1,7 +1,7 @@
 //go:build integration
 // +build integration
 
-package postgres_test
+package postgres
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/Gargair/clockwork/server/internal/repository"
-	repoimpl "github.com/Gargair/clockwork/server/internal/repository/postgres"
 )
 
 func TestCategoryRepositoryCreateSucceedsWithValidProjectIntegration(t *testing.T) {
@@ -18,8 +17,8 @@ func TestCategoryRepositoryCreateSucceedsWithValidProjectIntegration(t *testing.
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
 
 	proj := NewProject("cat-proj", nil)
 	p, err := pr.Create(ctx, proj)
@@ -43,8 +42,8 @@ func TestCategoryRepositoryUniqueCategoryNameWithinProjectEnforcedIntegration(t 
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
 
 	p, err := pr.Create(ctx, NewProject("uniq-proj", nil))
 	if err != nil {
@@ -70,8 +69,8 @@ func TestCategoryRepositoryParentChildAndDeleteParentSetsChildrenNullIntegration
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
 
 	p, err := pr.Create(ctx, NewProject("parent-child-proj", nil))
 	if err != nil {
@@ -125,8 +124,8 @@ func TestCategoryRepositoryUpdateFieldsButNotProjectIntegration(t *testing.T) {
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
 
 	p, err := pr.Create(ctx, NewProject("update-proj", nil))
 	if err != nil {
@@ -172,8 +171,8 @@ func TestCategoryRepositoryListByProjectFiltersIntegration(t *testing.T) {
 	TruncateAll(t, db)
 
 	ctx := context.Background()
-	pr := repoimpl.NewProjectRepository(db)
-	cr := repoimpl.NewCategoryRepository(db)
+	pr := NewProjectRepository(db)
+	cr := NewCategoryRepository(db)
 
 	p1, err := pr.Create(ctx, NewProject("p1", nil))
 	if err != nil {

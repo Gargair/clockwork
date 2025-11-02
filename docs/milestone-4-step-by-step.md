@@ -81,7 +81,7 @@
   - [x] Do not expose repositories via HTTP yet (reserved for Milestone 6)
 
  - [x] 9: Docs and developer workflow
-  - [x] Add a short note to `docs/development.md` about running repository integration tests (`go test ./server/... -tags=integration`)
+  - [x] Add a short note to `docs/development.md` about running repository integration tests (`cd server; go test ./... -tags=integration`)
   - [x] Ensure `docker compose up -d postgres` and `DATABASE_URL` instructions are referenced
 
 - [X] 10: Acceptance checklist (map to Implementation Plan)
