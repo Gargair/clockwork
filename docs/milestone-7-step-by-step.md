@@ -1,17 +1,17 @@
 ## Milestone 7: Step-by-step implementation plan
 
-- [ ] 1: Create shared client schemas and types (with Zod)
-  - [ ] Add `client/src/types/schemas.ts` defining Zod schemas mirroring `docs/api.md`:
-    - [ ] `ProjectSchema`
-    - [ ] `CategorySchema`
-    - [ ] `TimeEntrySchema`
-    - [ ] `ErrorResponseSchema`
-  - [ ] Add `client/src/types/index.ts` to export explicit types inferred from schemas:
-    - [ ] `export type Project = z.infer<typeof ProjectSchema>`
-    - [ ] `export type Category = z.infer<typeof CategorySchema>`
-    - [ ] `export type TimeEntry = z.infer<typeof TimeEntrySchema>`
-    - [ ] `export type ErrorResponse = z.infer<typeof ErrorResponseSchema>`
-  - [ ] Include array helpers where needed: `export const ProjectListSchema = z.array(ProjectSchema)` (same for others)
+- [x] 1: Create shared client schemas and types (with Zod)
+  - [x] Add `client/src/types/schemas.ts` defining Zod schemas mirroring `docs/api.md`:
+    - [x] `ProjectSchema`
+    - [x] `CategorySchema`
+    - [x] `TimeEntrySchema`
+    - [x] `ErrorResponseSchema`
+  - [x] Add `client/src/types/index.ts` to export explicit types inferred from schemas:
+    - [x] `export type Project = z.infer<typeof ProjectSchema>`
+    - [x] `export type Category = z.infer<typeof CategorySchema>`
+    - [x] `export type TimeEntry = z.infer<typeof TimeEntrySchema>`
+    - [x] `export type ErrorResponse = z.infer<typeof ErrorResponseSchema>`
+  - [x] Include array helpers where needed: `export const ProjectListSchema = z.array(ProjectSchema)` (same for others)
 
 - [ ] 2: Add Zod for runtime validation
   - [ ] Install dependency in `client`: `npm i zod`
