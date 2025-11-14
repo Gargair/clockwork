@@ -36,7 +36,7 @@ export function useProjects(): UseProjectsResult {
 
   useEffect(() => {
     mountedRef.current = true;
-    void refresh();
+    refresh();
     return () => {
       mountedRef.current = false;
     };
