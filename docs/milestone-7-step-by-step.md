@@ -17,9 +17,9 @@
   - [x] Install dependency in `client`: `npm i zod`
   - [x] Ensure TypeScript settings are strict enough to avoid `any` leakage
 
-- [ ] 3: Configure API base URL (dev/prod)
-  - [ ] Add `client/src/api/config.ts`:
-    - [ ] `export const API_BASE_URL: string = (import.meta as any).env?.VITE_API_BASE_URL ?? (window.location.origin || '');`
+- [x] 3: Configure API base URL (dev/prod)
+  - [x] Add `client/src/api/config.ts`:
+    - [x] `export const API_BASE_URL: string = (import.meta as any).env?.VITE_API_BASE_URL ?? (window.location.origin || '');`
     - In development, set `VITE_API_BASE_URL` to `http://localhost:8080` via `.env.development.local` (optional; CORS defaults to `*` in dev per server config).
     - In production, the SPA is served by the Go server; relative paths work.
 
