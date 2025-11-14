@@ -23,10 +23,10 @@
     - In development, set `VITE_API_BASE_URL` to `http://localhost:8080` via `.env.development.local` (optional; CORS defaults to `*` in dev per server config).
     - In production, the SPA is served by the Go server; relative paths work.
 
-- [ ] 4: Implement a typed HTTP helper with schema validation
-  - [ ] Add `client/src/api/http.ts`:
-    - [ ] `export interface RequestOptions { method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; headers?: Record<string, string>; body?: unknown; signal?: AbortSignal }`
-    - [ ] `export async function requestJson<T>(path: string, options: RequestOptions | undefined, schema: z.ZodSchema<T>): Promise<T>`
+- [x] 4: Implement a typed HTTP helper with schema validation
+  - [x] Add `client/src/api/http.ts`:
+    - [x] `export interface RequestOptions { method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; headers?: Record<string, string>; body?: unknown; signal?: AbortSignal }`
+    - [x] `export async function requestJson<T>(path: string, options: RequestOptions | undefined, schema: z.ZodSchema<T>): Promise<T>`
       - Prefix `path` with `API_BASE_URL` when absolute URL not provided
       - Set `Accept: application/json` and `Content-Type: application/json` when sending a body
       - Serialize `body` as JSON when provided
