@@ -41,10 +41,10 @@
     - [x] `client/src/api/categories.ts` (list/create/get/update/delete) using `CategorySchema`/`z.array(CategorySchema)`
     - [x] `client/src/api/time.ts` (start/stop/getActive/listEntries) using `TimeEntrySchema`/`z.array(TimeEntrySchema)`
 
-- [ ] 6: Introduce an application error boundary
-  - [ ] Add `client/src/app/ErrorBoundary.tsx` with an explicit `Props` and `State`:
+- [x] 6: Introduce an application error boundary
+  - [x] Add `client/src/app/ErrorBoundary.tsx` with an explicit `Props` and `State`:
     - Catches render errors and displays a fallback with `requestId` if present
-  - [ ] Wrap the router tree in `ErrorBoundary` in `client/src/main.tsx`
+  - [x] Wrap the router tree in `ErrorBoundary` in `client/src/main.tsx`
 
 - [ ] 7: Establish theme tokens and base layout polish
   - [ ] Augment `client/src/style.css` with CSS custom properties for colors/spacing/typography (light/dark), keeping existing styles
