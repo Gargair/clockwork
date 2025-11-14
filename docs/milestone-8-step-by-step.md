@@ -11,8 +11,8 @@
     - Use `requestJson<T>()` from `client/src/api/http.ts` for all calls and validate responses against `ProjectSchema`/`ProjectListSchema`.
     - Keep all function parameters and return types explicit. Do not rely on inference for exported functions.
 
-- [ ] 2: Create a reusable `useProjects` hook
-  - [ ] Add `client/src/hooks/useProjects.ts`
+- [x] 2: Create a reusable `useProjects` hook
+  - [x] Add `client/src/hooks/useProjects.ts`
     - Expose explicit types:
       - `status: 'idle' | 'loading' | 'success' | 'error'`
       - `projects: Project[]`
