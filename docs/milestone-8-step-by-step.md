@@ -68,13 +68,13 @@
     - Edit project name/description → changes persist after reload
     - Delete project → removed, and 404s handled gracefully if racing
 
-- [ ] 8: Acceptance checklist (aligns with Implementation Plan)
+- [x] 8: Acceptance checklist (aligns with Implementation Plan)
   - [x] `client/src/api/projects.ts` implements typed list/create/get/update/delete with Zod validation
-  - [ ] `useProjects` hook provides typed state and CRUD helpers
-  - [ ] `ProjectForm` provides validated inputs and explicit props
-  - [ ] `ProjectsPage` supports listing, creating, updating, and deleting
-  - [ ] Navigation to `/projects` exists and works
-  - [ ] Component tests cover happy paths and key error scenarios and pass
+  - [x] `useProjects` hook provides typed state and CRUD helpers
+  - [x] `ProjectForm` provides validated inputs and explicit props
+  - [x] `ProjectsPage` supports listing, creating, updating, and deleting
+  - [x] Navigation to `/projects` exists and works
+  - [x] Component tests cover happy paths and key error scenarios and pass
 
 ### Notes for M8
 - Prefer explicit types for all exported APIs, including hook return shapes.
