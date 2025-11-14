@@ -1,6 +1,6 @@
 import type { TimeEntry } from '../types';
 
-export async function startTimer(categoryId: string): Promise<TimeEntry> {
+export async function startTimer(_categoryId: string): Promise<TimeEntry> {
   throw new Error('Not implemented');
 }
 
@@ -18,7 +18,7 @@ export interface ListEntriesParams {
   to?: string;
 }
 
-export async function listEntries(params: ListEntriesParams): Promise<TimeEntry[]> {
+export async function listEntries(_params: ListEntriesParams): Promise<TimeEntry[]> {
   throw new Error('Not implemented');
 }
 

@@ -9,11 +9,11 @@ export interface CreateProjectInput {
   description?: string | null;
 }
 
-export async function createProject(input: CreateProjectInput): Promise<Project> {
+export async function createProject(_input: CreateProjectInput): Promise<Project> {
   throw new Error('Not implemented');
 }
 
-export async function getProject(projectId: string): Promise<Project> {
+export async function getProject(_projectId: string): Promise<Project> {
   throw new Error('Not implemented');
 }
 
@@ -22,11 +22,11 @@ export interface UpdateProjectInput {
   description?: string | null;
 }
 
-export async function updateProject(projectId: string, input: UpdateProjectInput): Promise<Project> {
+export async function updateProject(_projectId: string, _input: UpdateProjectInput): Promise<Project> {
   throw new Error('Not implemented');
 }
 
-export async function deleteProject(projectId: string): Promise<void> {
+export async function deleteProject(_projectId: string): Promise<void> {
   throw new Error('Not implemented');
 }
 
