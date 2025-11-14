@@ -7,3 +7,7 @@
 - Offline-friendly client
 - Role-based access control (post multi-user)
 
+## Post-initial release polish
+
+- Adopt Tailwind CSS for styling to standardize design tokens, speed up UI development, and reduce custom CSS surface area. Gradually migrate existing styles, starting with layout and common components.
+
