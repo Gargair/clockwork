@@ -50,7 +50,7 @@ export default function Home(): JSX.Element {
       <div style={{ marginTop: '1rem' }}>
         <h2>API Health</h2>
         {status === 'loading' ? <p>Checking health…</p> : null}
-        {status === 'success' && health ? <p>Status: {health.status}</p> : null}
+        {status === 'success' && health ? <p>Status: {health.ok ? 'OK' : 'Error'}</p> : null}
         {status === 'error' && error ? (
           <div role="alert">
             <p>Error: {error.message}</p>

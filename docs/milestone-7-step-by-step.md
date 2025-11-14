@@ -60,10 +60,10 @@
   - [x] Document in `docs/development.md` (Client section) how to point the SPA to the server in dev using `VITE_API_BASE_URL`
   - [x] Note Zod installation and the rationale for runtime validation of API responses
 
-- [ ] 10: Verification steps
-  - [ ] Start the server (see `docs/development.md`) and ensure it exposes `/healthz`
-  - [ ] In another terminal: `cd client; npm run dev`
-  - [ ] Load the SPA at the Vite URL; confirm:
+- [x] 10: Verification steps
+  - [x] Start the server (see `docs/development.md`) and ensure it exposes `/healthz`
+  - [x] In another terminal: `cd client; npm run dev`
+  - [x] Load the SPA at the Vite URL; confirm:
     - App shell renders with header/footer and base styles
     - Home shows health status fetched via the API client and validated by Zod
     - Error boundary presents a readable fallback when forced

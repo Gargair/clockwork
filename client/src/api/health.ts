@@ -2,7 +2,9 @@ import { z } from 'zod';
 import { requestJson } from './http';
 
 const HealthSchema = z.object({
-  status: z.string(),
+  db: z.enum(['up', 'down']),
+  time: z.iso.datetime(),
+  ok: z.boolean(),
 });
 
 export type HealthResponse = z.infer<typeof HealthSchema>;
