@@ -41,9 +41,9 @@
       - Provide edit and delete controls per row (edit can be inline or a simple toggle)
     - Handle and display loading/error states, including `ApiError` info when present
 
-- [ ] 5: Wire routing and navigation
-  - [ ] Update `client/src/app/App.tsx` to include a `Link` to `/projects`
-  - [ ] Update `client/src/main.tsx` to add a route:
+- [x] 5: Wire routing and navigation
+  - [x] Update `client/src/app/App.tsx` to include a `Link` to `/projects`
+  - [x] Update `client/src/main.tsx` to add a route:
     - `<Route path="/projects" element={<Projects />} />`
 
 - [ ] 6: Tests (component)
