@@ -35,9 +35,8 @@ function isAbsoluteUrl(path: string): boolean {
 
 function buildUrl(path: string): string {
   if (isAbsoluteUrl(path)) return path;
-  const base = API_BASE_URL.replace(/\/+$/, '');
   const suffix = path.startsWith('/') ? path : `/${path}`;
-  return `${base}${suffix}`;
+  return `${API_BASE_URL}${suffix}`;
 }
 
 export async function requestJson<T>(

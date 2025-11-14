@@ -1,12 +1,12 @@
 ## Milestone 8: Step-by-step implementation plan
 
-- [ ] 1: Implement typed Projects API client
-  - [ ] Fill in `client/src/api/projects.ts` using the shared HTTP helper and Zod schemas
-    - [ ] `listProjects(): Promise<Project[]>` → `GET /api/projects` with `ProjectListSchema`
-    - [ ] `createProject(input: CreateProjectInput): Promise<Project>` → `POST /api/projects` with `ProjectSchema`
-    - [ ] `getProject(projectId: string): Promise<Project>` → `GET /api/projects/{projectId}` with `ProjectSchema`
-    - [ ] `updateProject(projectId: string, input: UpdateProjectInput): Promise<Project>` → `PATCH /api/projects/{projectId}` with `ProjectSchema`
-    - [ ] `deleteProject(projectId: string): Promise<void>` → `DELETE /api/projects/{projectId}` with `z.undefined()`
+- [x] 1: Implement typed Projects API client
+  - [x] Fill in `client/src/api/projects.ts` using the shared HTTP helper and Zod schemas
+    - [x] `listProjects(): Promise<Project[]>` → `GET /api/projects` with `ProjectListSchema`
+    - [x] `createProject(input: CreateProjectInput): Promise<Project>` → `POST /api/projects` with `ProjectSchema`
+    - [x] `getProject(projectId: string): Promise<Project>` → `GET /api/projects/{projectId}` with `ProjectSchema`
+    - [x] `updateProject(projectId: string, input: UpdateProjectInput): Promise<Project>` → `PATCH /api/projects/{projectId}` with `ProjectSchema`
+    - [x] `deleteProject(projectId: string): Promise<void>` → `DELETE /api/projects/{projectId}` with `z.undefined()`
   - Notes:
     - Use `requestJson<T>()` from `client/src/api/http.ts` for all calls and validate responses against `ProjectSchema`/`ProjectListSchema`.
     - Keep all function parameters and return types explicit. Do not rely on inference for exported functions.
@@ -69,7 +69,7 @@
     - Delete project → removed, and 404s handled gracefully if racing
 
 - [ ] 8: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] `client/src/api/projects.ts` implements typed list/create/get/update/delete with Zod validation
+  - [x] `client/src/api/projects.ts` implements typed list/create/get/update/delete with Zod validation
   - [ ] `useProjects` hook provides typed state and CRUD helpers
   - [ ] `ProjectForm` provides validated inputs and explicit props
   - [ ] `ProjectsPage` supports listing, creating, updating, and deleting
