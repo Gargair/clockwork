@@ -33,8 +33,8 @@
     - Controlled inputs for `name` (required, trimmed) and `description` (optional)
     - Basic inline validation (e.g., show message if name is empty)
 
-- [ ] 4: Create `ProjectsPage` UI
-  - [ ] Add `client/src/pages/Projects.tsx`
+- [x] 4: Create `ProjectsPage` UI
+  - [x] Add `client/src/pages/Projects.tsx`
     - Uses `useProjects()` to:
       - Render list of projects (name, description, created/updated timestamps)
       - Provide a create form using `ProjectForm`
