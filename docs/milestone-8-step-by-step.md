@@ -23,8 +23,8 @@
       - On mutations, either optimistically update local state then reconcile, or call API and then `refresh()` (start simple with refetch)
       - Capture `ApiError` details (`code`, `requestId`) when present
 
-- [ ] 3: Build `ProjectForm` component
-  - [ ] Add `client/src/components/ProjectForm.tsx`
+- [x] 3: Build `ProjectForm` component
+  - [x] Add `client/src/components/ProjectForm.tsx`
     - Props (explicit types):
       - `initial?: { name: string; description?: string | null }`
       - `onSubmit: (values: { name: string; description?: string | null }) => void | Promise<void>`
