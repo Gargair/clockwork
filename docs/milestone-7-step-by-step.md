@@ -46,9 +46,9 @@
     - Catches render errors and displays a fallback with `requestId` if present
   - [x] Wrap the router tree in `ErrorBoundary` in `client/src/main.tsx`
 
-- [ ] 7: Establish theme tokens and base layout polish
-  - [ ] Augment `client/src/style.css` with CSS custom properties for colors/spacing/typography (light/dark), keeping existing styles
-  - [ ] Ensure `App` uses semantic HTML structure and respects the tokens
+- [x] 7: Establish theme tokens and base layout polish
+  - [x] Augment `client/src/style.css` with CSS custom properties for colors/spacing/typography (light/dark), keeping existing styles
+  - [x] Ensure `App` uses semantic HTML structure and respects the tokens
 
 - [ ] 8: Wire a simple health check on Home
   - [ ] Add `client/src/pages/Home.tsx` logic to call `getHealth()` on mount and display the status (OK/error)

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './app/App.tsx';
 import ErrorBoundary from './app/ErrorBoundary.tsx';
 import Home from './pages/Home.tsx';
+import './style.css';
 
 const root = document.getElementById('app');
 if (!root) {
