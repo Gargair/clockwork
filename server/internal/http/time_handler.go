@@ -159,12 +159,19 @@ func (h TimeHandler) handleEntries(w http.ResponseWriter, r *http.Request) {
 
 func timeEntryToResponse(e domain.TimeEntry) TimeEntryResponse {
 	return TimeEntryResponse{
-		ID:              e.ID,
-		CategoryID:      e.CategoryID,
-		StartedAt:       e.StartedAt,
-		StoppedAt:       e.StoppedAt,
+		ID:         e.ID,
+		CategoryID: e.CategoryID,
+		StartedAt:  e.StartedAt.UTC(),
+		StoppedAt: func() *time.Time {
+			if e.StoppedAt != nil {
+				t := e.StoppedAt.UTC()
+				return &t
+			} else {
+				return nil
+			}
+		}(),
 		DurationSeconds: e.DurationSeconds,
-		CreatedAt:       e.CreatedAt,
-		UpdatedAt:       e.UpdatedAt,
+		CreatedAt:       e.CreatedAt.UTC(),
+		UpdatedAt:       e.UpdatedAt.UTC(),
 	}
 }

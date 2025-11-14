@@ -8,6 +8,7 @@ export default function App(): JSX.Element {
         <nav>
           <strong>Clockwork</strong>
           <Link to="/">Home</Link>
+          <Link to="/projects">Projects</Link>
         </nav>
       </header>
       <main>

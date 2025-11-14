@@ -1,7 +1,9 @@
-import type { Project } from '../types';
+import { z } from 'zod';
+import { requestJson } from './http';
+import { type Project, ProjectSchema, ProjectListSchema } from '../types';
 
 export async function listProjects(): Promise<Project[]> {
-  throw new Error('Not implemented');
+  return requestJson('/api/projects', { method: 'GET' }, ProjectListSchema);
 }
 
 export interface CreateProjectInput {
@@ -9,12 +11,12 @@ export interface CreateProjectInput {
   description?: string | null;
 }
 
-export async function createProject(_input: CreateProjectInput): Promise<Project> {
-  throw new Error('Not implemented');
+export async function createProject(input: CreateProjectInput): Promise<Project> {
+  return requestJson('/api/projects', { method: 'POST', body: input }, ProjectSchema);
 }
 
-export async function getProject(_projectId: string): Promise<Project> {
-  throw new Error('Not implemented');
+export async function getProject(projectId: string): Promise<Project> {
+  return requestJson(`/api/projects/${projectId}`, { method: 'GET' }, ProjectSchema);
 }
 
 export interface UpdateProjectInput {
@@ -22,12 +24,12 @@ export interface UpdateProjectInput {
   description?: string | null;
 }
 
-export async function updateProject(_projectId: string, _input: UpdateProjectInput): Promise<Project> {
-  throw new Error('Not implemented');
+export async function updateProject(projectId: string, input: UpdateProjectInput): Promise<Project> {
+  return requestJson(`/api/projects/${projectId}`, { method: 'PATCH', body: input }, ProjectSchema);
 }
 
-export async function deleteProject(_projectId: string): Promise<void> {
-  throw new Error('Not implemented');
+export async function deleteProject(projectId: string): Promise<void> {
+  return requestJson(`/api/projects/${projectId}`, { method: 'DELETE' }, z.undefined());
 }
 
 

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './app/App.tsx';
 import ErrorBoundary from './app/ErrorBoundary.tsx';
 import Home from './pages/Home.tsx';
+import Projects from './pages/Projects.tsx';
 import './style.css';
 
 const root = document.getElementById('app');
@@ -18,6 +19,7 @@ ReactDOM.createRoot(root).render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
           </Route>
         </Routes>
       </BrowserRouter>

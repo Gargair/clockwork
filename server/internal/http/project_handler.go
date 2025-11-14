@@ -150,7 +150,7 @@ func projectToResponse(p domain.Project) ProjectResponse {
 		ID:          p.ID,
 		Name:        p.Name,
 		Description: p.Description,
-		CreatedAt:   p.CreatedAt,
-		UpdatedAt:   p.UpdatedAt,
+		CreatedAt:   p.CreatedAt.UTC(),
+		UpdatedAt:   p.UpdatedAt.UTC(),
 	}
 }

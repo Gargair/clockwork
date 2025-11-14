@@ -22,6 +22,7 @@ pnpm-debug.log*
 # Vite
 client/.vite/
 client/dist/
+client/coverage-html/
 
 # Go
 server/bin/

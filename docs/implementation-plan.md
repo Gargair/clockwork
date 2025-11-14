@@ -32,12 +32,20 @@ See the detailed guide for this milestone: [milestone-2-step-by-step.md](milesto
   - `internal/clock` with interface and `SystemClock`
 - **Acceptance**: Server runs; `/healthz` returns OK; serves placeholder static assets in prod mode.
 
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-3-step-by-step.md](milestone-3-step-by-step.md).
+
 ## Milestone 4: Repository interfaces and Postgres implementations
 - **Scope**: Define repository interfaces and implement PostgreSQL adapters.
 - **Deliverables**:
   - `ProjectRepository`, `CategoryRepository`, `TimeEntryRepository` interfaces
   - Postgres implementations with CRUD/list and query helpers
 - **Acceptance**: Integration tests for repositories pass (CRUD, listing, filters, constraints).
+
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-4-step-by-step.md](milestone-4-step-by-step.md).
 
 ## Milestone 5: Domain services with invariants
 - **Scope**: Implement `ProjectService`, `CategoryService`, `TimeTrackingService` with rules.
@@ -46,12 +54,20 @@ See the detailed guide for this milestone: [milestone-2-step-by-step.md](milesto
   - Unit tests for invariants and edge cases
 - **Acceptance**: TDD tests pass for start/stop/getActive/list and category hierarchy behaviors.
 
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-5-step-by-step.md](milestone-5-step-by-step.md).
+
 ## Milestone 6: HTTP API handlers
 - **Scope**: Implement REST endpoints per API sketch with validation and error handling.
 - **Deliverables**:
   - `ProjectHandler`, `CategoryHandler`, `TimeHandler`
   - Request/response models and validation
 - **Acceptance**: Handler integration tests cover happy paths and error cases and pass.
+
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-6-step-by-step.md](milestone-6-step-by-step.md).
 
 ## Milestone 7: Client foundations
 - **Scope**: Establish API client, shared types, app shell.
@@ -61,11 +77,19 @@ See the detailed guide for this milestone: [milestone-2-step-by-step.md](milesto
   - Theme, error boundary, router, base layout
 - **Acceptance**: App loads; API client can call health endpoint in dev.
 
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-7-step-by-step.md](milestone-7-step-by-step.md).
+
 ## Milestone 8: Projects feature (client)
 - **Scope**: CRUD for projects.
 - **Deliverables**:
   - `ProjectsPage`, `ProjectForm`, `useProjects` hook
 - **Acceptance**: List/create/update/delete projects works; component tests pass.
+
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-8-step-by-step.md](milestone-8-step-by-step.md).
 
 ## Milestone 9: Categories feature (client)
 - **Scope**: Hierarchical categories per project.
