@@ -55,10 +55,10 @@
     - Show error message and `requestId` when available
     - Keep types explicit for local component state
 
-- [ ] 9: Developer experience (DX) basics
-  - [ ] Add `client/.env.development.example` with `VITE_API_BASE_URL=http://localhost:8080`
-  - [ ] Document in `docs/development.md` (Client section) how to point the SPA to the server in dev using `VITE_API_BASE_URL`
-  - [ ] Note Zod installation and the rationale for runtime validation of API responses
+- [x] 9: Developer experience (DX) basics
+  - [x] Add `client/.env.development.example` with `VITE_API_BASE_URL=http://localhost:8080`
+  - [x] Document in `docs/development.md` (Client section) how to point the SPA to the server in dev using `VITE_API_BASE_URL`
+  - [x] Note Zod installation and the rationale for runtime validation of API responses
 
 - [ ] 10: Verification steps
   - [ ] Start the server (see `docs/development.md`) and ensure it exposes `/healthz`

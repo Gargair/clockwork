@@ -19,6 +19,10 @@
 - Client
   - Dev server: `npm run dev` (scripts TBD)
   - Build: `npm run build`
+  - API base URL (Vite): set `VITE_API_BASE_URL` to point the SPA at the Go server in development. Create `client/.env.development.local` with:
+    - `VITE_API_BASE_URL=http://localhost:8080`
+    - Note: In production the SPA is served by the Go server; relative paths work.
+  - Zod runtime validation: the client validates API responses with Zod schemas to catch contract drift early and keep types accurate at runtime.
  - Database
   - Run PostgreSQL locally (e.g., Docker) and set `DATABASE_URL`
   - Create a dev database and run migrations
