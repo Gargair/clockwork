@@ -69,12 +69,12 @@
     - Error boundary presents a readable fallback when forced
     - Intentionally corrupting the response in dev (e.g., via proxy/mock) surfaces a Zod validation error
 
-- [ ] 11: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] `client/src/api` provides a typed `requestJson<T>` that validates with Zod schemas, and `getHealth()` uses a Zod schema
-  - [ ] `client/src/types` exports Zod schemas and explicit types for `Project`, `Category`, `TimeEntry`, and `ErrorResponse`
-  - [ ] Error boundary in place for the app tree
-  - [ ] Theme tokens exist and are used in the base layout
-  - [ ] Dev app loads and successfully calls `/healthz` via the API client, with runtime validation enforced
+- [x] 11: Acceptance checklist (aligns with Implementation Plan)
+  - [x] `client/src/api` provides a typed `requestJson<T>` that validates with Zod schemas, and `getHealth()` uses a Zod schema
+  - [x] `client/src/types` exports Zod schemas and explicit types for `Project`, `Category`, `TimeEntry`, and `ErrorResponse`
+  - [x] Error boundary in place for the app tree
+  - [x] Theme tokens exist and are used in the base layout
+  - [x] Dev app loads and successfully calls `/healthz` via the API client, with runtime validation enforced
 
 ### Notes for M7
 - Prefer explicit types for public functions, params, and return values.
