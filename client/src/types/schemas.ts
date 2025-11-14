@@ -1,35 +1,35 @@
 import { z } from 'zod';
 
 export const ProjectSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string(),
   description: z.string().optional(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export const ProjectListSchema = z.array(ProjectSchema);
 
 export const CategorySchema = z.object({
-  id: z.string().uuid(),
-  projectId: z.string().uuid(),
-  parentCategoryId: z.string().uuid().nullable(),
+  id: z.uuid(),
+  projectId: z.uuid(),
+  parentCategoryId: z.uuid().nullable(),
   name: z.string(),
   description: z.string().optional(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export const CategoryListSchema = z.array(CategorySchema);
 
 export const TimeEntrySchema = z.object({
-  id: z.string().uuid(),
-  categoryId: z.string().uuid(),
-  startedAt: z.string().datetime(),
-  stoppedAt: z.string().datetime().nullable(),
+  id: z.uuid(),
+  categoryId: z.uuid(),
+  startedAt: z.iso.datetime(),
+  stoppedAt: z.iso.datetime().nullable(),
   durationSeconds: z.number().int().nonnegative().nullable(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export const TimeEntryListSchema = z.array(TimeEntrySchema);

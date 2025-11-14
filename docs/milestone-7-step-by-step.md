@@ -13,9 +13,9 @@
     - [x] `export type ErrorResponse = z.infer<typeof ErrorResponseSchema>`
   - [x] Include array helpers where needed: `export const ProjectListSchema = z.array(ProjectSchema)` (same for others)
 
-- [ ] 2: Add Zod for runtime validation
-  - [ ] Install dependency in `client`: `npm i zod`
-  - [ ] Ensure TypeScript settings are strict enough to avoid `any` leakage
+- [x] 2: Add Zod for runtime validation
+  - [x] Install dependency in `client`: `npm i zod`
+  - [x] Ensure TypeScript settings are strict enough to avoid `any` leakage
 
 - [ ] 3: Configure API base URL (dev/prod)
   - [ ] Add `client/src/api/config.ts`:
