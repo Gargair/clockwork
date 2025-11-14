@@ -10,17 +10,6 @@ export default function Projects(): JSX.Element {
   const hasProjects: boolean = projects.length > 0;
   const isLoading: boolean = status === 'loading';
 
-  const handleRefresh = useCallback(async (): Promise<void> => {
-    await refresh();
-  }, [refresh]);
-
-  const handleCreate = useCallback(
-    async (values: ProjectFormValues): Promise<void> => {
-      await create(values);
-    },
-    [create],
-  );
-
   const handleCancelEdit = useCallback((): void => {
     setEditingProjectId(null);
   }, []);
@@ -65,7 +54,7 @@ export default function Projects(): JSX.Element {
     <section>
       <header>
         <h1>Projects</h1>
-        <button type="button" onClick={handleRefresh} disabled={isLoading}>
+        <button type="button" onClick={refresh} disabled={isLoading}>
           {isLoading ? 'Refreshing…' : 'Refresh'}
         </button>
       </header>
@@ -75,7 +64,7 @@ export default function Projects(): JSX.Element {
 
       <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
         <h2>Create Project</h2>
-        <ProjectForm onSubmit={handleCreate} submitLabel="Create" />
+        <ProjectForm onSubmit={create} submitLabel="Create" />
       </div>
 
       <div>

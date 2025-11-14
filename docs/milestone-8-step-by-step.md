@@ -46,13 +46,13 @@
   - [x] Update `client/src/main.tsx` to add a route:
     - `<Route path="/projects" element={<Projects />} />`
 
-- [ ] 6: Tests (component)
-  - [ ] Add client test tooling (if not present):
+- [x] 6: Tests (component)
+  - [x] Add client test tooling (if not present):
     - Dev dependencies: `vitest`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom`
     - Add scripts in `client/package.json`:
       - `"test": "vitest --run"`, `"test:watch": "vitest"`
     - Minimal `vitest` config to use `jsdom`
-  - [ ] Write tests for `ProjectsPage` (mock API layer):
+  - [x] Write tests for `ProjectsPage` (mock API layer):
     - Renders list from `listProjects()`
     - Creating a project calls `createProject()` and updates UI
     - Updating a project calls `updateProject()` and updates UI
