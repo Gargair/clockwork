@@ -59,10 +59,10 @@
     - Deleting a project calls `deleteProject()` and removes from UI
     - Error paths surface readable messages (and `requestId` if available)
 
-- [ ] 7: Verification steps
-  - [ ] Start the server (per `docs/development.md`); confirm `GET /api/projects` returns 200
-  - [ ] In another terminal: `cd client; npm run dev`
-  - [ ] Navigate to `/projects`:
+- [x] 7: Verification steps
+  - [x] Start the server (per `docs/development.md`); confirm `GET /api/projects` returns 200
+  - [x] In another terminal: `cd client; npm run dev`
+  - [x] Navigate to `/projects`:
     - See list (empty state if none)
     - Create project → appears in list
     - Edit project name/description → changes persist after reload

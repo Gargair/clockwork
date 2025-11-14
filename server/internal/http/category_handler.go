@@ -202,7 +202,7 @@ func categoryToResponse(c domain.Category) CategoryResponse {
 		ParentCategoryID: c.ParentCategoryID,
 		Name:             c.Name,
 		Description:      c.Description,
-		CreatedAt:        c.CreatedAt,
-		UpdatedAt:        c.UpdatedAt,
+		CreatedAt:        c.CreatedAt.UTC(),
+		UpdatedAt:        c.UpdatedAt.UTC(),
 	}
 }
