@@ -33,13 +33,13 @@
       - Parse successful responses with the provided Zod `schema` and return typed data
       - On non-2xx, attempt to parse `ErrorResponse` via `ErrorResponseSchema` and throw an `Error` that includes `code` and `requestId`; if parsing fails, include raw text
 
-- [ ] 5: Add minimal endpoint wrappers (using schemas)
-  - [ ] Add `client/src/api/health.ts`:
-    - [ ] `export async function getHealth(): Promise<{ status: string }>` calling `GET /healthz` and validating with `z.object({ status: z.string() })`
-  - [ ] Prepare modules (stubs) for upcoming milestones with typed signatures (implement later):
-    - [ ] `client/src/api/projects.ts` (list/create/get/update/delete) using `ProjectSchema`/`ProjectListSchema`
-    - [ ] `client/src/api/categories.ts` (list/create/get/update/delete) using `CategorySchema`/`z.array(CategorySchema)`
-    - [ ] `client/src/api/time.ts` (start/stop/getActive/listEntries) using `TimeEntrySchema`/`z.array(TimeEntrySchema)`
+- [x] 5: Add minimal endpoint wrappers (using schemas)
+  - [x] Add `client/src/api/health.ts`:
+    - [x] `export async function getHealth(): Promise<{ status: string }>` calling `GET /healthz` and validating with `z.object({ status: z.string() })`
+  - [x] Prepare modules (stubs) for upcoming milestones with typed signatures (implement later):
+    - [x] `client/src/api/projects.ts` (list/create/get/update/delete) using `ProjectSchema`/`ProjectListSchema`
+    - [x] `client/src/api/categories.ts` (list/create/get/update/delete) using `CategorySchema`/`z.array(CategorySchema)`
+    - [x] `client/src/api/time.ts` (start/stop/getActive/listEntries) using `TimeEntrySchema`/`z.array(TimeEntrySchema)`
 
 - [ ] 6: Introduce an application error boundary
   - [ ] Add `client/src/app/ErrorBoundary.tsx` with an explicit `Props` and `State`:
