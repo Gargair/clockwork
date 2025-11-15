@@ -58,7 +58,7 @@ jobs:
 
       - name: Run Server integration tests
         working-directory: server
-        run: go test ./... -tags=integration -coverprofile="coverage.out"
+        run: go test ./... -tags=integration -coverprofile="coverage.out -json -outputfile=coverage.json"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
