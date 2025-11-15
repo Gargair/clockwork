@@ -40,16 +40,16 @@
       - Converts flat list to a tree, ensures stable ordering (e.g., by `name`)
       - Defensive: gracefully handle orphans if any (should not occur with server constraints)
 
-- [ ] 4: Build UI components
-  - [ ] `client/src/components/CategoryForm.tsx`
+- [x] 4: Build UI components
+  - [x] `client/src/components/CategoryForm.tsx`
     - Props (explicit types):
       - `initial?: { name: string; description?: string | null; parentCategoryId?: string | null }`
       - `onSubmit: (values: { name: string; description?: string | null; parentCategoryId?: string | null }) => void | Promise<void>`
       - `submitLabel?: string`
       - `disabled?: boolean`
       - `parentOptions: Array<{ value: string | null; label: string }>`
-    - Controlled inputs for name, description, and a Parent select (includes “None”).
-  - [ ] `client/src/components/CategoryTree.tsx`
+    - Controlled inputs for name, description, and a Parent select (includes "None").
+  - [x] `client/src/components/CategoryTree.tsx`
     - Props (explicit types):
       - `tree: CategoryNode[]`
       - Callbacks: `onAdd(parentId | null)`, `onEdit(categoryId)`, `onDelete(categoryId)`
