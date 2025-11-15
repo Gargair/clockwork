@@ -25,8 +25,8 @@
     - Prefer explicit parameter and return types for all exported functions.
     - Inputs support `description?: string | null` and `parentCategoryId?: string | null`.
 
-- [ ] 3: Create a reusable `useCategories` hook
-  - [ ] Add `client/src/hooks/useCategories.ts`
+- [x] 3: Create a reusable `useCategories` hook
+  - [x] Add `client/src/hooks/useCategories.ts`
     - Return type (explicit):
       - `status: 'idle' | 'loading' | 'success' | 'error'`
       - `categories: Category[]`
@@ -36,7 +36,7 @@
       - Load list on mount via `listCategories(projectId)`
       - On mutations, call API and then `refresh()` to reconcile
       - Capture `ApiError` details (`code`, `requestId`) when available
-    - [ ] Add `buildCategoryTree(categories: Category[]): CategoryNode[]` pure helper
+    - [x] Add `buildCategoryTree(categories: Category[]): CategoryNode[]` pure helper
       - Converts flat list to a tree, ensures stable ordering (e.g., by `name`)
       - Defensive: gracefully handle orphans if any (should not occur with server constraints)
 
