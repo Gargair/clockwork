@@ -9,17 +9,17 @@
     - `description`: optional string
     - `createdAt`, `updatedAt`: RFC3339 strings
 
-- [ ] 2: Implement typed Categories API client
-  - [ ] Fill in `client/src/api/categories.ts` using the shared HTTP helper and Zod schemas
-    - [ ] `listCategories(projectId: string): Promise<Category[]>`
+- [x] 2: Implement typed Categories API client
+  - [x] Fill in `client/src/api/categories.ts` using the shared HTTP helper and Zod schemas
+    - [x] `listCategories(projectId: string): Promise<Category[]>`
       - GET `/api/projects/{projectId}/categories` with `CategoryListSchema`
-    - [ ] `createCategory(projectId: string, input: CreateCategoryInput): Promise<Category>`
+    - [x] `createCategory(projectId: string, input: CreateCategoryInput): Promise<Category>`
       - POST `/api/projects/{projectId}/categories` with `CategorySchema`
-    - [ ] `getCategory(projectId: string, categoryId: string): Promise<Category>`
+    - [x] `getCategory(projectId: string, categoryId: string): Promise<Category>`
       - GET `/api/projects/{projectId}/categories/{categoryId}` with `CategorySchema`
-    - [ ] `updateCategory(projectId: string, categoryId: string, input: UpdateCategoryInput): Promise<Category>`
+    - [x] `updateCategory(projectId: string, categoryId: string, input: UpdateCategoryInput): Promise<Category>`
       - PATCH `/api/projects/{projectId}/categories/{categoryId}` with `CategorySchema`
-    - [ ] `deleteCategory(projectId: string, categoryId: string): Promise<void>`
+    - [x] `deleteCategory(projectId: string, categoryId: string): Promise<void>`
       - DELETE `/api/projects/{projectId}/categories/{categoryId}` with `z.undefined()`
   - Notes:
     - Prefer explicit parameter and return types for all exported functions.
