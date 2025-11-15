@@ -7,7 +7,7 @@ export interface CategoryFormValues {
 }
 
 export interface CategoryFormProps {
-  initial?: { name: string; description?: string | null; parentCategoryId?: string | null };
+  initial?: { name?: string | null; description?: string | null; parentCategoryId?: string | null };
   onSubmit: (values: CategoryFormValues) => void | Promise<void>;
   submitLabel?: string;
   disabled?: boolean;

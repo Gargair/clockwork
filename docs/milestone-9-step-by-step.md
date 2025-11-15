@@ -59,19 +59,19 @@
       - Actions per node: Add subcategory, Edit, Delete
       - ARIA roles for a11y (`role="tree"`, `role="treeitem"`) and focus handling
 
-- [ ] 5: Categories page and routing
-  - [ ] Add `client/src/pages/Categories.tsx`
+- [x] 5: Categories page and routing
+  - [x] Add `client/src/pages/Categories.tsx`
     - Read `projectId` from route params
     - Use `useCategories(projectId)` to load data; display loading/error states
     - Render:
       - Create form for top-level category (Parent = None)
-      - `CategoryTree` listing with inline edit/delete and “add child” flows
+      - `CategoryTree` listing with inline edit/delete and "add child" flows
     - Display API constraint errors in an alert region:
       - `invalid_parent`, `cross_project_parent`, `category_cycle`
-  - [ ] Update routing in `client/src/main.tsx`:
+  - [x] Update routing in `client/src/main.tsx`:
     - Add `<Route path="/projects/:projectId/categories" element={<Categories />} />`
-  - [ ] Update `client/src/pages/Projects.tsx`:
-    - Add a “Manage categories” link per project row that navigates to `/projects/{id}/categories`
+  - [x] Update `client/src/pages/Projects.tsx`:
+    - Add a "Manage categories" link per project row that navigates to `/projects/{id}/categories`
 
 - [ ] 6: Tests (Vitest + RTL)
   - [ ] `client/src/pages/Categories.test.tsx`
