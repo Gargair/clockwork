@@ -1,8 +1,8 @@
 ## Milestone 9: Step-by-step implementation plan
 
-- [ ] 1: Preparations and validation
-  - [ ] Confirm server endpoints and payloads in `docs/api.md` for categories.
-  - [ ] Ensure `CategorySchema` and `CategoryListSchema` in `client/src/types/schemas.ts` match server responses:
+- [x] 1: Preparations and validation
+  - [x] Confirm server endpoints and payloads in `docs/api.md` for categories.
+  - [x] Ensure `CategorySchema` and `CategoryListSchema` in `client/src/types/schemas.ts` match server responses:
     - `id`, `projectId`: UUID
     - `parentCategoryId`: UUID or `null`
     - `name`: string
