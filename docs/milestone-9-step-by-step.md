@@ -99,14 +99,14 @@
     - Edit and re-parent → updates persist after reload
     - Delete → removed from tree
 
-- [ ] 8: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] `client/src/api/categories.ts` implements typed list/create/get/update/delete with Zod validation
-  - [ ] `useCategories` hook provides typed state and CRUD helpers
-  - [ ] `CategoryForm` provides validated inputs including Parent select
-  - [ ] `CategoryTree` renders hierarchy with core actions
-  - [ ] `CategoriesPage` supports listing, creating, updating, re-parenting, and deleting
-  - [ ] Routing to `/projects/:projectId/categories` exists and works
-  - [ ] Component tests cover happy paths and key error scenarios and pass
+- [x] 8: Acceptance checklist (aligns with Implementation Plan)
+  - [x] `client/src/api/categories.ts` implements typed list/create/get/update/delete with Zod validation
+  - [x] `useCategories` hook provides typed state and CRUD helpers
+  - [x] `CategoryForm` provides validated inputs including Parent select
+  - [x] `CategoryTree` renders hierarchy with core actions
+  - [x] `CategoriesPage` supports listing, creating, updating, re-parenting, and deleting
+  - [x] Routing to `/projects/:projectId/categories` exists and works
+  - [x] Component tests cover happy paths and key error scenarios and pass
 
 ### Notes for M9
 - Prefer explicit types for all exported APIs, hooks, and complex props.
