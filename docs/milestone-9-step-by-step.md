@@ -73,8 +73,8 @@
   - [x] Update `client/src/pages/Projects.tsx`:
     - Add a "Manage categories" link per project row that navigates to `/projects/{id}/categories`
 
-- [ ] 6: Tests (Vitest + RTL)
-  - [ ] `client/src/pages/Categories.test.tsx`
+- [x] 6: Tests (Vitest + RTL)
+  - [x] `client/src/pages/Categories.test.tsx`
     - Mock `../api/categories` like `Projects.test.tsx` does for projects
     - Cover:
       - Listing renders as a tree
@@ -83,10 +83,10 @@
       - Delete category
       - Error paths surface readable messages and `requestId` when available
       - Cycle error (`category_cycle`) shows user-friendly message
-  - [ ] `CategoryTree` component tests
+  - [x] `CategoryTree` component tests
     - Expand/collapse behavior
     - Actions invoke callbacks with correct IDs
-  - [ ] `buildCategoryTree` helper tests
+  - [x] `buildCategoryTree` helper tests
     - Acyclic nesting builds correctly
     - Orphan nodes are handled defensively (if encountered)
 

@@ -4,12 +4,27 @@ import userEvent from '@testing-library/user-event';
 import type { Project } from '../types';
 import Projects from './Projects';
 import { ApiError } from '../api/http';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 // Mock the API layer used by the hook
 const listProjectsMock = vi.fn();
 const createProjectMock = vi.fn();
 const updateProjectMock = vi.fn();
 const deleteProjectMock = vi.fn();
+
+
+function renderWithRouter() {
+  return render(
+    <MemoryRouter basename=""
+      initialEntries={[{ pathname: `/projects` }]}
+      initialIndex={0}
+    >
+      <Routes>
+        <Route path="/projects" element={<Projects />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+}
 
 vi.mock('../api/projects', () => ({
   listProjects: (...args: unknown[]) => listProjectsMock(...args),
@@ -45,7 +60,7 @@ describe('Projects page', { concurrent: false }, () => {
     ];
     listProjectsMock.mockResolvedValue(projects);
 
-    render(<Projects />);
+    renderWithRouter();
 
     // Names appear
     expect(await screen.findByText('Alpha')).toBeInTheDocument();
@@ -71,7 +86,7 @@ describe('Projects page', { concurrent: false }, () => {
       },
     );
 
-    render(<Projects />);
+    renderWithRouter();
 
     const user = userEvent.setup();
     // Create form (only one at start)
@@ -113,7 +128,7 @@ describe('Projects page', { concurrent: false }, () => {
     );
 
     const user = userEvent.setup();
-    render(<Projects />);
+    renderWithRouter();
     
     // Start edit
     await user.click(await screen.findByRole('button', { name: 'Edit' }));
@@ -148,7 +163,7 @@ describe('Projects page', { concurrent: false }, () => {
     });
 
     const user = userEvent.setup();
-    render(<Projects />);
+    renderWithRouter();
 
     // Delete
     await user.click(await screen.findByRole('button', { name: 'Delete' }));
@@ -160,7 +175,7 @@ describe('Projects page', { concurrent: false }, () => {
     const err = new ApiError('internal: oops', 500, { code: 'internal', requestId: 'req-abc' });
     listProjectsMock.mockRejectedValue(err);
 
-    render(<Projects />);
+    renderWithRouter();
 
     const alert = await screen.findByRole('alert');
     expect(within(alert).getByText(/Error:/i)).toBeInTheDocument();

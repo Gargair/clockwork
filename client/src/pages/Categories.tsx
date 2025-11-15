@@ -24,7 +24,7 @@ export default function Categories(): JSX.Element {
   return <CategoryList projectId={projectId} />;
 }
 
-function CategoryList({ projectId }: Readonly<{ projectId: string }>): JSX.Element {
+export function CategoryList({ projectId }: Readonly<{ projectId: string }>): JSX.Element {
   const { status, categories, error, refresh, create, update, remove } = useCategories(projectId);
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [addingChildToId, setAddingChildToId] = useState<string | null>(null);
