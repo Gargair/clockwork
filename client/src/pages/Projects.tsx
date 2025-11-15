@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState, type JSX } from 'react';
+import { Link } from 'react-router-dom';
 import type { Project } from '../types';
 import { useProjects, type UseProjectsError } from '../hooks/useProjects';
 import ProjectForm, { type ProjectFormValues } from '../components/ProjectForm';
@@ -112,6 +113,7 @@ export default function Projects(): JSX.Element {
                         <td>{formatDate(p.createdAt)}</td>
                         <td>{formatDate(p.updatedAt)}</td>
                         <td>
+                          <Link to={`/projects/${p.id}/categories`}>Manage categories</Link>
                           <button type="button" onClick={startEdit}>
                             Edit
                           </button>

@@ -32,6 +32,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -58,7 +61,7 @@ jobs:
 
       - name: Run Server integration tests
         working-directory: server
-        run: go test ./... -tags=integration -coverprofile="coverage.out"
+        run: go test ./... -tags=integration -coverprofile="coverage.out" -json > "coverage.json"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

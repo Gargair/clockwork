@@ -1,4 +1,6 @@
-import type { Category } from '../types';
+import { z } from 'zod';
+import { requestJson } from './http';
+import { type Category, CategorySchema, CategoryListSchema } from '../types';
 
 export interface CreateCategoryInput {
   name: string;
@@ -6,16 +8,31 @@ export interface CreateCategoryInput {
   parentCategoryId?: string | null;
 }
 
-export async function listCategories(_projectId: string): Promise<Category[]> {
-  throw new Error('Not implemented');
+export async function listCategories(projectId: string): Promise<Category[]> {
+  return requestJson(
+    `/api/projects/${projectId}/categories`,
+    { method: 'GET' },
+    CategoryListSchema,
+  );
 }
 
-export async function createCategory(_projectId: string, _input: CreateCategoryInput): Promise<Category> {
-  throw new Error('Not implemented');
+export async function createCategory(
+  projectId: string,
+  input: CreateCategoryInput,
+): Promise<Category> {
+  return requestJson(
+    `/api/projects/${projectId}/categories`,
+    { method: 'POST', body: input },
+    CategorySchema,
+  );
 }
 
-export async function getCategory(_projectId: string, _categoryId: string): Promise<Category> {
-  throw new Error('Not implemented');
+export async function getCategory(projectId: string, categoryId: string): Promise<Category> {
+  return requestJson(
+    `/api/projects/${projectId}/categories/${categoryId}`,
+    { method: 'GET' },
+    CategorySchema,
+  );
 }
 
 export interface UpdateCategoryInput {
@@ -25,15 +42,21 @@ export interface UpdateCategoryInput {
 }
 
 export async function updateCategory(
-  _projectId: string,
-  _categoryId: string,
-  _input: UpdateCategoryInput,
+  projectId: string,
+  categoryId: string,
+  input: UpdateCategoryInput,
 ): Promise<Category> {
-  throw new Error('Not implemented');
+  return requestJson(
+    `/api/projects/${projectId}/categories/${categoryId}`,
+    { method: 'PATCH', body: input },
+    CategorySchema,
+  );
 }
 
-export async function deleteCategory(_projectId: string, _categoryId: string): Promise<void> {
-  throw new Error('Not implemented');
+export async function deleteCategory(projectId: string, categoryId: string): Promise<void> {
+  return requestJson(
+    `/api/projects/${projectId}/categories/${categoryId}`,
+    { method: 'DELETE' },
+    z.undefined(),
+  );
 }
-
-

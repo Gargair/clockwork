@@ -97,6 +97,10 @@ See the detailed guide for this milestone: [milestone-8-step-by-step.md](milesto
   - `CategoriesPage`, `CategoryTree`, `useCategories` hook
 - **Acceptance**: Users manage nested categories; constraints respected; tests pass.
 
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-9-step-by-step.md](milestone-9-step-by-step.md).
+
 ## Milestone 10: Time tracking feature (client)
 - **Scope**: Start/Stop controls, active timer, entries list/filters.
 - **Deliverables**:
