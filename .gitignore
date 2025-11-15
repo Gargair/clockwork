@@ -29,6 +29,7 @@ server/bin/
 server/tmp/
 coverage.out
 coverage.html
+coverage.json
 *.test
 *.exe
 *.exe~
