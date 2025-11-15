@@ -90,9 +90,9 @@
     - Acyclic nesting builds correctly
     - Orphan nodes are handled defensively (if encountered)
 
-- [ ] 7: Verification steps
-  - [ ] Start the server; verify `GET /api/projects/{projectId}/categories` returns 200 with data
-  - [ ] `cd client; npm run dev`; navigate to `/projects/{id}/categories`
+- [x] 7: Verification steps
+  - [x] Start the server; verify `GET /api/projects/{projectId}/categories` returns 200 with data
+  - [x] `cd client; npm run dev`; navigate to `/projects/{id}/categories`
     - See tree (empty state if none)
     - Create top-level category → appears
     - Add child category → nested correctly
