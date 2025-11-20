@@ -98,12 +98,12 @@
   - [x] Update `client/src/app/App.tsx`:
     - Add a "Dashboard" link in navigation
 
-- [ ] 7: Enhance active timer polling (optional but recommended)
-  - [ ] In `useActiveTimer`, add optional polling:
+- [x] 7: Enhance active timer polling (optional but recommended)
+  - [x] In `useActiveTimer`, add optional polling:
     - Use `setInterval` to call `getActiveTimer()` every 5-10 seconds when component is mounted
     - Clear interval on unmount
     - Optionally pause polling when `activeTimer` is null (no active timer)
-  - [ ] Update elapsed time display in `TimerControls` to refresh every second when active
+  - [x] Update elapsed time display in `TimerControls` to refresh every second when active
 
 - [ ] 8: Tests (Vitest + RTL)
   - [ ] `client/src/pages/Dashboard.test.tsx`

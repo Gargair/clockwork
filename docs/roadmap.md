@@ -11,3 +11,4 @@
 
 - Adopt Tailwind CSS for styling to standardize design tokens, speed up UI development, and reduce custom CSS surface area. Gradually migrate existing styles, starting with layout and common components.
 - Replace native `Date` usage with a time library (e.g., `date-fns`, `dayjs`, or `luxon`) for better date handling, timezone support, and formatting in client components (`TimerControls.tsx`, `EntryList.tsx`, and related hooks)
+- Replace state handling through hooks with mobX and proper observables
