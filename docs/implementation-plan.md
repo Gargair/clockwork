@@ -3,6 +3,7 @@
 This plan translates the MVP scope, architecture, domain model, API, and deployment docs into concrete milestones with clear acceptance criteria and sequencing.
 
 ## Milestone 1: Repository scaffolding and tooling
+
 - **Scope**: Establish repo layout, initialize Go and Node projects, baseline scripts and linters.
 - **Deliverables**:
   - `client/` Vite + React scaffold; router and basic layout
@@ -15,6 +16,7 @@ This plan translates the MVP scope, architecture, domain model, API, and deploym
 See the detailed guide for this milestone: [milestone-1-step-by-step.md](milestone-1-step-by-step.md).
 
 ## Milestone 2: Database schema and migrations
+
 - **Scope**: Implement PostgreSQL schema and migration tooling.
 - **Deliverables**:
   - Migrations for `PROJECT`, `CATEGORY`, `TIME_ENTRY` with constraints and indexes (per domain model)
@@ -26,6 +28,7 @@ See the detailed guide for this milestone: [milestone-1-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-2-step-by-step.md](milestone-2-step-by-step.md).
 
 ## Milestone 3: Server foundations
+
 - **Scope**: HTTP server setup, middleware, static file serving, health check.
 - **Deliverables**:
   - `internal/http` router, logging, recover, CORS, request-id; `/healthz`
@@ -37,6 +40,7 @@ See the detailed guide for this milestone: [milestone-2-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-3-step-by-step.md](milestone-3-step-by-step.md).
 
 ## Milestone 4: Repository interfaces and Postgres implementations
+
 - **Scope**: Define repository interfaces and implement PostgreSQL adapters.
 - **Deliverables**:
   - `ProjectRepository`, `CategoryRepository`, `TimeEntryRepository` interfaces
@@ -48,6 +52,7 @@ See the detailed guide for this milestone: [milestone-3-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-4-step-by-step.md](milestone-4-step-by-step.md).
 
 ## Milestone 5: Domain services with invariants
+
 - **Scope**: Implement `ProjectService`, `CategoryService`, `TimeTrackingService` with rules.
 - **Deliverables**:
   - Enforce category tree constraints and single-active-timer invariant
@@ -59,6 +64,7 @@ See the detailed guide for this milestone: [milestone-4-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-5-step-by-step.md](milestone-5-step-by-step.md).
 
 ## Milestone 6: HTTP API handlers
+
 - **Scope**: Implement REST endpoints per API sketch with validation and error handling.
 - **Deliverables**:
   - `ProjectHandler`, `CategoryHandler`, `TimeHandler`
@@ -70,6 +76,7 @@ See the detailed guide for this milestone: [milestone-5-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-6-step-by-step.md](milestone-6-step-by-step.md).
 
 ## Milestone 7: Client foundations
+
 - **Scope**: Establish API client, shared types, app shell.
 - **Deliverables**:
   - `client/src/api` HTTP client; typed endpoint wrappers
@@ -82,6 +89,7 @@ See the detailed guide for this milestone: [milestone-6-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-7-step-by-step.md](milestone-7-step-by-step.md).
 
 ## Milestone 8: Projects feature (client)
+
 - **Scope**: CRUD for projects.
 - **Deliverables**:
   - `ProjectsPage`, `ProjectForm`, `useProjects` hook
@@ -92,6 +100,7 @@ See the detailed guide for this milestone: [milestone-7-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-8-step-by-step.md](milestone-8-step-by-step.md).
 
 ## Milestone 9: Categories feature (client)
+
 - **Scope**: Hierarchical categories per project.
 - **Deliverables**:
   - `CategoriesPage`, `CategoryTree`, `useCategories` hook
@@ -102,12 +111,18 @@ See the detailed guide for this milestone: [milestone-8-step-by-step.md](milesto
 See the detailed guide for this milestone: [milestone-9-step-by-step.md](milestone-9-step-by-step.md).
 
 ## Milestone 10: Time tracking feature (client)
+
 - **Scope**: Start/Stop controls, active timer, entries list/filters.
 - **Deliverables**:
   - `DashboardPage`, `TimerControls`, `EntryList`, `useActiveTimer`, `useTimeEntries`
 - **Acceptance**: Single active timer enforced end‑to‑end; filtering works; tests pass.
 
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-10-step-by-step.md](milestone-10-step-by-step.md).
+
 ## Milestone 11: Containerization and local orchestration
+
 - **Scope**: Build images and compose for local dev.
 - **Deliverables**:
   - Multi-stage Dockerfile bundling Go server and built SPA
@@ -115,6 +130,7 @@ See the detailed guide for this milestone: [milestone-9-step-by-step.md](milesto
 - **Acceptance**: `docker compose up` runs full app; migrations applied automatically or via command.
 
 ## Milestone 12: Kubernetes deployment (dev/prod)
+
 - **Scope**: Manifests/Helm, configuration, secrets, migration strategy.
 - **Deliverables**:
   - `deploy/` with Deployment, Service, ConfigMap/Secret; migration Job or init strategy
@@ -122,6 +138,7 @@ See the detailed guide for this milestone: [milestone-9-step-by-step.md](milesto
 - **Acceptance**: App deploys to a dev cluster; health checks pass; DB connectivity verified.
 
 ## Milestone 13: Observability and security hardening (MVP scope)
+
 - **Scope**: Structured logs, basic metrics (optional), MVP security guardrails.
 - **Deliverables**:
   - Correlated request/response logging; basic metrics endpoint if chosen
@@ -129,6 +146,7 @@ See the detailed guide for this milestone: [milestone-9-step-by-step.md](milesto
 - **Acceptance**: Logs structured and correlated; basic dashboards/alerts optionally scaffolded.
 
 ## Milestone 14: Testing maturity and docs
+
 - **Scope**: Expand automated tests and developer documentation.
 - **Deliverables**:
   - Server unit/integration tests; client component tests; smoke e2e
@@ -136,12 +154,12 @@ See the detailed guide for this milestone: [milestone-9-step-by-step.md](milesto
 - **Acceptance**: CI runs all test suites; onboarding achievable in under 15 minutes.
 
 ## Dependencies and sequencing
+
 - Repos/tooling → DB/migrations → Server foundations → Repositories → Services → Handlers → Client foundations → Client features → Containerization → Kubernetes → Observability/Security → Testing/Docs.
 - After server endpoints stabilize, client features (Projects/Categories/Time) can proceed in parallel.
 
 ## Risks and notes
+
 - Single-active-timer correctness depends on transactional semantics; add tests for races.
 - Category tree operations can be complex; keep invariants in services, not handlers.
 - Serving SPA from the Go image simplifies deployment; confirm asset pipeline early.
-
-
