@@ -1,12 +1,12 @@
 ## Milestone 10: Step-by-step implementation plan
 
-- [ ] 1: Preparations and validation
-  - [ ] Confirm server endpoints and payloads in `docs/api.md` for time tracking:
+- [x] 1: Preparations and validation
+  - [x] Confirm server endpoints and payloads in `docs/api.md` for time tracking:
     - `POST /api/time/start` with `{ categoryId: string }` → `201 Created` returns `TimeEntryResponse`
     - `POST /api/time/stop` → `200 OK` returns `TimeEntryResponse` or `409` if no active timer
     - `GET /api/time/active` → `200 OK` returns `TimeEntryResponse | null`
     - `GET /api/time/entries?categoryId=&from=&to=` → `200 OK` returns `TimeEntryResponse[]`
-  - [ ] Ensure `TimeEntrySchema` and `TimeEntryListSchema` in `client/src/types/schemas.ts` match server responses:
+  - [x] Ensure `TimeEntrySchema` and `TimeEntryListSchema` in `client/src/types/schemas.ts` match server responses:
     - `id`, `categoryId`: UUID
     - `startedAt`: RFC3339 string
     - `stoppedAt`: RFC3339 string or `null`
