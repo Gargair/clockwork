@@ -105,8 +105,8 @@
     - Optionally pause polling when `activeTimer` is null (no active timer)
   - [x] Update elapsed time display in `TimerControls` to refresh every second when active
 
-- [ ] 8: Tests (Vitest + RTL)
-  - [ ] `client/src/pages/Dashboard.test.tsx`
+- [x] 8: Tests (Vitest + RTL)
+  - [x] `client/src/pages/Dashboard.test.tsx`
     - Mock `../api/time` and `../api/categories` (or `useCategories`)
     - Cover:
       - Renders timer controls and entry list
@@ -116,22 +116,22 @@
       - Filtering entries by date range calls `listEntries()` with correct params
       - Error paths surface readable messages and `requestId` when available
       - `no_active_timer` error shows user-friendly message
-  - [ ] `TimerControls` component tests
+  - [x] `TimerControls` component tests
     - Renders start controls when no active timer
     - Renders stop controls with elapsed time when active
     - Start/stop actions invoke callbacks correctly
     - Loading state disables controls
-  - [ ] `EntryList` component tests
+  - [x] `EntryList` component tests
     - Renders entries list
     - Shows empty state when no entries
     - Formats durations correctly
     - Filter inputs call `onFilterChange` with correct values
-  - [ ] `useActiveTimer` hook tests
+  - [x] `useActiveTimer` hook tests
     - Loads active timer on mount
     - `start()` calls API and refreshes
     - `stop()` calls API and refreshes
     - Error handling captures `ApiError` details
-  - [ ] `useTimeEntries` hook tests
+  - [x] `useTimeEntries` hook tests
     - `load()` calls API with correct params
     - Handles query param validation errors
     - Error handling captures `ApiError` details
