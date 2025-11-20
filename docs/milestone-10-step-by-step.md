@@ -39,8 +39,8 @@
       - Capture `ApiError` details (`code`, `requestId`) when present
       - Optionally poll `getActiveTimer()` periodically (e.g., every 5-10 seconds) to keep UI in sync, or rely on manual refresh
 
-- [ ] 4: Create `useTimeEntries` hook
-  - [ ] Add `client/src/hooks/useTimeEntries.ts`
+- [x] 4: Create `useTimeEntries` hook
+  - [x] Add `client/src/hooks/useTimeEntries.ts`
     - Return type (explicit):
       - `status: 'idle' | 'loading' | 'success' | 'error'`
       - `entries: TimeEntry[]`
