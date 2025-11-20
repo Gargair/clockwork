@@ -25,8 +25,8 @@
     - Keep all function parameters and return types explicit. Do not rely on inference for exported functions.
     - Handle `409 no_active_timer` error code for `stopTimer()`.
 
-- [ ] 3: Create `useActiveTimer` hook
-  - [ ] Add `client/src/hooks/useActiveTimer.ts`
+- [x] 3: Create `useActiveTimer` hook
+  - [x] Add `client/src/hooks/useActiveTimer.ts`
     - Return type (explicit):
       - `status: 'idle' | 'loading' | 'success' | 'error'`
       - `activeTimer: TimeEntry | null`
