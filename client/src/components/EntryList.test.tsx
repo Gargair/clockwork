@@ -136,7 +136,7 @@ describe('EntryList component', { concurrent: false }, () => {
     expect(onFilterChange).toHaveBeenCalled();
     const calls = onFilterChange.mock.calls;
     expect(calls.length).toBeGreaterThan(0);
-    const lastCall = calls[calls.length - 1]?.[0];
+    const lastCall = calls.at(-1)?.[0];
     expect(lastCall).toHaveProperty('from');
     expect(lastCall).toHaveProperty('to');
     if (lastCall?.from) {
