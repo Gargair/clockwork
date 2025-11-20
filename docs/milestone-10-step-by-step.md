@@ -81,8 +81,8 @@
       - Format durations in human-readable format (e.g., "1h 23m" or "45s")
       - Display `error` message in an alert region if present
 
-- [ ] 6: Create Dashboard page and routing
-  - [ ] Add `client/src/pages/Dashboard.tsx`
+- [x] 6: Create Dashboard page and routing
+  - [x] Add `client/src/pages/Dashboard.tsx`
     - Use `useActiveTimer()` to manage active timer state
     - Use `useTimeEntries()` to load entries (requires category selection or default category)
     - Fetch categories from `useCategories()` or a simplified category list API call
@@ -93,9 +93,9 @@
     - Display API constraint errors in an alert region:
       - `no_active_timer` when stopping without active timer
       - `invalid_id`, `invalid_time`, `invalid_time_range` for entry listing
-  - [ ] Update routing in `client/src/main.tsx`:
+  - [x] Update routing in `client/src/main.tsx`:
     - Add `<Route path="/dashboard" element={<Dashboard />} />`
-  - [ ] Update `client/src/app/App.tsx`:
+  - [x] Update `client/src/app/App.tsx`:
     - Add a "Dashboard" link in navigation
 
 - [ ] 7: Enhance active timer polling (optional but recommended)
