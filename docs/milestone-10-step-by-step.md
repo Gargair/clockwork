@@ -136,9 +136,9 @@
     - Handles query param validation errors
     - Error handling captures `ApiError` details
 
-- [ ] 9: Verification steps
-  - [ ] Start the server; verify time tracking endpoints return expected responses
-  - [ ] `cd client; npm run dev`; navigate to `/dashboard`
+- [x] 9: Verification steps
+  - [x] Start the server; verify time tracking endpoints return expected responses
+  - [x] `cd client; npm run dev`; navigate to `/dashboard`
     - See timer controls (start form if no active timer)
     - Start timer for a category → active timer displays with elapsed time
     - Stop timer → active state clears, entry appears in list
