@@ -13,12 +13,12 @@
     - `durationSeconds`: integer or `null`
     - `createdAt`, `updatedAt`: RFC3339 strings
 
-- [ ] 2: Implement typed Time API client
-  - [ ] Fill in `client/src/api/time.ts` using the shared HTTP helper and Zod schemas
-    - [ ] `startTimer(categoryId: string): Promise<TimeEntry>` → `POST /api/time/start` with `TimeEntrySchema`
-    - [ ] `stopTimer(): Promise<TimeEntry>` → `POST /api/time/stop` with `TimeEntrySchema`
-    - [ ] `getActiveTimer(): Promise<TimeEntry | null>` → `GET /api/time/active` with `z.union([TimeEntrySchema, z.null()])`
-    - [ ] `listEntries(params: ListEntriesParams): Promise<TimeEntry[]>` → `GET /api/time/entries` with query params and `TimeEntryListSchema`
+- [x] 2: Implement typed Time API client
+  - [x] Fill in `client/src/api/time.ts` using the shared HTTP helper and Zod schemas
+    - [x] `startTimer(categoryId: string): Promise<TimeEntry>` → `POST /api/time/start` with `TimeEntrySchema`
+    - [x] `stopTimer(): Promise<TimeEntry>` → `POST /api/time/stop` with `TimeEntrySchema`
+    - [x] `getActiveTimer(): Promise<TimeEntry | null>` → `GET /api/time/active` with `z.union([TimeEntrySchema, z.null()])`
+    - [x] `listEntries(params: ListEntriesParams): Promise<TimeEntry[]>` → `GET /api/time/entries` with query params and `TimeEntryListSchema`
   - Notes:
     - Use `requestJson<T>()` from `client/src/api/http.ts` for all calls and validate responses against `TimeEntrySchema`/`TimeEntryListSchema`.
     - For `listEntries`, build query string from `params` (categoryId required, from/to optional as RFC3339 strings).
