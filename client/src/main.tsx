@@ -6,6 +6,7 @@ import ErrorBoundary from './app/ErrorBoundary.tsx';
 import Home from './pages/Home.tsx';
 import Projects from './pages/Projects.tsx';
 import Categories from './pages/Categories.tsx';
+import Dashboard from './pages/Dashboard.tsx';
 import './style.css';
 
 const root = document.getElementById('app');
@@ -22,6 +23,7 @@ ReactDOM.createRoot(root).render(
             <Route index element={<Home />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:projectId/categories" element={<Categories />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>

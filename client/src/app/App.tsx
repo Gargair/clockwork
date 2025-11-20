@@ -9,6 +9,7 @@ export default function App(): JSX.Element {
           <strong>Clockwork</strong>
           <Link to="/">Home</Link>
           <Link to="/projects">Projects</Link>
+          <Link to="/dashboard">Dashboard</Link>
         </nav>
       </header>
       <main>

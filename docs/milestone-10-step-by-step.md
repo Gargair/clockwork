@@ -1,0 +1,167 @@
+## Milestone 10: Step-by-step implementation plan
+
+- [x] 1: Preparations and validation
+  - [x] Confirm server endpoints and payloads in `docs/api.md` for time tracking:
+    - `POST /api/time/start` with `{ categoryId: string }` → `201 Created` returns `TimeEntryResponse`
+    - `POST /api/time/stop` → `200 OK` returns `TimeEntryResponse` or `409` if no active timer
+    - `GET /api/time/active` → `200 OK` returns `TimeEntryResponse | null`
+    - `GET /api/time/entries?categoryId=&from=&to=` → `200 OK` returns `TimeEntryResponse[]`
+  - [x] Ensure `TimeEntrySchema` and `TimeEntryListSchema` in `client/src/types/schemas.ts` match server responses:
+    - `id`, `categoryId`: UUID
+    - `startedAt`: RFC3339 string
+    - `stoppedAt`: RFC3339 string or `null`
+    - `durationSeconds`: integer or `null`
+    - `createdAt`, `updatedAt`: RFC3339 strings
+
+- [x] 2: Implement typed Time API client
+  - [x] Fill in `client/src/api/time.ts` using the shared HTTP helper and Zod schemas
+    - [x] `startTimer(categoryId: string): Promise<TimeEntry>` → `POST /api/time/start` with `TimeEntrySchema`
+    - [x] `stopTimer(): Promise<TimeEntry>` → `POST /api/time/stop` with `TimeEntrySchema`
+    - [x] `getActiveTimer(): Promise<TimeEntry | null>` → `GET /api/time/active` with `z.union([TimeEntrySchema, z.null()])`
+    - [x] `listEntries(params: ListEntriesParams): Promise<TimeEntry[]>` → `GET /api/time/entries` with query params and `TimeEntryListSchema`
+  - Notes:
+    - Use `requestJson<T>()` from `client/src/api/http.ts` for all calls and validate responses against `TimeEntrySchema`/`TimeEntryListSchema`.
+    - For `listEntries`, build query string from `params` (categoryId required, from/to optional as RFC3339 strings).
+    - Keep all function parameters and return types explicit. Do not rely on inference for exported functions.
+    - Handle `409 no_active_timer` error code for `stopTimer()`.
+
+- [x] 3: Create `useActiveTimer` hook
+  - [x] Add `client/src/hooks/useActiveTimer.ts`
+    - Return type (explicit):
+      - `status: 'idle' | 'loading' | 'success' | 'error'`
+      - `activeTimer: TimeEntry | null`
+      - `error: { message: string; code?: string; requestId?: string } | null`
+      - Methods: `refresh()`, `start(categoryId: string)`, `stop()`
+    - Behavior:
+      - Load active timer on mount via `getActiveTimer()`
+      - `start()` calls `startTimer()`, then `refresh()` to reconcile (server enforces single active timer)
+      - `stop()` calls `stopTimer()`, then `refresh()` to clear active state
+      - Capture `ApiError` details (`code`, `requestId`) when present
+      - Optionally poll `getActiveTimer()` periodically (e.g., every 5-10 seconds) to keep UI in sync, or rely on manual refresh
+
+- [x] 4: Create `useTimeEntries` hook
+  - [x] Add `client/src/hooks/useTimeEntries.ts`
+    - Return type (explicit):
+      - `status: 'idle' | 'loading' | 'success' | 'error'`
+      - `entries: TimeEntry[]`
+      - `error: { message: string; code?: string; requestId?: string } | null`
+      - Methods: `refresh()`, `load(params: ListEntriesParams)`
+    - Behavior:
+      - Accept `categoryId` (required) and optional `from`/`to` (RFC3339 strings) as params
+      - Load entries via `listEntries(params)` when `load()` is called or params change
+      - Capture `ApiError` details (`code`, `requestId`) when present
+      - Handle `400 invalid_id | invalid_time | invalid_time_range` errors
+
+- [x] 5: Build UI components
+  - [x] `client/src/components/TimerControls.tsx`
+    - Props (explicit types):
+      - `activeTimer: TimeEntry | null`
+      - `categories: Array<{ id: string; name: string }>` (for category selector when starting)
+      - `onStart: (categoryId: string) => void | Promise<void>`
+      - `onStop: () => void | Promise<void>`
+      - `loading?: boolean`
+      - `error?: string | null`
+    - Behavior:
+      - If no active timer: show category selector and "Start" button
+      - If active timer: show active timer info (category name, elapsed time), "Stop" button
+      - Display elapsed time (calculate from `startedAt` to now if `stoppedAt` is null)
+      - Disable controls when `loading` is true
+      - Display `error` message in an alert region if present
+  - [x] `client/src/components/EntryList.tsx`
+    - Props (explicit types):
+      - `entries: TimeEntry[]`
+      - `categories: Array<{ id: string; name: string }>` (for lookup)
+      - `loading?: boolean`
+      - `error?: string | null`
+      - `onFilterChange?: (params: { from?: string; to?: string }) => void`
+    - Behavior:
+      - Render list of entries (category name, start/stop times, duration)
+      - Show empty state when no entries
+      - Optional: date range filter inputs (from/to) that call `onFilterChange`
+      - Format durations in human-readable format (e.g., "1h 23m" or "45s")
+      - Display `error` message in an alert region if present
+
+- [x] 6: Create Dashboard page and routing
+  - [x] Add `client/src/pages/Dashboard.tsx`
+    - Use `useActiveTimer()` to manage active timer state
+    - Use `useTimeEntries()` to load entries (requires category selection or default category)
+    - Fetch categories from `useCategories()` or a simplified category list API call
+    - Render:
+      - `TimerControls` for start/stop
+      - `EntryList` for historical entries
+      - Loading/error states for both hooks
+    - Display API constraint errors in an alert region:
+      - `no_active_timer` when stopping without active timer
+      - `invalid_id`, `invalid_time`, `invalid_time_range` for entry listing
+  - [x] Update routing in `client/src/main.tsx`:
+    - Add `<Route path="/dashboard" element={<Dashboard />} />`
+  - [x] Update `client/src/app/App.tsx`:
+    - Add a "Dashboard" link in navigation
+
+- [x] 7: Enhance active timer polling (optional but recommended)
+  - [x] In `useActiveTimer`, add optional polling:
+    - Use `setInterval` to call `getActiveTimer()` every 5-10 seconds when component is mounted
+    - Clear interval on unmount
+    - Optionally pause polling when `activeTimer` is null (no active timer)
+  - [x] Update elapsed time display in `TimerControls` to refresh every second when active
+
+- [x] 8: Tests (Vitest + RTL)
+  - [x] `client/src/pages/Dashboard.test.tsx`
+    - Mock `../api/time` and `../api/categories` (or `useCategories`)
+    - Cover:
+      - Renders timer controls and entry list
+      - Starting a timer calls `startTimer()` and updates UI
+      - Stopping a timer calls `stopTimer()` and clears active state
+      - Entry list displays entries with formatted durations
+      - Filtering entries by date range calls `listEntries()` with correct params
+      - Error paths surface readable messages and `requestId` when available
+      - `no_active_timer` error shows user-friendly message
+  - [x] `TimerControls` component tests
+    - Renders start controls when no active timer
+    - Renders stop controls with elapsed time when active
+    - Start/stop actions invoke callbacks correctly
+    - Loading state disables controls
+  - [x] `EntryList` component tests
+    - Renders entries list
+    - Shows empty state when no entries
+    - Formats durations correctly
+    - Filter inputs call `onFilterChange` with correct values
+  - [x] `useActiveTimer` hook tests
+    - Loads active timer on mount
+    - `start()` calls API and refreshes
+    - `stop()` calls API and refreshes
+    - Error handling captures `ApiError` details
+  - [x] `useTimeEntries` hook tests
+    - `load()` calls API with correct params
+    - Handles query param validation errors
+    - Error handling captures `ApiError` details
+
+- [x] 9: Verification steps
+  - [x] Start the server; verify time tracking endpoints return expected responses
+  - [x] `cd client; npm run dev`; navigate to `/dashboard`
+    - See timer controls (start form if no active timer)
+    - Start timer for a category → active timer displays with elapsed time
+    - Stop timer → active state clears, entry appears in list
+    - View entries list (may need to select a category first)
+    - Filter entries by date range → list updates
+    - Verify single active timer enforcement: starting a new timer while one is active should stop the previous one (server behavior)
+
+- [x] 10: Acceptance checklist (aligns with Implementation Plan)
+  - [x] `client/src/api/time.ts` implements typed start/stop/getActive/listEntries with Zod validation
+  - [x] `useActiveTimer` hook provides typed state and start/stop helpers
+  - [x] `useTimeEntries` hook provides typed state and filtering helpers
+  - [x] `TimerControls` provides start/stop UI with elapsed time display
+  - [x] `EntryList` displays entries with formatted durations and optional filtering
+  - [x] `DashboardPage` integrates timer controls and entry list
+  - [x] Routing to `/dashboard` exists and works
+  - [x] Single active timer enforced end-to-end (server enforces, client reflects state correctly)
+  - [x] Filtering works (date range filters applied to entry list)
+  - [x] Component tests cover happy paths and key error scenarios and pass
+
+### Notes for M10
+- Prefer explicit types for all exported APIs, hooks, and complex props.
+- Keep the UI accessible; use appropriate ARIA roles and labels for timer controls.
+- Surface server error codes directly to help correlate with logs, similar to Projects and Categories.
+- Elapsed time calculation should handle timezone correctly (use `Date` objects from RFC3339 strings).
+- Consider adding a visual indicator (e.g., pulsing dot) when timer is active to improve UX.
+- The single-active-timer invariant is enforced by the server; the client should handle the case where starting a new timer automatically stops the previous one (server returns the new active entry).
