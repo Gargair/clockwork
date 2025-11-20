@@ -52,8 +52,8 @@
       - Capture `ApiError` details (`code`, `requestId`) when present
       - Handle `400 invalid_id | invalid_time | invalid_time_range` errors
 
-- [ ] 5: Build UI components
-  - [ ] `client/src/components/TimerControls.tsx`
+- [x] 5: Build UI components
+  - [x] `client/src/components/TimerControls.tsx`
     - Props (explicit types):
       - `activeTimer: TimeEntry | null`
       - `categories: Array<{ id: string; name: string }>` (for category selector when starting)
@@ -67,7 +67,7 @@
       - Display elapsed time (calculate from `startedAt` to now if `stoppedAt` is null)
       - Disable controls when `loading` is true
       - Display `error` message in an alert region if present
-  - [ ] `client/src/components/EntryList.tsx`
+  - [x] `client/src/components/EntryList.tsx`
     - Props (explicit types):
       - `entries: TimeEntry[]`
       - `categories: Array<{ id: string; name: string }>` (for lookup)
@@ -165,4 +165,3 @@
 - Elapsed time calculation should handle timezone correctly (use `Date` objects from RFC3339 strings).
 - Consider adding a visual indicator (e.g., pulsing dot) when timer is active to improve UX.
 - The single-active-timer invariant is enforced by the server; the client should handle the case where starting a new timer automatically stops the previous one (server returns the new active entry).
-
