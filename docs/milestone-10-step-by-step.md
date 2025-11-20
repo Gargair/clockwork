@@ -146,17 +146,17 @@
     - Filter entries by date range → list updates
     - Verify single active timer enforcement: starting a new timer while one is active should stop the previous one (server behavior)
 
-- [ ] 10: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] `client/src/api/time.ts` implements typed start/stop/getActive/listEntries with Zod validation
-  - [ ] `useActiveTimer` hook provides typed state and start/stop helpers
-  - [ ] `useTimeEntries` hook provides typed state and filtering helpers
-  - [ ] `TimerControls` provides start/stop UI with elapsed time display
-  - [ ] `EntryList` displays entries with formatted durations and optional filtering
-  - [ ] `DashboardPage` integrates timer controls and entry list
-  - [ ] Routing to `/dashboard` exists and works
-  - [ ] Single active timer enforced end-to-end (server enforces, client reflects state correctly)
-  - [ ] Filtering works (date range filters applied to entry list)
-  - [ ] Component tests cover happy paths and key error scenarios and pass
+- [x] 10: Acceptance checklist (aligns with Implementation Plan)
+  - [x] `client/src/api/time.ts` implements typed start/stop/getActive/listEntries with Zod validation
+  - [x] `useActiveTimer` hook provides typed state and start/stop helpers
+  - [x] `useTimeEntries` hook provides typed state and filtering helpers
+  - [x] `TimerControls` provides start/stop UI with elapsed time display
+  - [x] `EntryList` displays entries with formatted durations and optional filtering
+  - [x] `DashboardPage` integrates timer controls and entry list
+  - [x] Routing to `/dashboard` exists and works
+  - [x] Single active timer enforced end-to-end (server enforces, client reflects state correctly)
+  - [x] Filtering works (date range filters applied to entry list)
+  - [x] Component tests cover happy paths and key error scenarios and pass
 
 ### Notes for M10
 - Prefer explicit types for all exported APIs, hooks, and complex props.
