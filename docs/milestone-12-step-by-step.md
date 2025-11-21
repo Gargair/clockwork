@@ -1,0 +1,339 @@
+## Milestone 12: Step-by-step implementation plan
+
+- [ ] 1: Preparations and validation
+  - [ ] Review `docs/deployment.md` for Kubernetes deployment requirements
+  - [ ] Verify Docker image is built and tagged: `clockwork:latest`
+  - [ ] Confirm server configuration requirements:
+    - `DATABASE_URL` (required): Postgres connection string
+    - `DB_AUTO_MIGRATE` (default `false`): Run migrations on startup
+    - `MIGRATIONS_DIR` (default `server/migrations`): Path to SQL migrations
+    - `PORT` (default `8080`): HTTP port to bind
+    - `ENV` (default `development`): `development` or `production`
+    - `STATIC_DIR` (default `client/dist`): Path to built client assets
+    - `ALLOWED_ORIGINS` (CSV): CORS allowed origins
+  - [ ] Choose deployment strategy:
+    - Development: kind or minikube for local testing
+    - Production: Managed Kubernetes (GKE, EKS, AKS) or self-hosted
+  - [ ] Decide on PostgreSQL deployment:
+    - Option 1: Managed PostgreSQL service (recommended for production)
+    - Option 2: In-cluster StatefulSet with PersistentVolumeClaim (for development/testing)
+
+- [ ] 2: Create deploy directory structure
+  - [ ] Create `deploy/` directory at repository root
+  - [ ] Create Helm chart directory structure:
+    - `deploy/helm/clockwork/` for Helm chart
+    - `deploy/helm/clockwork/templates/` for Kubernetes manifest templates
+  - [ ] Create `deploy/README.md` with deployment instructions
+
+- [ ] 3: Create Helm chart structure
+  - [ ] Create `deploy/helm/clockwork/Chart.yaml`:
+    - Chart metadata (name, version, description)
+    - API version: `v2` (Helm 3)
+  - [ ] Create `deploy/helm/clockwork/values.yaml`:
+    - Default values for all configurable parameters
+    - Namespace configuration:
+      - `namespace.name`: `clockwork` (default, configurable)
+      - `namespace.create`: `true` (default, can be disabled)
+    - ConfigMap configuration:
+      - `configMap.create`: `true` (default, can be disabled)
+      - `configMap.name`: `clockwork-config` (default, configurable)
+      - `configMap.values`: All non-sensitive configuration
+    - Secret configuration:
+      - `secret.create`: `false` (default, assume existing)
+      - `secret.name`: `clockwork-secrets` (default, configurable)
+      - `secret.existingSecret`: Name of existing secret (if not creating)
+    - PostgreSQL configuration:
+      - `postgresql.enabled`: `false` (default, assume existing)
+      - `postgresql.existingSecret`: Name of existing secret with DATABASE_URL
+      - `postgresql.host`: External PostgreSQL host (if using managed service)
+    - Deployment configuration:
+      - Image, replicas, resources, probes
+    - Service configuration:
+      - Type, ports
+    - Migration Job configuration:
+      - Enabled, strategy
+  - [ ] Create `deploy/helm/clockwork/values-dev.yaml`:
+    - Development environment overrides
+  - [ ] Create `deploy/helm/clockwork/values-prod.yaml`:
+    - Production environment overrides
+  - [ ] Create `deploy/helm/clockwork/.helmignore`:
+    - Exclude unnecessary files from chart package
+
+- [ ] 4: Create Namespace template
+  - [ ] Add `deploy/helm/clockwork/templates/namespace.yaml`:
+    - Conditional creation: `{{- if .Values.namespace.create }}`
+    - Namespace name: `{{ .Values.namespace.name | default "clockwork" }}`
+    - Add labels for environment identification
+    - Use Helm template functions for conditional rendering
+
+- [ ] 5: Create ConfigMap template
+  - [ ] Add `deploy/helm/clockwork/templates/configmap.yaml`:
+    - Conditional creation: `{{- if .Values.configMap.create }}`
+    - ConfigMap name: `{{ .Values.configMap.name | default "clockwork-config" }}`
+    - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
+    - Data section with all non-sensitive configuration from values:
+      - `PORT`: `{{ .Values.configMap.values.port }}`
+      - `ENV`: `{{ .Values.configMap.values.env }}`
+      - `MIGRATIONS_DIR`: `{{ .Values.configMap.values.migrationsDir }}`
+      - `STATIC_DIR`: `{{ .Values.configMap.values.staticDir }}`
+      - `ALLOWED_ORIGINS`: `{{ .Values.configMap.values.allowedOrigins }}`
+    - Reference: `server/internal/config/config.go` for all config keys
+    - If `configMap.create: false`, deployment should reference existing ConfigMap name
+
+- [ ] 6: Create Deployment template
+  - [ ] Add `deploy/helm/clockwork/templates/deployment.yaml`:
+    - Metadata:
+      - Name: `{{ .Values.deployment.name | default "clockwork-server" }}`
+      - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
+      - Labels: `app: clockwork`, `component: server`
+    - Spec:
+      - Replicas: `{{ .Values.deployment.replicas }}`
+      - Selector: match labels `app: clockwork`, `component: server`
+      - Template:
+        - Container image: `{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}`
+        - Image pull policy: `{{ .Values.deployment.image.pullPolicy }}`
+        - Ports: container port `{{ .Values.deployment.containerPort }}`
+        - Environment variables:
+          - From ConfigMap: Reference `{{ .Values.configMap.name }}` (or existing ConfigMap if `configMap.create: false`)
+          - From Secret: Reference `{{ .Values.secret.name }}` (or existing Secret if `secret.create: false`)
+        - Resource limits: From values (requests/limits)
+        - Liveness probe: Configured from values
+        - Readiness probe: Configured from values
+        - Volume mounts: migrations directory (if needed)
+        - Security context: From values
+    - Support for InitContainer migration strategy (if enabled in values)
+
+- [ ] 7: Create Service template
+  - [ ] Add `deploy/helm/clockwork/templates/service.yaml`:
+    - Metadata:
+      - Name: `{{ .Values.service.name | default "clockwork-service" }}`
+      - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
+    - Spec:
+      - Type: `{{ .Values.service.type }}`
+      - Selector: `app: clockwork`, `component: server`
+      - Ports: From values (port, targetPort, protocol)
+      - Session affinity: `None` (stateless)
+
+- [ ] 8: Create migration Job template
+  - [ ] Add `deploy/helm/clockwork/templates/migration-job.yaml`:
+    - Conditional creation: `{{- if .Values.migration.enabled }}`
+    - Strategy: Separate Job (recommended for production)
+    - Metadata:
+      - Name: `{{ .Values.migration.jobName | default "clockwork-migrate" }}`
+      - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
+    - Spec:
+      - Job template:
+        - Restart policy: `{{ .Values.migration.restartPolicy }}`
+        - Container:
+          - Image: Same as deployment image
+          - Command: Migration command from values
+          - Environment variables:
+            - From ConfigMap: Reference `{{ .Values.configMap.name }}` (or existing)
+            - From Secret: Reference `{{ .Values.secret.name }}` (or existing)
+          - Volume mounts: migrations directory
+    - Alternative: InitContainer in Deployment (if `migration.strategy: initContainer`)
+
+- [ ] 9: Document PostgreSQL integration (existing server)
+  - [ ] Update `deploy/helm/clockwork/values.yaml`:
+    - Set `postgresql.enabled: false` (default)
+    - Add `postgresql.existingSecret` parameter for existing secret with DATABASE_URL
+    - Add `postgresql.host` parameter for external PostgreSQL host (if using managed service)
+    - Document that PostgreSQL is expected to exist externally
+  - [ ] Update `deploy/README.md`:
+    - Document how to use existing PostgreSQL:
+      - Create secret with DATABASE_URL pointing to existing PostgreSQL
+      - Set `postgresql.existingSecret` in values.yaml
+      - Or set `postgresql.host` if using managed service
+    - Document connection string format
+    - Document SSL/TLS requirements
+
+- [ ] 10: Create Ingress template (optional, for external access)
+  - [ ] Add `deploy/helm/clockwork/templates/ingress.yaml`:
+    - Conditional creation: `{{- if .Values.ingress.enabled }}`
+    - Metadata:
+      - Name: `{{ .Values.ingress.name | default "clockwork-ingress" }}`
+      - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
+      - Annotations: From values (TLS/SSL, ingress controller settings)
+    - Spec:
+      - Ingress class: `{{ .Values.ingress.class }}`
+      - TLS: From values (secret name, hosts)
+      - Rules: From values (host, path, backend service)
+
+- [ ] 11: Configure Helm chart for existing resources
+  - [ ] Update `deploy/helm/clockwork/values.yaml`:
+    - Set defaults for using existing resources:
+      - `namespace.create: true` (can be set to `false` if namespace exists)
+      - `configMap.create: true` (can be set to `false` if ConfigMap exists)
+      - `configMap.name: clockwork-config` (can be changed to existing ConfigMap name)
+      - `secret.create: false` (default, assume existing secret)
+      - `secret.name: clockwork-secrets` (name of existing secret)
+      - `postgresql.enabled: false` (default, assume existing PostgreSQL)
+  - [ ] Update templates to conditionally create resources:
+    - Namespace: Only create if `namespace.create: true`
+    - ConfigMap: Only create if `configMap.create: true`, otherwise reference existing
+    - Secret: Only create if `secret.create: true`, otherwise reference existing
+  - [ ] Test both scenarios:
+    - With resource creation enabled
+    - With existing resources (creation disabled)
+
+- [ ] 12: Update documentation
+  - [ ] Update `docs/deployment.md`:
+    - Add "Kubernetes Deployment" section
+    - Document Helm chart usage
+    - Document development cluster setup (kind/minikube)
+    - Document production deployment checklist
+    - Document secrets management best practices
+    - Document migration strategy (Job vs InitContainer)
+    - Document scaling considerations (HPA, resource limits)
+    - Document using existing resources (namespace, ConfigMap, Secret, PostgreSQL)
+  - [ ] Update `deploy/README.md`:
+    - Prerequisites (kubectl, Helm 3, cluster access)
+    - Helm installation instructions
+    - Development deployment steps:
+      - `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml -n clockwork --create-namespace`
+    - Production deployment steps:
+      - `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-prod.yaml -n clockwork --create-namespace`
+    - Using existing namespace:
+      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set namespace.create=false --set namespace.name=existing-namespace -n existing-namespace`
+    - Using existing ConfigMap:
+      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set configMap.create=false --set configMap.name=existing-configmap`
+    - Using existing Secret:
+      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set secret.name=existing-secret`
+    - Using existing PostgreSQL:
+      - Document how to configure DATABASE_URL in existing secret
+      - Document connection string format
+    - Secrets creation instructions (if creating new secret)
+    - Migration execution instructions
+    - Upgrade instructions: `helm upgrade clockwork ./deploy/helm/clockwork -f values.yaml`
+    - Uninstall instructions: `helm uninstall clockwork`
+    - Troubleshooting guide
+    - Rollback procedures: `helm rollback clockwork <revision>`
+
+- [ ] 13: Test development cluster deployment with Helm
+  - [ ] Set up local cluster:
+    - Option A: kind (Kubernetes in Docker)
+      - Install kind: `choco install kind` (Windows) or `brew install kind` (Mac)
+      - Create cluster: `kind create cluster --name clockwork`
+    - Option B: minikube
+      - Install minikube
+      - Start: `minikube start`
+  - [ ] Install Helm 3 (if not already installed)
+  - [ ] Load Docker image into cluster:
+    - kind: `kind load docker-image clockwork:latest --name clockwork`
+    - minikube: `minikube image load clockwork:latest`
+  - [ ] Test deployment with resource creation:
+    - Create namespace and resources: `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml -n clockwork --create-namespace`
+    - Verify namespace created: `kubectl get namespace clockwork`
+    - Verify ConfigMap created: `kubectl get configmap -n clockwork`
+    - Create Secret manually: `kubectl create secret generic clockwork-secrets --from-literal=DATABASE_URL='...' -n clockwork`
+    - Wait for Deployment: `kubectl wait --for=condition=available deployment/clockwork-server -n clockwork --timeout=300s`
+    - Verify pods: `kubectl get pods -n clockwork`
+    - Check logs: `kubectl logs -l app=clockwork,component=server -n clockwork`
+  - [ ] Test deployment with existing resources:
+    - Create namespace manually: `kubectl create namespace clockwork-test`
+    - Create ConfigMap manually: `kubectl create configmap existing-config --from-literal=PORT=8080 -n clockwork-test`
+    - Create Secret manually: `kubectl create secret generic existing-secret --from-literal=DATABASE_URL='...' -n clockwork-test`
+    - Deploy with existing resources: `helm install clockwork-test ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml --set namespace.create=false --set namespace.name=clockwork-test --set configMap.create=false --set configMap.name=existing-config --set secret.name=existing-secret -n clockwork-test`
+    - Verify deployment uses existing resources
+    - Clean up: `helm uninstall clockwork-test -n clockwork-test`
+  - [ ] Test migration Job (if enabled):
+    - Run migration: `kubectl create job --from=cronjob/clockwork-migrate clockwork-migrate-manual -n clockwork` (if using CronJob) or apply Job directly
+    - Wait for completion: `kubectl wait --for=condition=complete job/clockwork-migrate -n clockwork --timeout=300s`
+    - Check logs: `kubectl logs job/clockwork-migrate -n clockwork`
+  - [ ] Port forward for testing: `kubectl port-forward service/clockwork-service 8080:80 -n clockwork`
+  - [ ] Test endpoints:
+    - Health: `curl http://localhost:8080/healthz`
+    - API: `curl http://localhost:8080/api/health`
+    - Static assets: `curl http://localhost:8080/`
+
+- [ ] 15: Verify health checks and probes
+  - [ ] Check pod status: `kubectl get pods -n clockwork`
+  - [ ] Verify liveness probe:
+    - Simulate failure (if possible) and verify pod restarts
+    - Check events: `kubectl describe pod <pod-name> -n clockwork`
+  - [ ] Verify readiness probe:
+    - Check pod ready status
+    - Verify service endpoints: `kubectl get endpoints clockwork-service -n clockwork`
+  - [ ] Test rolling updates:
+    - Update image: `kubectl set image deployment/clockwork-server server=clockwork:v1.0.1 -n clockwork`
+    - Watch rollout: `kubectl rollout status deployment/clockwork-server -n clockwork`
+    - Verify zero-downtime deployment
+
+- [ ] 16: Test database connectivity and persistence
+  - [ ] Verify database connection:
+    - Check pod logs for database connection success
+    - Test API endpoints that require database (create project, category)
+  - [ ] Test persistence:
+    - Create test data via API
+    - Delete pod: `kubectl delete pod <pod-name> -n clockwork`
+    - Wait for new pod to start
+    - Verify data persists (query API for created data)
+
+- [ ] 17: Production deployment preparation
+  - [ ] Review production checklist:
+    - [ ] Image pushed to container registry (Docker Hub, GCR, ECR, ACR)
+    - [ ] Secrets created using secure method (not plain YAML)
+    - [ ] Resource limits appropriate for production workload
+    - [ ] Replica count set for high availability (minimum 2)
+    - [ ] Horizontal Pod Autoscaler configured (optional)
+    - [ ] Network policies configured (optional, for security)
+    - [ ] Monitoring and alerting configured (optional, for M13)
+    - [ ] Backup strategy for database (if in-cluster)
+    - [ ] TLS/SSL certificates configured (if using Ingress)
+  - [ ] Document production-specific considerations in `deploy/README.md`
+
+- [ ] 18: Acceptance checklist (aligns with Implementation Plan)
+  - [ ] Helm chart created in `deploy/helm/clockwork/`
+  - [ ] Chart includes all required templates (Namespace, ConfigMap, Deployment, Service, Migration Job)
+  - [ ] Namespace is configurable (default: `clockwork`) via `values.yaml`
+  - [ ] Namespace creation can be disabled via `namespace.create: false`
+  - [ ] ConfigMap creation can be disabled; deployment supports existing ConfigMap
+  - [ ] Secret creation defaults to false; deployment supports existing Secret
+  - [ ] PostgreSQL deployment disabled by default; supports existing PostgreSQL server
+  - [ ] Deployment manifest includes resource limits and health checks
+  - [ ] Service manifest created for internal/external access
+  - [ ] Migration Job manifest created (or InitContainer strategy)
+  - [ ] Values files created for dev and prod environments
+  - [ ] Documentation updated with Helm deployment instructions
+  - [ ] Development cluster setup guide created (kind/minikube)
+  - [ ] Production deployment checklist created
+  - [ ] Application deploys successfully to development cluster using Helm
+  - [ ] Deployment works with existing namespace, ConfigMap, Secret, and PostgreSQL
+  - [ ] Health checks (readiness/liveness) pass and pods start correctly
+  - [ ] Database connectivity verified; migrations run successfully
+  - [ ] Service endpoints accessible; static assets served correctly
+  - [ ] Configuration and secrets properly injected from ConfigMap/Secret (existing or created)
+  - [ ] Full stack end-to-end test passes in Kubernetes environment
+
+### Notes for M12
+- **Helm chart**: This milestone uses Helm charts exclusively. Helm provides templating, value management, and release management capabilities.
+- **Namespace configuration**: The namespace defaults to `clockwork` but can be overridden. Set `namespace.create: false` if deploying to an existing namespace.
+- **Existing resources**: The chart supports using existing ConfigMaps, Secrets, and PostgreSQL servers. This is useful for:
+  - Shared infrastructure (PostgreSQL managed by platform team)
+  - Pre-configured secrets (from secret management systems)
+  - Multi-tenant deployments (shared namespace with other apps)
+- **Image registry**: For production, push images to a container registry. Update `values.yaml` to reference registry images with tags.
+- **Secrets management**: Never commit actual secrets to git. Use:
+  - `kubectl create secret` for manual creation
+  - Sealed Secrets for encrypted secrets in git
+  - External Secrets Operator for cloud secret managers
+  - Cloud-native secret management (GCP Secret Manager, AWS Secrets Manager, Azure Key Vault)
+  - Set `secret.create: false` and reference existing secret name
+- **Migration strategy**:
+  - **Job approach**: More control, can run migrations independently, easier to debug failures
+  - **InitContainer approach**: Simpler, migrations run automatically before app starts, but less control
+  - Choose based on operational preferences
+- **Resource limits**: Set appropriate CPU/memory limits based on workload. Start conservative and adjust based on metrics.
+- **High availability**: For production, run at least 2 replicas. Consider Pod Disruption Budgets for graceful shutdowns.
+- **Scaling**: Consider Horizontal Pod Autoscaler (HPA) for automatic scaling based on CPU/memory or custom metrics.
+- **Network policies**: Implement network policies to restrict pod-to-pod communication for enhanced security.
+- **Monitoring**: Integrate with cluster monitoring (Prometheus, Grafana) for observability (covered in M13).
+- **TLS/SSL**: Use cert-manager for automatic certificate management with Let's Encrypt.
+- **Helm operations**: 
+  - Install: `helm install <release-name> ./deploy/helm/clockwork -f values.yaml -n <namespace>`
+  - Upgrade: `helm upgrade <release-name> ./deploy/helm/clockwork -f values.yaml -n <namespace>`
+  - Rollback: `helm rollback <release-name> <revision> -n <namespace>`
+  - Uninstall: `helm uninstall <release-name> -n <namespace>`
+- **Database**: Prefer managed PostgreSQL services in production (RDS, Cloud SQL, Azure Database) for reliability, backups, and maintenance. Set `postgresql.enabled: false` and configure connection via existing secret.
+- **Image tags**: Use semantic versioning or commit hashes for image tags. Avoid `latest` in production for reproducibility.
+- **Values files**: Use separate values files for different environments (dev, staging, prod). Override specific values using `--set` flag when needed.
