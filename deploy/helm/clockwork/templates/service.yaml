@@ -18,7 +18,7 @@ spec:
   ports:
   - name: http
     port: {{ .Values.service.port }}
-    targetPort: {{ .Values.service.targetPort }}
-    protocol: {{ .Values.service.protocol }}
+    targetPort: 8080
+    protocol: TCP
   sessionAffinity: {{ .Values.service.sessionAffinity }}
 

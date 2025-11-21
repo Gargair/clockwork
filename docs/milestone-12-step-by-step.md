@@ -212,15 +212,15 @@
     - Rollback procedures: `helm rollback clockwork <revision>` ✓
 
 - [ ] 13: Test development cluster deployment with Helm
-  - [ ] Set up local cluster:
+  - [x] Set up local cluster:
     - Option A: kind (Kubernetes in Docker)
       - Install kind: `choco install kind` (Windows) or `brew install kind` (Mac)
       - Create cluster: `kind create cluster --name clockwork`
     - Option B: minikube
       - Install minikube
       - Start: `minikube start`
-  - [ ] Install Helm 3 (if not already installed)
-  - [ ] Load Docker image into cluster:
+  - [x] Install Helm 3 (if not already installed)
+  - [x] Load Docker image into cluster:
     - kind: `kind load docker-image clockwork:latest --name clockwork`
     - minikube: `minikube image load clockwork:latest`
   - [ ] Test deployment with resource creation:

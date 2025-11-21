@@ -44,7 +44,6 @@ spec:
             name: {{ .Values.secret.name | default "clockwork-secrets" }}
         securityContext:
           runAsNonRoot: true
-          runAsUser: 65532
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: false
           capabilities:
@@ -57,7 +56,7 @@ spec:
         imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
         ports:
         - name: http
-          containerPort: {{ .Values.deployment.containerPort }}
+          containerPort: 8080
           protocol: TCP
         envFrom:
         - configMapRef:
@@ -67,13 +66,30 @@ spec:
         resources:
           {{- toYaml .Values.deployment.resources | nindent 10 }}
         livenessProbe:
-          {{- toYaml .Values.deployment.livenessProbe | nindent 10 }}
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         readinessProbe:
-          {{- toYaml .Values.deployment.readinessProbe | nindent 10 }}
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
         securityContext:
-          {{- toYaml .Values.deployment.securityContext | nindent 10 }}
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
       securityContext:
-        {{- toYaml .Values.deployment.podSecurityContext | nindent 8 }}
+        runAsNonRoot: true
       {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

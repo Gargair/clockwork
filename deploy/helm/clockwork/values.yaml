@@ -22,14 +22,8 @@ configMap:
   name: clockwork-config
   # Non-sensitive configuration values
   values:
-    # HTTP port to bind
-    port: "8080"
     # Environment mode: development or production
     env: "development"
-    # Path to SQL migrations directory (in container: /app/migrations)
-    migrationsDir: "/app/migrations"
-    # Path to built client assets (in container: /app/static)
-    staticDir: "/app/static"
     # CORS allowed origins (comma-separated)
     # Defaults to "*" in development when not set
     allowedOrigins: ""
@@ -87,10 +81,8 @@ deployment:
   # Container image configuration
   image:
     repository: clockwork
-    tag: latest
+    tag: v0.11.1
     pullPolicy: IfNotPresent
-  # Container port
-  containerPort: 8080
   # Resource limits and requests
   resources:
     requests:
@@ -99,38 +91,6 @@ deployment:
     limits:
       cpu: 500m
       memory: 512Mi
-  # Health check probes
-  livenessProbe:
-    httpGet:
-      path: /healthz
-      port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-  readinessProbe:
-    httpGet:
-      path: /healthz
-      port: 8080
-    initialDelaySeconds: 10
-    periodSeconds: 5
-    timeoutSeconds: 3
-    failureThreshold: 3
-  # Security context
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 65532
-    fsGroup: 65532
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true
-    capabilities:
-      drop:
-        - ALL
-  # Pod security context
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 65532
-    fsGroup: 65532
   # Node selector
   nodeSelector: {}
   # Tolerations
@@ -146,10 +106,6 @@ service:
   type: ClusterIP
   # Service port
   port: 80
-  # Target port (container port)
-  targetPort: 8080
-  # Protocol
-  protocol: TCP
   # Session affinity
   sessionAffinity: None
 

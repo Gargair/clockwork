@@ -42,7 +42,7 @@ spec:
             service:
               name: {{ .Values.service.name | default "clockwork-service" }}
               port:
-                number: {{ .Values.service.port }}
+                name: http
     {{- end }}
 {{- end }}
 

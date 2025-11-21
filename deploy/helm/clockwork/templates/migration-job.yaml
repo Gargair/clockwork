@@ -51,7 +51,6 @@ spec:
         # 3. Use the clockwork image with a migration binary (requires building one)
         securityContext:
           runAsNonRoot: true
-          runAsUser: 65532
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: false
           capabilities:
