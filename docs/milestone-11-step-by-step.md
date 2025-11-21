@@ -160,21 +160,21 @@
     - Consider compressing client assets if not already done by Vite
 
 - [ ] 10: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] Multi-stage Dockerfile builds Go server and client SPA
-  - [ ] Dockerfile includes migration files in final image
-  - [ ] `.dockerignore` excludes unnecessary files
-  - [ ] `docker-compose.yml` includes server and postgres services
-  - [ ] Server service configured with correct environment variables
-  - [ ] Health checks configured for both services
-  - [ ] Helper scripts created for common operations (optional)
-  - [ ] Documentation updated with containerized workflow
-  - [ ] `docker compose up` runs full app successfully
-  - [ ] Migrations applied automatically (or via command)
-  - [ ] Health checks pass (`/healthz` endpoint)
-  - [ ] Static assets served correctly (SPA loads)
-  - [ ] API endpoints functional (create project, category, start/stop timer)
-  - [ ] Database persistence verified (data survives container restarts)
-  - [ ] Full stack end-to-end test passes (create project → category → timer)
+  - [x] Multi-stage Dockerfile builds Go server and client SPA
+  - [x] Dockerfile includes migration files in final image
+  - [x] `.dockerignore` excludes unnecessary files
+  - [x] `docker-compose.yml` includes server and postgres services
+  - [x] Server service configured with correct environment variables
+  - [x] Health checks configured for both services
+  - [x] Helper scripts created for common operations (optional)
+  - [x] Documentation updated with containerized workflow
+  - [x] `docker compose up` runs full app successfully
+  - [x] Migrations applied automatically (or via command)
+  - [x] Health checks pass (`/healthz` endpoint)
+  - [x] Static assets served correctly (SPA loads)
+  - [x] API endpoints functional (create project, category, start/stop timer)
+  - [x] Database persistence verified (data survives container restarts)
+  - [x] Full stack end-to-end test passes (create project → category → timer)
 
 ### Notes for M11
 - Prefer multi-stage builds to minimize final image size.
