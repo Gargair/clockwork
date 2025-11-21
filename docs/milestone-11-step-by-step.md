@@ -1,0 +1,198 @@
+## Milestone 11: Step-by-step implementation plan
+
+- [ ] 1: Preparations and validation
+  - [ ] Review `docs/deployment.md` for containerization requirements
+  - [ ] Confirm server configuration in `server/internal/config/config.go`:
+    - `DATABASE_URL` (required): Postgres connection string
+    - `DB_AUTO_MIGRATE` (default `false`): Run migrations on startup
+    - `MIGRATIONS_DIR` (default `server/migrations`): Path to SQL migrations
+    - `PORT` (default `8080`): HTTP port to bind
+    - `ENV` (default `development`): `development` or `production`
+    - `STATIC_DIR` (default `client/dist`): Path to built client assets
+    - `ALLOWED_ORIGINS` (CSV): CORS allowed origins
+  - [ ] Verify `docker-compose.yml` exists with Postgres service
+  - [ ] Confirm client build output directory is `client/dist` (from `vite build`)
+
+- [ ] 2: Create multi-stage Dockerfile for server
+  - [ ] Add `Dockerfile` at repository root
+    - Stage 1: Build Go server (statically linked)
+      - Use `golang:1.25-alpine` as base
+      - Set working directory
+      - Copy `go.mod` and `go.sum` first (for layer caching)
+      - Run `go mod download`
+      - Copy server source code
+      - Build statically linked binary:
+        - Set `CGO_ENABLED=0` to disable CGO (pure Go binary)
+        - Set `GOOS=linux` and `GOARCH=amd64` for Linux target
+        - Build: `go build -ldflags '-w -s' -o /app/server ./cmd/server`
+        - `-ldflags '-w -s'` strips debug info to reduce binary size
+    - Stage 2: Build client SPA
+      - Use `node:20-alpine` as base
+      - Set working directory
+      - Copy `client/package.json` and `client/package-lock.json` first
+      - Run `npm ci` (or `npm install` if no lock file)
+      - Copy client source code
+      - Run `npm run build` to produce `client/dist`
+    - Stage 3: Final runtime image (minimal/no base image)
+      - Use `gcr.io/distroless/static` (includes CA certs, still minimal)
+        - Start with `FROM gcr.io/distroless/static:nonroot`
+        - Copy statically linked Go binary from Stage 1 to `/app/server`
+        - Copy built client assets from Stage 2 to `/app/static`
+        - Copy migration files from `server/migrations` to `/app/migrations`
+        - Includes CA certificates for TLS verification
+        - Runs as non-root user automatically
+      - Set working directory to `/app`
+      - Expose port 8080
+      - Set default command: `["/app/server"]`
+
+- [ ] 3: Create .dockerignore file
+  - [ ] Add `.dockerignore` at repository root
+    - Exclude: `node_modules/`, `.git/`, `*.md`, `docs/`, `coverage*`, `.env*`, `dist/`, `client/dist/`
+    - Include only necessary files for build
+
+- [ ] 4: Update docker-compose.yml
+  - [ ] Add `server` service to `docker-compose.yml`:
+    - Build context: `.` (repository root)
+    - Dockerfile: `Dockerfile`
+    - Environment variables:
+      - `DATABASE_URL`: `postgres://postgres:postgres@postgres:5432/clockwork?sslmode=disable`
+      - `DB_AUTO_MIGRATE`: `true` (or `false` for manual migrations)
+      - `MIGRATIONS_DIR`: `/app/migrations`
+      - `PORT`: `8080`
+      - `ENV`: `production` (or `development` for dev mode)
+      - `STATIC_DIR`: `/app/static` (or `/app/client/dist` matching Dockerfile)
+      - `ALLOWED_ORIGINS`: `*` (or specific origins for production)
+    - Ports: `"${SERVER_PORT:-8080}:8080"`
+    - Depends on: `postgres` service
+    - Healthcheck:
+      - Test: `["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/healthz"]` or use `curl` if available
+      - Interval: `10s`
+      - Timeout: `5s`
+      - Retries: `5`
+      - Start period: `30s`
+    - Restart: `unless-stopped`
+  - [ ] Ensure `postgres` service healthcheck is configured (already present)
+
+- [ ] 5: Create helper scripts (optional but recommended)
+  - [ ] Add `scripts/docker-build.ps1` (PowerShell) or `scripts/docker-build.sh` (Bash):
+    - Build Docker image: `docker build -t clockwork:latest .`
+    - Optionally tag with version: `docker tag clockwork:latest clockwork:v1.0.0`
+  - [ ] Add `scripts/docker-up.ps1` or `scripts/docker-up.sh`:
+    - Start services: `docker compose up -d`
+    - Wait for health checks
+    - Display logs: `docker compose logs -f`
+  - [ ] Add `scripts/docker-down.ps1` or `scripts/docker-down.sh`:
+    - Stop services: `docker compose down`
+    - Optionally remove volumes: `docker compose down -v` (with warning)
+  - [ ] Add `scripts/docker-logs.ps1` or `scripts/docker-logs.sh`:
+    - View logs: `docker compose logs -f [service]`
+  - [ ] Add `scripts/docker-migrate.ps1` or `scripts/docker-migrate.sh`:
+    - Run migrations manually if `DB_AUTO_MIGRATE=false`:
+      - `docker compose exec server /app/server migrate` (if migration command exists)
+      - Or use goose directly: `docker compose exec server goose -dir /app/migrations postgres "$DATABASE_URL" up`
+
+- [ ] 6: Update documentation
+  - [ ] Update `docs/development.md`:
+    - Add section "Containerized Development"
+    - Document `docker compose up` workflow
+    - Document environment variable overrides
+    - Document migration strategy (auto vs manual)
+  - [ ] Update `docs/deployment.md`:
+    - Document Docker build process
+    - Document docker-compose usage
+    - Document image size optimization considerations
+    - Document production considerations (non-root user, secrets management)
+
+- [ ] 7: Test containerized setup
+  - [ ] Build Docker image:
+    - `docker build -t clockwork:latest .`
+    - Verify image builds successfully
+    - Check image size (should be reasonable, < 100MB ideally)
+  - [ ] Test docker-compose:
+    - `docker compose up -d`
+    - Wait for services to be healthy
+    - Verify Postgres is accessible
+    - Verify server health endpoint: `curl http://localhost:8080/healthz`
+    - Verify migrations applied (check Postgres or server logs)
+    - Verify static assets served: `curl http://localhost:8080/` (should return HTML)
+    - Verify API endpoints work: `curl http://localhost:8080/api/health`
+  - [ ] Test environment variable overrides:
+    - Set `SERVER_PORT=9090` in environment
+    - Restart: `docker compose up -d`
+    - Verify server listens on port 9090
+  - [ ] Test with `DB_AUTO_MIGRATE=false`:
+    - Update docker-compose.yml to set `DB_AUTO_MIGRATE=false`
+    - Restart services
+    - Manually run migrations (if migration command exists)
+    - Verify migrations applied
+
+- [ ] 8: Verify full stack functionality
+  - [ ] Start services: `docker compose up -d`
+  - [ ] Open browser to `http://localhost:8080`
+    - Verify SPA loads (React app)
+    - Navigate to Projects page
+    - Create a project
+    - Navigate to Categories page
+    - Create a category
+    - Navigate to Dashboard
+    - Start a timer
+    - Stop the timer
+    - Verify entries appear in list
+  - [ ] Check logs for errors:
+    - `docker compose logs server`
+    - `docker compose logs postgres`
+  - [ ] Verify database persistence:
+    - Stop services: `docker compose down`
+    - Start services again: `docker compose up -d`
+    - Verify data persists (projects, categories, entries still exist)
+
+- [ ] 9: Verify and fine-tune Docker image optimization
+  - [ ] Review final image size:
+    - Check size: `docker images clockwork:latest`
+    - Target: < 60MB for distroless-based (excluding client assets)
+    - Client assets will add size; consider if they can be optimized (minification, compression)
+  - [ ] Verify static linking:
+    - Check binary: `docker run --rm clockwork:latest /app/server --version` (if version flag exists)
+    - Or inspect binary: `docker run --rm --entrypoint sh clockwork:debug ldd /app/server` (should show "not a dynamic executable" for scratch)
+  - [ ] Fine-tune if needed:
+    - Ensure `.dockerignore` excludes all unnecessary files
+    - Verify build flags (`-ldflags '-w -s'`) are applied
+    - Consider compressing client assets if not already done by Vite
+
+- [ ] 10: Acceptance checklist (aligns with Implementation Plan)
+  - [ ] Multi-stage Dockerfile builds Go server and client SPA
+  - [ ] Dockerfile includes migration files in final image
+  - [ ] `.dockerignore` excludes unnecessary files
+  - [ ] `docker-compose.yml` includes server and postgres services
+  - [ ] Server service configured with correct environment variables
+  - [ ] Health checks configured for both services
+  - [ ] Helper scripts created for common operations (optional)
+  - [ ] Documentation updated with containerized workflow
+  - [ ] `docker compose up` runs full app successfully
+  - [ ] Migrations applied automatically (or via command)
+  - [ ] Health checks pass (`/healthz` endpoint)
+  - [ ] Static assets served correctly (SPA loads)
+  - [ ] API endpoints functional (create project, category, start/stop timer)
+  - [ ] Database persistence verified (data survives container restarts)
+  - [ ] Full stack end-to-end test passes (create project → category → timer)
+
+### Notes for M11
+- Prefer multi-stage builds to minimize final image size.
+- Use `.dockerignore` to speed up builds and reduce image size.
+- **Static linking**: The Go server can be statically linked (no CGO dependencies), enabling use of `scratch` or `distroless/static` base images for minimal size and attack surface.
+- **Base image choice**:
+  - `scratch`: Smallest possible (empty), but no CA certificates. Use if PostgreSQL connections don't require SSL verification.
+  - `gcr.io/distroless/static:nonroot`: Includes CA certificates, runs as non-root, still very small (~2MB). Recommended if SSL/TLS verification is needed.
+  - Both options provide better security than full OS images (no shell, no package manager).
+- **Build flags**: `CGO_ENABLED=0` ensures pure Go binary; `-ldflags '-w -s'` strips debug symbols to reduce size.
+- Health checks are important for orchestration tools (Kubernetes in M12).
+- Environment variable configuration should match `server/internal/config/config.go`.
+- Migration strategy: auto-migrate is convenient for development but may require manual control in production.
+- Static asset serving: ensure the Go server's static file handler serves from the correct directory in the container.
+- Consider adding build-time version tags or commit hashes to images for traceability.
+- Test on both Windows (PowerShell) and Linux/Mac (Bash) if cross-platform support is needed.
+- **Debugging distroless images**: Since they have no shell, debugging requires:
+  - Adding temporary debug stage in Dockerfile, or
+  - Using `docker run --entrypoint sh` with a full image for debugging, or
+  - Comprehensive logging in the application itself.
+
