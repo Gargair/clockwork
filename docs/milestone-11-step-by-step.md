@@ -146,15 +146,15 @@
     - Start services again: `docker compose up -d`
     - Verify data persists (projects, categories, entries still exist)
 
-- [ ] 9: Verify and fine-tune Docker image optimization
-  - [ ] Review final image size:
+- [x] 9: Verify and fine-tune Docker image optimization
+  - [x] Review final image size:
     - Check size: `docker images clockwork:latest`
     - Target: < 60MB for distroless-based (excluding client assets)
     - Client assets will add size; consider if they can be optimized (minification, compression)
-  - [ ] Verify static linking:
+  - [x] Verify static linking:
     - Check binary: `docker run --rm clockwork:latest /app/server --version` (if version flag exists)
     - Or inspect binary: `docker run --rm --entrypoint sh clockwork:debug ldd /app/server` (should show "not a dynamic executable" for scratch)
-  - [ ] Fine-tune if needed:
+  - [x] Fine-tune if needed:
     - Ensure `.dockerignore` excludes all unnecessary files
     - Verify build flags (`-ldflags '-w -s'`) are applied
     - Consider compressing client assets if not already done by Vite
