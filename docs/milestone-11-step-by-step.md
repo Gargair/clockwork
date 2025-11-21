@@ -45,8 +45,8 @@
       - Expose port 8080
       - Set default command: `["/app/server"]`
 
-- [ ] 3: Create .dockerignore file
-  - [ ] Add `.dockerignore` at repository root
+- [x] 3: Create .dockerignore file
+  - [x] Add `.dockerignore` at repository root
     - Exclude: `node_modules/`, `.git/`, `*.md`, `docs/`, `coverage*`, `.env*`, `dist/`, `client/dist/`
     - Include only necessary files for build
 
