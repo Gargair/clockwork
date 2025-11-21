@@ -50,8 +50,8 @@
     - Exclude: `node_modules/`, `.git/`, `*.md`, `docs/`, `coverage*`, `.env*`, `dist/`, `client/dist/`
     - Include only necessary files for build
 
-- [ ] 4: Update docker-compose.yml
-  - [ ] Add `server` service to `docker-compose.yml`:
+- [x] 4: Update docker-compose.yml
+  - [x] Add `server` service to `docker-compose.yml`:
     - Build context: `.` (repository root)
     - Dockerfile: `Dockerfile`
     - Environment variables:
@@ -71,7 +71,7 @@
       - Retries: `5`
       - Start period: `30s`
     - Restart: `unless-stopped`
-  - [ ] Ensure `postgres` service healthcheck is configured (already present)
+  - [x] Ensure `postgres` service healthcheck is configured (already present)
 
 - [ ] 5: Create helper scripts (optional but recommended)
   - [ ] Add `scripts/docker-build.ps1` (PowerShell) or `scripts/docker-build.sh` (Bash):
