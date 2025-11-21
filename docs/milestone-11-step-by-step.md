@@ -126,9 +126,9 @@
     - Manually run migrations (if migration command exists)
     - Verify migrations applied
 
-- [ ] 8: Verify full stack functionality
-  - [ ] Start services: `docker compose up -d`
-  - [ ] Open browser to `http://localhost:8080`
+- [x] 8: Verify full stack functionality
+  - [x] Start services: `docker compose up -d`
+  - [x] Open browser to `http://localhost:8080`
     - Verify SPA loads (React app)
     - Navigate to Projects page
     - Create a project
@@ -138,10 +138,10 @@
     - Start a timer
     - Stop the timer
     - Verify entries appear in list
-  - [ ] Check logs for errors:
+  - [x] Check logs for errors:
     - `docker compose logs server`
     - `docker compose logs postgres`
-  - [ ] Verify database persistence:
+  - [x] Verify database persistence:
     - Stop services: `docker compose down`
     - Start services again: `docker compose up -d`
     - Verify data persists (projects, categories, entries still exist)
