@@ -42,6 +42,14 @@ spec:
             name: {{ .Values.configMap.name | default "clockwork-config" }}
         - secretRef:
             name: {{ .Values.secret.name | default "clockwork-secrets" }}
+        resources:
+          requests:
+            cpu: {{ .Values.migration.resources.requests.cpu | default "100m" }}
+            memory: {{ .Values.migration.resources.requests.memory | default "128Mi" }}
+          limits:
+            cpu: {{ .Values.migration.resources.limits.cpu | default "500m" }}
+            memory: {{ .Values.migration.resources.limits.memory | default "512Mi" }}
+            ephemeral-storage: {{ .Values.migration.resources.limits.ephemeralStorage | default "500Mi" }}
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
@@ -64,7 +72,13 @@ spec:
         - secretRef:
             name: {{ .Values.secret.name | default "clockwork-secrets" }}
         resources:
-          {{- toYaml .Values.deployment.resources | nindent 10 }}
+          requests:
+            cpu: {{ .Values.deployment.resources.requests.cpu | default "100m" }}
+            memory: {{ .Values.deployment.resources.requests.memory | default "128Mi" }}
+          limits:
+            cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" }}
+            memory: {{ .Values.deployment.resources.limits.memory | default "512Mi" }}
+            ephemeral-storage: {{ .Values.deployment.resources.limits.ephemeralStorage | default "500Mi" }}
         livenessProbe:
           httpGet:
             path: /healthz
@@ -81,6 +95,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
+        automountServiceAccountToken: false
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
