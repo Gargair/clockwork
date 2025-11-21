@@ -103,12 +103,12 @@
     - Document image size optimization considerations
     - Document production considerations (non-root user, secrets management)
 
-- [ ] 7: Test containerized setup
-  - [ ] Build Docker image:
+- [x] 7: Test containerized setup
+  - [x] Build Docker image:
     - `docker build -t clockwork:latest .`
     - Verify image builds successfully
     - Check image size (should be reasonable, < 100MB ideally)
-  - [ ] Test docker-compose:
+  - [x] Test docker-compose:
     - `docker compose up -d`
     - Wait for services to be healthy
     - Verify Postgres is accessible
@@ -116,11 +116,11 @@
     - Verify migrations applied (check Postgres or server logs)
     - Verify static assets served: `curl http://localhost:8080/` (should return HTML)
     - Verify API endpoints work: `curl http://localhost:8080/api/health`
-  - [ ] Test environment variable overrides:
+  - [x] Test environment variable overrides:
     - Set `SERVER_PORT=9090` in environment
     - Restart: `docker compose up -d`
     - Verify server listens on port 9090
-  - [ ] Test with `DB_AUTO_MIGRATE=false`:
+  - [x] Test with `DB_AUTO_MIGRATE=false`:
     - Update docker-compose.yml to set `DB_AUTO_MIGRATE=false`
     - Restart services
     - Manually run migrations (if migration command exists)
