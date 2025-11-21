@@ -178,8 +178,8 @@
     - With resource creation enabled ✓
     - With existing resources (creation disabled) ✓
 
-- [ ] 12: Update documentation
-  - [ ] Update `docs/deployment.md`:
+- [x] 12: Update documentation
+  - [x] Update `docs/deployment.md`:
     - Add "Kubernetes Deployment" section
     - Document Helm chart usage
     - Document development cluster setup (kind/minikube)
@@ -188,28 +188,28 @@
     - Document migration strategy (Job vs InitContainer)
     - Document scaling considerations (HPA, resource limits)
     - Document using existing resources (namespace, ConfigMap, Secret, PostgreSQL)
-  - [ ] Update `deploy/README.md`:
-    - Prerequisites (kubectl, Helm 3, cluster access)
-    - Helm installation instructions
+  - [x] Update `deploy/README.md`:
+    - Prerequisites (kubectl, Helm 3, cluster access) ✓
+    - Helm installation instructions ✓
     - Development deployment steps:
-      - `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml -n clockwork --create-namespace`
+      - `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml -n clockwork --create-namespace` ✓
     - Production deployment steps:
-      - `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-prod.yaml -n clockwork --create-namespace`
+      - `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-prod.yaml -n clockwork --create-namespace` ✓
     - Using existing namespace:
-      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set namespace.create=false --set namespace.name=existing-namespace -n existing-namespace`
+      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set namespace.create=false --set namespace.name=existing-namespace -n existing-namespace` ✓
     - Using existing ConfigMap:
-      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set configMap.create=false --set configMap.name=existing-configmap`
+      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set configMap.create=false --set configMap.name=existing-configmap` ✓
     - Using existing Secret:
-      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set secret.name=existing-secret`
+      - `helm install clockwork ./deploy/helm/clockwork -f values.yaml --set secret.name=existing-secret` ✓
     - Using existing PostgreSQL:
-      - Document how to configure DATABASE_URL in existing secret
-      - Document connection string format
-    - Secrets creation instructions (if creating new secret)
-    - Migration execution instructions
-    - Upgrade instructions: `helm upgrade clockwork ./deploy/helm/clockwork -f values.yaml`
-    - Uninstall instructions: `helm uninstall clockwork`
-    - Troubleshooting guide
-    - Rollback procedures: `helm rollback clockwork <revision>`
+      - Document how to configure DATABASE_URL in existing secret ✓
+      - Document connection string format ✓
+    - Secrets creation instructions (if creating new secret) ✓
+    - Migration execution instructions ✓
+    - Upgrade instructions: `helm upgrade clockwork ./deploy/helm/clockwork -f values.yaml` ✓
+    - Uninstall instructions: `helm uninstall clockwork` ✓
+    - Troubleshooting guide ✓
+    - Rollback procedures: `helm rollback clockwork <revision>` ✓
 
 - [ ] 13: Test development cluster deployment with Helm
   - [ ] Set up local cluster:
@@ -248,7 +248,7 @@
     - API: `curl http://localhost:8080/api/health`
     - Static assets: `curl http://localhost:8080/`
 
-- [ ] 15: Verify health checks and probes
+- [ ] 14: Verify health checks and probes
   - [ ] Check pod status: `kubectl get pods -n clockwork`
   - [ ] Verify liveness probe:
     - Simulate failure (if possible) and verify pod restarts
@@ -261,7 +261,7 @@
     - Watch rollout: `kubectl rollout status deployment/clockwork-server -n clockwork`
     - Verify zero-downtime deployment
 
-- [ ] 16: Test database connectivity and persistence
+- [ ] 15: Test database connectivity and persistence
   - [ ] Verify database connection:
     - Check pod logs for database connection success
     - Test API endpoints that require database (create project, category)
@@ -271,7 +271,7 @@
     - Wait for new pod to start
     - Verify data persists (query API for created data)
 
-- [ ] 17: Production deployment preparation
+- [ ] 16: Production deployment preparation
   - [ ] Review production checklist:
     - [ ] Image pushed to container registry (Docker Hub, GCR, ECR, ACR)
     - [ ] Secrets created using secure method (not plain YAML)
@@ -284,7 +284,7 @@
     - [ ] TLS/SSL certificates configured (if using Ingress)
   - [ ] Document production-specific considerations in `deploy/README.md`
 
-- [ ] 18: Acceptance checklist (aligns with Implementation Plan)
+- [ ] 17: Acceptance checklist (aligns with Implementation Plan)
   - [ ] Helm chart created in `deploy/helm/clockwork/`
   - [ ] Chart includes all required templates (Namespace, ConfigMap, Deployment, Service, Migration Job)
   - [ ] Namespace is configurable (default: `clockwork`) via `values.yaml`

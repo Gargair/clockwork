@@ -101,6 +101,32 @@ docker compose down
 
 ## Kubernetes Deployment
 
+Clockwork can be deployed to Kubernetes using Helm charts. The Helm chart provides a complete, production-ready deployment configuration with support for development and production environments.
+
+### Helm Chart Overview
+
+The Helm chart is located in `deploy/helm/clockwork/` and includes:
+- **Templates**: Namespace, ConfigMap, Secret, Deployment, Service, Migration Job, Ingress
+- **Values files**: Default values, development overrides, production overrides
+- **Flexibility**: Supports creating resources or using existing ones
+
+**Quick start:**
+```bash
+# Development
+helm install clockwork ./deploy/helm/clockwork \
+  -f ./deploy/helm/clockwork/values-dev.yaml \
+  -n clockwork \
+  --create-namespace
+
+# Production
+helm install clockwork ./deploy/helm/clockwork \
+  -f ./deploy/helm/clockwork/values-prod.yaml \
+  -n clockwork \
+  --create-namespace
+```
+
+For detailed deployment instructions, see [`deploy/README.md`](../deploy/README.md).
+
 ### Prerequisites
 
 **Required:**
@@ -251,3 +277,247 @@ The application requires the following environment variables:
 - Resource limits and requests configured
 - Monitoring and alerting enabled
 
+### Helm Chart Usage
+
+**Installation:**
+```bash
+helm install <release-name> ./deploy/helm/clockwork \
+  -f ./deploy/helm/clockwork/values-prod.yaml \
+  -n <namespace> \
+  --create-namespace
+```
+
+**Upgrade:**
+```bash
+helm upgrade <release-name> ./deploy/helm/clockwork \
+  -f ./deploy/helm/clockwork/values-prod.yaml \
+  -n <namespace>
+```
+
+**Uninstall:**
+```bash
+helm uninstall <release-name> -n <namespace>
+```
+
+**Rollback:**
+```bash
+helm rollback <release-name> <revision-number> -n <namespace>
+```
+
+### Development Cluster Setup
+
+**kind (Kubernetes in Docker) - Recommended:**
+```bash
+# Install kind
+choco install kind  # Windows
+brew install kind   # macOS
+
+# Create cluster
+kind create cluster --name clockwork
+
+# Load Docker image
+kind load docker-image clockwork:latest --name clockwork
+```
+
+**minikube:**
+```bash
+# Install minikube
+# Start cluster
+minikube start
+
+# Load Docker image
+minikube image load clockwork:latest
+```
+
+### Production Deployment Checklist
+
+Before deploying to production, ensure:
+
+- [ ] **Image Management**
+  - [ ] Image pushed to container registry (Docker Hub, GCR, ECR, ACR)
+  - [ ] Image tagged with semantic version (avoid `latest` in production)
+  - [ ] Image scanned for vulnerabilities
+
+- [ ] **Secrets Management**
+  - [ ] `DATABASE_URL` secret created using secure method
+  - [ ] Secrets not committed to git
+  - [ ] Secrets rotated regularly
+  - [ ] Secret management tool integrated (if applicable)
+
+- [ ] **Resource Configuration**
+  - [ ] Resource limits appropriate for workload
+  - [ ] Resource requests set for scheduling
+  - [ ] Replica count set for high availability (minimum 2)
+  - [ ] Horizontal Pod Autoscaler configured (optional)
+
+- [ ] **Database**
+  - [ ] Managed PostgreSQL service configured
+  - [ ] Database backups enabled
+  - [ ] Connection pooling configured (if needed)
+  - [ ] SSL/TLS enabled for database connections
+
+- [ ] **Networking**
+  - [ ] Ingress configured with TLS/SSL
+  - [ ] Certificates managed (cert-manager or manual)
+  - [ ] Network policies configured (optional, for security)
+  - [ ] CORS origins configured correctly
+
+- [ ] **Migrations**
+  - [ ] Migration strategy chosen (Job recommended)
+  - [ ] Migration Job tested
+  - [ ] Rollback plan documented
+
+- [ ] **Monitoring & Observability**
+  - [ ] Health checks configured (liveness/readiness probes)
+  - [ ] Log aggregation configured
+  - [ ] Metrics collection enabled
+  - [ ] Alerting rules configured
+
+- [ ] **Security**
+  - [ ] Non-root user configured
+  - [ ] Security context set
+  - [ ] Pod Security Policies/Standards applied
+  - [ ] RBAC configured (if needed)
+
+### Secrets Management Best Practices
+
+**Never commit secrets to git.** Use one of these methods:
+
+1. **kubectl create secret** (manual):
+   ```bash
+   kubectl create secret generic clockwork-secrets \
+     --from-literal=DATABASE_URL='postgres://...' \
+     -n clockwork
+   ```
+
+2. **Sealed Secrets** (for GitOps):
+   - Encrypt secrets for git storage
+   - Automatically decrypts in cluster
+
+3. **External Secrets Operator**:
+   - Syncs from cloud secret managers
+   - Supports AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, HashiCorp Vault
+
+4. **Cloud-native secret management**:
+   - **GCP**: Secret Manager with Workload Identity
+   - **AWS**: Secrets Manager with IAM roles
+   - **Azure**: Key Vault with Managed Identity
+
+**Secret rotation:**
+- Rotate database passwords regularly
+- Update secrets without redeploying (use `kubectl create secret --dry-run -o yaml | kubectl apply -f -`)
+- Monitor secret age and set rotation policies
+
+### Migration Strategy
+
+**Job approach (recommended for production):**
+- Set `migration.enabled: true` and `migration.strategy: job`
+- Set `configMap.values.dbAutoMigrate: false`
+- Migration Job runs before deployment (Helm pre-install hook)
+- Ensures migrations run once, with proper error handling
+- Can be integrated into CI/CD pipeline
+
+**InitContainer approach:**
+- Set `migration.enabled: true` and `migration.strategy: initContainer`
+- Migrations run in InitContainer before main container starts
+- Simpler but less control
+- Migrations run on every pod start (inefficient for multiple replicas)
+- **Note**: Requires migration image with goose installed
+
+**Auto-migrate approach:**
+- Set `configMap.values.dbAutoMigrate: true`
+- Migrations run automatically on pod startup
+- Convenient for development
+- **Not recommended for production** (risk of concurrent migrations)
+
+### Scaling Considerations
+
+**Horizontal Pod Autoscaler (HPA):**
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: clockwork-hpa
+  namespace: clockwork
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: clockwork-server
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+```
+
+**Resource limits:**
+- Set appropriate CPU/memory limits based on workload
+- Start conservative and adjust based on metrics
+- Use resource requests for scheduling
+- Monitor actual usage and adjust accordingly
+
+**Pod Disruption Budget:**
+```yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: clockwork-pdb
+  namespace: clockwork
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: clockwork
+      component: server
+```
+
+### Using Existing Resources
+
+The Helm chart supports using existing resources instead of creating new ones:
+
+**Using existing namespace:**
+```bash
+helm install clockwork ./deploy/helm/clockwork \
+  -f values.yaml \
+  --set namespace.create=false \
+  --set namespace.name=existing-namespace \
+  -n existing-namespace
+```
+
+**Using existing ConfigMap:**
+```bash
+helm install clockwork ./deploy/helm/clockwork \
+  -f values.yaml \
+  --set configMap.create=false \
+  --set configMap.name=existing-configmap \
+  -n clockwork
+```
+
+**Using existing Secret:**
+```bash
+helm install clockwork ./deploy/helm/clockwork \
+  -f values.yaml \
+  --set secret.name=existing-secret \
+  -n clockwork
+```
+
+**Using existing PostgreSQL:**
+- Create secret with `DATABASE_URL` pointing to existing PostgreSQL
+- Chart defaults to `postgresql.enabled: false`
+- Configure connection string in secret (see PostgreSQL integration section)
+
+This is useful for:
+- Shared infrastructure (PostgreSQL managed by platform team)
+- Pre-configured secrets (from secret management systems)
+- Multi-tenant deployments (shared namespace with other apps)
