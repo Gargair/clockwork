@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build outputs (will be built in container)
+dist/
+client/dist/
+server/coverage.html
+server/coverage.json
+client/coverage-html/
+
+# Version control
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Test coverage
+coverage/
+coverage.*
+*.coverage
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker files
+docker-compose.yml
+Dockerfile
+.dockerignore

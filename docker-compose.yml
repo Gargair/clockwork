@@ -17,6 +17,29 @@ services:
       - pgdata:/var/lib/postgresql
     restart: unless-stopped
 
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clockwork-server
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/clockwork?sslmode=disable
+      DB_AUTO_MIGRATE: "true"
+      ALLOWED_ORIGINS: "*"
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      # Use custom healthcheck binary (distroless doesn't have wget/curl)
+      test: ["CMD", "/app/healthcheck", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
 volumes:
   pgdata:
     name: clockwork-pgdata

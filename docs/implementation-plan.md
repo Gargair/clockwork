@@ -127,7 +127,13 @@ See the detailed guide for this milestone: [milestone-10-step-by-step.md](milest
 - **Deliverables**:
   - Multi-stage Dockerfile bundling Go server and built SPA
   - docker-compose for server + Postgres; make targets or npm scripts
-- **Acceptance**: `docker compose up` runs full app; migrations applied automatically or via command.
+  - Environment variable configuration for containerized deployment
+  - Migration strategy (auto-migrate or manual via command)
+- **Acceptance**: `docker compose up` runs full app; migrations applied automatically or via command; health checks pass; full stack accessible.
+
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-11-step-by-step.md](milestone-11-step-by-step.md).
 
 ## Milestone 12: Kubernetes deployment (dev/prod)
 
