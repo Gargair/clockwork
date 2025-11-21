@@ -1,0 +1,217 @@
+# Default values for Clockwork Helm chart
+# This is a YAML-formatted file.
+
+# Namespace configuration
+namespace:
+  # Name of the namespace to create or use
+  # Set to existing namespace name if deploying to existing namespace
+  name: clockwork
+  # Whether to create the namespace
+  # Set to false if namespace already exists
+  create: true
+  # Labels to apply to the namespace (only used if create: true)
+  labels: {}
+
+# ConfigMap configuration
+configMap:
+  # Whether to create the ConfigMap
+  # Set to false if ConfigMap already exists
+  create: true
+  # Name of the ConfigMap (or existing ConfigMap if create is false)
+  # Update this if using an existing ConfigMap with a different name
+  name: clockwork-config
+  # Non-sensitive configuration values
+  values:
+    # HTTP port to bind
+    port: "8080"
+    # Environment mode: development or production
+    env: "development"
+    # Path to SQL migrations directory (in container: /app/migrations)
+    migrationsDir: "/app/migrations"
+    # Path to built client assets (in container: /app/static)
+    staticDir: "/app/static"
+    # CORS allowed origins (comma-separated)
+    # Defaults to "*" in development when not set
+    allowedOrigins: ""
+    # Whether to run migrations on startup
+    # Set to "true" for auto-migrate, "false" for manual migrations via Job
+    dbAutoMigrate: "false"
+
+# Secret configuration
+secret:
+  # Whether to create the Secret (default: false, assume existing)
+  # Secrets should typically be created manually or via secret management tools
+  # Set to true only if you want Helm to create the secret (not recommended for production)
+  create: false
+  # Name of the Secret (or existing Secret if create is false)
+  # Update this if using an existing Secret with a different name
+  name: clockwork-secrets
+  # Name of existing secret to use (deprecated, use secret.name instead)
+  existingSecret: ""
+  # Secret data (only used if create is true)
+  # Never commit actual secrets to git!
+  data:
+    # DATABASE_URL: PostgreSQL connection string
+    # Format: postgres://user:password@host:port/database
+    # Must be provided via Secret (never in ConfigMap)
+    DATABASE_URL: ""
+
+# PostgreSQL configuration
+postgresql:
+  # Whether to deploy PostgreSQL in-cluster (default: false, assume existing)
+  # The chart assumes PostgreSQL exists externally (managed service or separate deployment)
+  # Set to true only if you want to deploy PostgreSQL as part of this chart (not recommended for production)
+  enabled: false
+  # Name of existing secret containing DATABASE_URL
+  # This secret must exist before deploying the application
+  # Create it with: kubectl create secret generic clockwork-secrets --from-literal=DATABASE_URL='postgres://...' -n clockwork
+  existingSecret: clockwork-secrets
+  # External PostgreSQL host (informational, for documentation purposes)
+  # The actual connection details are in DATABASE_URL within the secret
+  # Examples:
+  # - Managed service: your-instance.cloudsql.google.com
+  # - RDS: your-instance.region.rds.amazonaws.com
+  # - Azure: your-instance.postgres.database.azure.com
+  host: ""
+  # PostgreSQL port (informational, typically 5432)
+  port: 5432
+  # Database name (informational, typically "clockwork")
+  database: clockwork
+
+# Deployment configuration
+deployment:
+  # Deployment name
+  name: clockwork-server
+  # Number of replicas
+  replicas: 1
+  # Container image configuration
+  image:
+    repository: clockwork
+    tag: latest
+    pullPolicy: IfNotPresent
+  # Container port
+  containerPort: 8080
+  # Resource limits and requests
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  # Health check probes
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  # Pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+  # Node selector
+  nodeSelector: {}
+  # Tolerations
+  tolerations: []
+  # Affinity rules
+  affinity: {}
+
+# Service configuration
+service:
+  # Service name
+  name: clockwork-service
+  # Service type: ClusterIP, NodePort, or LoadBalancer
+  type: ClusterIP
+  # Service port
+  port: 80
+  # Target port (container port)
+  targetPort: 8080
+  # Protocol
+  protocol: TCP
+  # Session affinity
+  sessionAffinity: None
+
+# Migration Job configuration
+migration:
+  # Whether to create a migration Job
+  enabled: false
+  # Migration strategy: "job" or "initContainer"
+  # "job": Separate Kubernetes Job (recommended for production)
+  # "initContainer": InitContainer in Deployment (simpler but less control)
+  strategy: job
+  # Job name
+  jobName: clockwork-migrate
+  # Restart policy for Job
+  restartPolicy: OnFailure
+  # Job backoff limit
+  backoffLimit: 3
+  # Job active deadline seconds (0 = no limit)
+  activeDeadlineSeconds: 300
+  # Image for migration
+  # Note: The distroless clockwork image doesn't include goose
+  # Recommended: Build a migration image that includes both goose and migrations
+  # Alternative: Use golang image and provide migrations via ConfigMap/volume
+  image:
+    repository: golang
+    tag: "1.25-alpine"
+    pullPolicy: IfNotPresent
+  # Migration command
+  # Default uses goose (requires migrations to be available at /app/migrations)
+  # For production, build a migration image with migrations baked in
+  command:
+    - sh
+    - -c
+    - go run github.com/pressly/goose/v3/cmd/goose@latest -dir /app/migrations postgres "$DATABASE_URL" up
+
+# Ingress configuration (optional)
+ingress:
+  # Whether to create Ingress resource
+  enabled: false
+  # Ingress name
+  name: clockwork-ingress
+  # Ingress class
+  class: nginx
+  # Ingress annotations
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  # TLS configuration
+  tls: []
+    # - secretName: clockwork-tls
+    #   hosts:
+    #     - clockwork.example.com
+  # Ingress rules
+  rules: []
+    # - host: clockwork.example.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: clockwork-service
+    #             port:
+    #               number: 80
+

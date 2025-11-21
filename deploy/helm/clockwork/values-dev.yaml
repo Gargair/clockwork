@@ -1,0 +1,97 @@
+# Development environment overrides for Clockwork Helm chart
+
+# Namespace
+namespace:
+  name: clockwork
+  create: true
+
+# ConfigMap - Development settings
+configMap:
+  create: true
+  name: clockwork-config
+  values:
+    port: "8080"
+    env: "development"
+    migrationsDir: "/app/migrations"
+    staticDir: "/app/static"
+    # Allow all origins in development
+    allowedOrigins: "*"
+    # Enable auto-migrate for convenience in development
+    dbAutoMigrate: "true"
+
+# Secret - Assume existing (create manually)
+secret:
+  create: false
+  name: clockwork-secrets
+
+# PostgreSQL - Assume existing (for development, can use in-cluster)
+postgresql:
+  enabled: false
+  existingSecret: clockwork-secrets
+
+# Deployment - Development settings
+deployment:
+  name: clockwork-server
+  # Single replica for development
+  replicas: 1
+  image:
+    repository: clockwork
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 8080
+  # Lower resource requirements for development
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+
+# Service - ClusterIP for development
+service:
+  name: clockwork-service
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  protocol: TCP
+  sessionAffinity: None
+
+# Migration - Disabled (using auto-migrate in development)
+migration:
+  enabled: false
+  strategy: job
+
+# Ingress - Disabled for development (use port-forward)
+ingress:
+  enabled: false
+

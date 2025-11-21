@@ -25,11 +25,11 @@
     - `deploy/helm/clockwork/templates/` for Kubernetes manifest templates
   - [x] Create `deploy/README.md` with deployment instructions
 
-- [ ] 3: Create Helm chart structure
-  - [ ] Create `deploy/helm/clockwork/Chart.yaml`:
+- [x] 3: Create Helm chart structure
+  - [x] Create `deploy/helm/clockwork/Chart.yaml`:
     - Chart metadata (name, version, description)
     - API version: `v2` (Helm 3)
-  - [ ] Create `deploy/helm/clockwork/values.yaml`:
+  - [x] Create `deploy/helm/clockwork/values.yaml`:
     - Default values for all configurable parameters
     - Namespace configuration:
       - `namespace.name`: `clockwork` (default, configurable)
@@ -52,22 +52,22 @@
       - Type, ports
     - Migration Job configuration:
       - Enabled, strategy
-  - [ ] Create `deploy/helm/clockwork/values-dev.yaml`:
+  - [x] Create `deploy/helm/clockwork/values-dev.yaml`:
     - Development environment overrides
-  - [ ] Create `deploy/helm/clockwork/values-prod.yaml`:
+  - [x] Create `deploy/helm/clockwork/values-prod.yaml`:
     - Production environment overrides
-  - [ ] Create `deploy/helm/clockwork/.helmignore`:
+  - [x] Create `deploy/helm/clockwork/.helmignore`:
     - Exclude unnecessary files from chart package
 
-- [ ] 4: Create Namespace template
-  - [ ] Add `deploy/helm/clockwork/templates/namespace.yaml`:
+- [x] 4: Create Namespace template
+  - [x] Add `deploy/helm/clockwork/templates/namespace.yaml`:
     - Conditional creation: `{{- if .Values.namespace.create }}`
     - Namespace name: `{{ .Values.namespace.name | default "clockwork" }}`
     - Add labels for environment identification
     - Use Helm template functions for conditional rendering
 
-- [ ] 5: Create ConfigMap template
-  - [ ] Add `deploy/helm/clockwork/templates/configmap.yaml`:
+- [x] 5: Create ConfigMap template
+  - [x] Add `deploy/helm/clockwork/templates/configmap.yaml`:
     - Conditional creation: `{{- if .Values.configMap.create }}`
     - ConfigMap name: `{{ .Values.configMap.name | default "clockwork-config" }}`
     - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
@@ -80,8 +80,8 @@
     - Reference: `server/internal/config/config.go` for all config keys
     - If `configMap.create: false`, deployment should reference existing ConfigMap name
 
-- [ ] 6: Create Deployment template
-  - [ ] Add `deploy/helm/clockwork/templates/deployment.yaml`:
+- [x] 6: Create Deployment template
+  - [x] Add `deploy/helm/clockwork/templates/deployment.yaml`:
     - Metadata:
       - Name: `{{ .Values.deployment.name | default "clockwork-server" }}`
       - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
@@ -99,12 +99,11 @@
         - Resource limits: From values (requests/limits)
         - Liveness probe: Configured from values
         - Readiness probe: Configured from values
-        - Volume mounts: migrations directory (if needed)
         - Security context: From values
     - Support for InitContainer migration strategy (if enabled in values)
 
-- [ ] 7: Create Service template
-  - [ ] Add `deploy/helm/clockwork/templates/service.yaml`:
+- [x] 7: Create Service template
+  - [x] Add `deploy/helm/clockwork/templates/service.yaml`:
     - Metadata:
       - Name: `{{ .Values.service.name | default "clockwork-service" }}`
       - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
@@ -114,32 +113,34 @@
       - Ports: From values (port, targetPort, protocol)
       - Session affinity: `None` (stateless)
 
-- [ ] 8: Create migration Job template
-  - [ ] Add `deploy/helm/clockwork/templates/migration-job.yaml`:
+- [x] 8: Create migration Job template
+  - [x] Add `deploy/helm/clockwork/templates/migration-job.yaml`:
     - Conditional creation: `{{- if .Values.migration.enabled }}`
     - Strategy: Separate Job (recommended for production)
     - Metadata:
       - Name: `{{ .Values.migration.jobName | default "clockwork-migrate" }}`
       - Namespace: `{{ .Values.namespace.name | default "clockwork" }}`
+      - Helm hooks: pre-install, pre-upgrade (runs before deployment)
     - Spec:
       - Job template:
         - Restart policy: `{{ .Values.migration.restartPolicy }}`
         - Container:
-          - Image: Same as deployment image
-          - Command: Migration command from values
+          - Image: Configurable (default: golang image with goose)
+          - Command: Migration command from values (uses goose)
           - Environment variables:
             - From ConfigMap: Reference `{{ .Values.configMap.name }}` (or existing)
             - From Secret: Reference `{{ .Values.secret.name }}` (or existing)
-          - Volume mounts: migrations directory
+        - Backoff limit and active deadline from values
+    - Note: Requires migrations to be available (build migration image or use ConfigMap/volume)
     - Alternative: InitContainer in Deployment (if `migration.strategy: initContainer`)
 
-- [ ] 9: Document PostgreSQL integration (existing server)
-  - [ ] Update `deploy/helm/clockwork/values.yaml`:
+- [x] 9: Document PostgreSQL integration (existing server)
+  - [x] Update `deploy/helm/clockwork/values.yaml`:
     - Set `postgresql.enabled: false` (default)
     - Add `postgresql.existingSecret` parameter for existing secret with DATABASE_URL
     - Add `postgresql.host` parameter for external PostgreSQL host (if using managed service)
     - Document that PostgreSQL is expected to exist externally
-  - [ ] Update `deploy/README.md`:
+  - [x] Update `deploy/README.md`:
     - Document how to use existing PostgreSQL:
       - Create secret with DATABASE_URL pointing to existing PostgreSQL
       - Set `postgresql.existingSecret` in values.yaml
@@ -147,8 +148,8 @@
     - Document connection string format
     - Document SSL/TLS requirements
 
-- [ ] 10: Create Ingress template (optional, for external access)
-  - [ ] Add `deploy/helm/clockwork/templates/ingress.yaml`:
+- [x] 10: Create Ingress template (optional, for external access)
+  - [x] Add `deploy/helm/clockwork/templates/ingress.yaml`:
     - Conditional creation: `{{- if .Values.ingress.enabled }}`
     - Metadata:
       - Name: `{{ .Values.ingress.name | default "clockwork-ingress" }}`
@@ -159,8 +160,8 @@
       - TLS: From values (secret name, hosts)
       - Rules: From values (host, path, backend service)
 
-- [ ] 11: Configure Helm chart for existing resources
-  - [ ] Update `deploy/helm/clockwork/values.yaml`:
+- [x] 11: Configure Helm chart for existing resources
+  - [x] Update `deploy/helm/clockwork/values.yaml`:
     - Set defaults for using existing resources:
       - `namespace.create: true` (can be set to `false` if namespace exists)
       - `configMap.create: true` (can be set to `false` if ConfigMap exists)
@@ -168,13 +169,14 @@
       - `secret.create: false` (default, assume existing secret)
       - `secret.name: clockwork-secrets` (name of existing secret)
       - `postgresql.enabled: false` (default, assume existing PostgreSQL)
-  - [ ] Update templates to conditionally create resources:
-    - Namespace: Only create if `namespace.create: true`
-    - ConfigMap: Only create if `configMap.create: true`, otherwise reference existing
-    - Secret: Only create if `secret.create: true`, otherwise reference existing
-  - [ ] Test both scenarios:
-    - With resource creation enabled
-    - With existing resources (creation disabled)
+  - [x] Update templates to conditionally create resources:
+    - Namespace: Only create if `namespace.create: true` ✓
+    - ConfigMap: Only create if `configMap.create: true`, otherwise reference existing ✓
+    - Secret: Only create if `secret.create: true`, otherwise reference existing ✓
+    - Created Secret template for optional secret creation
+  - [x] Test both scenarios:
+    - With resource creation enabled ✓
+    - With existing resources (creation disabled) ✓
 
 - [ ] 12: Update documentation
   - [ ] Update `docs/deployment.md`:

@@ -256,12 +256,163 @@ helm install clockwork ./helm/clockwork \
 
 ### Using existing PostgreSQL
 
-The chart defaults to `postgresql.enabled: false`, assuming PostgreSQL exists externally. Configure the `DATABASE_URL` in your existing Secret to point to the external PostgreSQL instance.
+The chart defaults to `postgresql.enabled: false`, assuming PostgreSQL exists externally. This is the recommended approach for production deployments.
 
-For managed PostgreSQL services:
-- Google Cloud SQL: Use Cloud SQL Proxy or Private IP
-- Amazon RDS: Configure security groups for cluster access
-- Azure Database: Configure firewall rules and use connection string from Azure portal
+#### Connection String Format
+
+The `DATABASE_URL` must be provided in a Kubernetes Secret. The connection string format is:
+
+```
+postgres://[user]:[password]@[host]:[port]/[database][?parameters]
+```
+
+**Examples:**
+
+**Basic connection:**
+```
+postgres://postgres:mypassword@postgres.example.com:5432/clockwork
+```
+
+**With SSL (recommended for production):**
+```
+postgres://postgres:mypassword@postgres.example.com:5432/clockwork?sslmode=require
+```
+
+**With SSL and certificate verification:**
+```
+postgres://postgres:mypassword@postgres.example.com:5432/clockwork?sslmode=verify-full&sslcert=/path/to/cert&sslkey=/path/to/key&sslrootcert=/path/to/ca-cert
+```
+
+**Connection string parameters:**
+- `sslmode`: `disable`, `allow`, `prefer`, `require`, `verify-ca`, `verify-full`
+- `connect_timeout`: Connection timeout in seconds
+- `application_name`: Application identifier (optional)
+
+#### Creating the Secret
+
+**1. Create secret with DATABASE_URL:**
+
+```bash
+kubectl create secret generic clockwork-secrets \
+  --from-literal=DATABASE_URL='postgres://user:password@host:5432/clockwork?sslmode=require' \
+  -n clockwork
+```
+
+**2. Verify the secret:**
+
+```bash
+# View secret (base64 encoded)
+kubectl get secret clockwork-secrets -n clockwork -o jsonpath='{.data.DATABASE_URL}' | base64 -d
+
+# Or decode on Windows PowerShell:
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((kubectl get secret clockwork-secrets -n clockwork -o jsonpath='{.data.DATABASE_URL}')))
+```
+
+**3. Deploy with existing secret:**
+
+The chart automatically uses the secret specified in `postgresql.existingSecret` (default: `clockwork-secrets`). No additional configuration needed if using the default name.
+
+```bash
+helm install clockwork ./helm/clockwork \
+  -f ./helm/clockwork/values-prod.yaml \
+  -n clockwork \
+  --create-namespace
+```
+
+#### Managed PostgreSQL Services
+
+**Google Cloud SQL:**
+
+1. **Using Cloud SQL Proxy (recommended):**
+   - Deploy Cloud SQL Proxy as a sidecar or separate deployment
+   - Use connection string: `postgres://user:password@127.0.0.1:5432/clockwork`
+   - Configure with Workload Identity for authentication
+
+2. **Using Private IP:**
+   - Enable Private IP on Cloud SQL instance
+   - Configure VPC peering between GKE and Cloud SQL
+   - Use connection string: `postgres://user:password@10.x.x.x:5432/clockwork?sslmode=require`
+
+3. **Using Public IP (less secure):**
+   - Enable authorized networks in Cloud SQL
+   - Add cluster node IPs to authorized networks
+   - Use connection string: `postgres://user:password@PUBLIC_IP:5432/clockwork?sslmode=require`
+
+**Amazon RDS:**
+
+1. **Configure security groups:**
+   - Allow inbound traffic from Kubernetes cluster on port 5432
+   - Use cluster security group or node security groups
+
+2. **Connection string:**
+   ```
+   postgres://user:password@your-instance.region.rds.amazonaws.com:5432/clockwork?sslmode=require
+   ```
+
+3. **Using IAM database authentication (optional):**
+   - Configure RDS for IAM authentication
+   - Use IAM role for database access
+   - Connection string format differs (see AWS documentation)
+
+**Azure Database for PostgreSQL:**
+
+1. **Configure firewall rules:**
+   - Add Kubernetes cluster IP ranges to firewall rules
+   - Or enable "Allow access to Azure services"
+
+2. **Connection string:**
+   ```
+   postgres://user@servername:password@servername.postgres.database.azure.com:5432/clockwork?sslmode=require
+   ```
+
+3. **Using Managed Identity (recommended):**
+   - Configure Azure AD authentication
+   - Use Managed Identity for passwordless authentication
+
+#### SSL/TLS Requirements
+
+**For production deployments, always use SSL/TLS:**
+
+1. **Minimum requirement:** `sslmode=require`
+   - Encrypts connection but doesn't verify certificate
+   - Suitable for managed services with trusted certificates
+
+2. **Recommended:** `sslmode=verify-full`
+   - Encrypts connection and verifies server certificate
+   - Requires CA certificate (provided by managed service)
+
+3. **Certificate files:**
+   - For `verify-full`, you may need to mount certificate files
+   - Managed services typically provide CA certificates
+   - Mount certificates as ConfigMap or Secret and reference in connection string
+
+**Example with certificate verification:**
+
+```bash
+# Create ConfigMap with CA certificate
+kubectl create configmap postgres-ca-cert \
+  --from-file=ca-cert.pem=/path/to/ca-cert.pem \
+  -n clockwork
+
+# Update deployment to mount certificate
+# Then use connection string: postgres://...?sslmode=verify-full&sslrootcert=/etc/ssl/certs/ca-cert.pem
+```
+
+#### Testing Database Connectivity
+
+After deployment, verify database connectivity:
+
+```bash
+# Check pod logs for database connection
+kubectl logs -l app=clockwork,component=server -n clockwork | grep -i database
+
+# Test from within a pod
+kubectl exec -it deployment/clockwork-server -n clockwork -- /app/healthcheck http://localhost:8080/healthz
+
+# Check health endpoint (includes database status)
+curl http://localhost:8080/healthz
+# (after port-forwarding: kubectl port-forward service/clockwork-service 8080:80 -n clockwork)
+```
 
 ## Secrets Management
 

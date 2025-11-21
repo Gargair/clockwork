@@ -1,0 +1,31 @@
+{{- if .Values.configMap.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name | default "clockwork-config" }}
+  namespace: {{ .Values.namespace.name | default "clockwork" }}
+  labels:
+    app.kubernetes.io/name: clockwork
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.configMap.values.env }}
+    environment: {{ .Values.configMap.values.env }}
+    {{- end }}
+data:
+  # HTTP port to bind
+  PORT: {{ .Values.configMap.values.port | default "8080" | quote }}
+  # Environment mode: development or production
+  ENV: {{ .Values.configMap.values.env | default "development" | quote }}
+  # Path to SQL migrations directory (in container: /app/migrations)
+  MIGRATIONS_DIR: {{ .Values.configMap.values.migrationsDir | default "/app/migrations" | quote }}
+  # Path to built client assets (in container: /app/static)
+  STATIC_DIR: {{ .Values.configMap.values.staticDir | default "/app/static" | quote }}
+  # CORS allowed origins (comma-separated)
+  # Empty string means use default (app will default to "*" in development)
+  ALLOWED_ORIGINS: {{ .Values.configMap.values.allowedOrigins | default "" | quote }}
+  # Whether to run migrations on startup
+  # "true" for auto-migrate, "false" for manual migrations via Job
+  DB_AUTO_MIGRATE: {{ .Values.configMap.values.dbAutoMigrate | default "false" | quote }}
+{{- end }}
+

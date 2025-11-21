@@ -1,0 +1,68 @@
+# Patterns to ignore when building packages.
+# This supports shell glob matching, relative path matching, and
+# negation (prefixed with !). Only one pattern per line.
+.DS_Store
+# Common VCS files
+.git/
+.gitignore
+.bzr/
+.bzrignore
+.hg/
+.hgignore
+.svn/
+# Common backup files
+*.swp
+*.bak
+*.tmp
+*.orig
+*~
+# Various IDEs
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/
+.idea/
+*.iml
+# OS-specific files
+Thumbs.db
+.DS_Store
+# Documentation (not needed in chart package)
+README.md
+docs/
+# Test files
+*_test.go
+*_test.ts
+*_test.tsx
+*.test.ts
+*.test.tsx
+# Source files (only templates and values are needed)
+*.go
+*.ts
+*.tsx
+*.js
+*.jsx
+*.sql
+# Build artifacts
+dist/
+node_modules/
+coverage/
+*.exe
+*.dll
+*.so
+*.dylib
+# Configuration files not needed in chart
+.env
+.env.*
+docker-compose.yml
+Dockerfile
+.dockerignore
+# Scripts (not needed in chart package)
+scripts/
+# Git files
+.git/
+.gitignore
+.gitattributes
+

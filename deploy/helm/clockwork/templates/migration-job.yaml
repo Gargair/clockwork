@@ -1,0 +1,61 @@
+{{- if and .Values.migration.enabled (eq .Values.migration.strategy "job") }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.migration.jobName | default "clockwork-migrate" }}
+  namespace: {{ .Values.namespace.name | default "clockwork" }}
+  labels:
+    app.kubernetes.io/name: clockwork
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: clockwork
+    component: migration
+  annotations:
+    # Add annotation to prevent Job from being deleted automatically
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: {{ .Values.migration.backoffLimit }}
+  {{- if .Values.migration.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.migration.activeDeadlineSeconds }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clockwork
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app: clockwork
+        component: migration
+    spec:
+      restartPolicy: {{ .Values.migration.restartPolicy }}
+      containers:
+      - name: migrate
+        image: "{{ .Values.migration.image.repository }}:{{ .Values.migration.image.tag }}"
+        imagePullPolicy: {{ .Values.migration.image.pullPolicy }}
+        command:
+          {{- toYaml .Values.migration.command | nindent 10 }}
+        workingDir: /app
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMap.name | default "clockwork-config" }}
+        - secretRef:
+            name: {{ .Values.secret.name | default "clockwork-secrets" }}
+        # Note: Migrations directory must be available in the migration image
+        # Options:
+        # 1. Build a migration image that includes both goose and migrations
+        # 2. Use a ConfigMap or volume for migrations
+        # 3. Use the clockwork image with a migration binary (requires building one)
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+              - ALL
+{{- end }}
+
