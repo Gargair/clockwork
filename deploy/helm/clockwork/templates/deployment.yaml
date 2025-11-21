@@ -75,6 +75,7 @@ spec:
           requests:
             cpu: {{ .Values.deployment.resources.requests.cpu | default "100m" }}
             memory: {{ .Values.deployment.resources.requests.memory | default "128Mi" }}
+            ephemeral-storage: {{ .Values.deployment.resources.requests.ephemeralStorage | default "100Mi" }}
           limits:
             cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" }}
             memory: {{ .Values.deployment.resources.limits.memory | default "512Mi" }}
@@ -95,7 +96,6 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
-        automountServiceAccountToken: false
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
@@ -103,6 +103,7 @@ spec:
           capabilities:
             drop:
               - ALL
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
       {{- with .Values.deployment.nodeSelector }}
