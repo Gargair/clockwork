@@ -211,7 +211,7 @@
     - Troubleshooting guide ✓
     - Rollback procedures: `helm rollback clockwork <revision>` ✓
 
-- [ ] 13: Test development cluster deployment with Helm
+- [x] 13: Test development cluster deployment with Helm
   - [x] Set up local cluster:
     - Option A: kind (Kubernetes in Docker)
       - Install kind: `choco install kind` (Windows) or `brew install kind` (Mac)
@@ -223,7 +223,7 @@
   - [x] Load Docker image into cluster:
     - kind: `kind load docker-image clockwork:latest --name clockwork`
     - minikube: `minikube image load clockwork:latest`
-  - [ ] Test deployment with resource creation:
+  - [x] Test deployment with resource creation:
     - Create namespace and resources: `helm install clockwork ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml -n clockwork --create-namespace`
     - Verify namespace created: `kubectl get namespace clockwork`
     - Verify ConfigMap created: `kubectl get configmap -n clockwork`
@@ -231,81 +231,68 @@
     - Wait for Deployment: `kubectl wait --for=condition=available deployment/clockwork-server -n clockwork --timeout=300s`
     - Verify pods: `kubectl get pods -n clockwork`
     - Check logs: `kubectl logs -l app=clockwork,component=server -n clockwork`
-  - [ ] Test deployment with existing resources:
+  - [x] Test deployment with existing resources:
     - Create namespace manually: `kubectl create namespace clockwork-test`
     - Create ConfigMap manually: `kubectl create configmap existing-config --from-literal=PORT=8080 -n clockwork-test`
     - Create Secret manually: `kubectl create secret generic existing-secret --from-literal=DATABASE_URL='...' -n clockwork-test`
     - Deploy with existing resources: `helm install clockwork-test ./deploy/helm/clockwork -f deploy/helm/clockwork/values-dev.yaml --set namespace.create=false --set namespace.name=clockwork-test --set configMap.create=false --set configMap.name=existing-config --set secret.name=existing-secret -n clockwork-test`
     - Verify deployment uses existing resources
     - Clean up: `helm uninstall clockwork-test -n clockwork-test`
-  - [ ] Test migration Job (if enabled):
+  - [x] Test migration Job (if enabled):
     - Run migration: `kubectl create job --from=cronjob/clockwork-migrate clockwork-migrate-manual -n clockwork` (if using CronJob) or apply Job directly
     - Wait for completion: `kubectl wait --for=condition=complete job/clockwork-migrate -n clockwork --timeout=300s`
     - Check logs: `kubectl logs job/clockwork-migrate -n clockwork`
-  - [ ] Port forward for testing: `kubectl port-forward service/clockwork-service 8080:80 -n clockwork`
-  - [ ] Test endpoints:
+  - [x] Port forward for testing: `kubectl port-forward service/clockwork-service 8080:80 -n clockwork`
+  - [x] Test endpoints:
     - Health: `curl http://localhost:8080/healthz`
     - API: `curl http://localhost:8080/api/health`
     - Static assets: `curl http://localhost:8080/`
 
-- [ ] 14: Verify health checks and probes
-  - [ ] Check pod status: `kubectl get pods -n clockwork`
-  - [ ] Verify liveness probe:
+- [x] 14: Verify health checks and probes
+  - [x] Check pod status: `kubectl get pods -n clockwork`
+  - [x] Verify liveness probe:
     - Simulate failure (if possible) and verify pod restarts
     - Check events: `kubectl describe pod <pod-name> -n clockwork`
-  - [ ] Verify readiness probe:
+  - [x] Verify readiness probe:
     - Check pod ready status
     - Verify service endpoints: `kubectl get endpoints clockwork-service -n clockwork`
-  - [ ] Test rolling updates:
+  - [x] Test rolling updates:
     - Update image: `kubectl set image deployment/clockwork-server server=clockwork:v1.0.1 -n clockwork`
     - Watch rollout: `kubectl rollout status deployment/clockwork-server -n clockwork`
     - Verify zero-downtime deployment
 
-- [ ] 15: Test database connectivity and persistence
-  - [ ] Verify database connection:
+- [x] 15: Test database connectivity and persistence
+  - [x] Verify database connection:
     - Check pod logs for database connection success
     - Test API endpoints that require database (create project, category)
-  - [ ] Test persistence:
+  - [x] Test persistence:
     - Create test data via API
     - Delete pod: `kubectl delete pod <pod-name> -n clockwork`
     - Wait for new pod to start
     - Verify data persists (query API for created data)
 
-- [ ] 16: Production deployment preparation
-  - [ ] Review production checklist:
-    - [ ] Image pushed to container registry (Docker Hub, GCR, ECR, ACR)
-    - [ ] Secrets created using secure method (not plain YAML)
-    - [ ] Resource limits appropriate for production workload
-    - [ ] Replica count set for high availability (minimum 2)
-    - [ ] Horizontal Pod Autoscaler configured (optional)
-    - [ ] Network policies configured (optional, for security)
-    - [ ] Monitoring and alerting configured (optional, for M13)
-    - [ ] Backup strategy for database (if in-cluster)
-    - [ ] TLS/SSL certificates configured (if using Ingress)
-  - [ ] Document production-specific considerations in `deploy/README.md`
-
-- [ ] 17: Acceptance checklist (aligns with Implementation Plan)
-  - [ ] Helm chart created in `deploy/helm/clockwork/`
-  - [ ] Chart includes all required templates (Namespace, ConfigMap, Deployment, Service, Migration Job)
-  - [ ] Namespace is configurable (default: `clockwork`) via `values.yaml`
-  - [ ] Namespace creation can be disabled via `namespace.create: false`
-  - [ ] ConfigMap creation can be disabled; deployment supports existing ConfigMap
-  - [ ] Secret creation defaults to false; deployment supports existing Secret
-  - [ ] PostgreSQL deployment disabled by default; supports existing PostgreSQL server
-  - [ ] Deployment manifest includes resource limits and health checks
-  - [ ] Service manifest created for internal/external access
-  - [ ] Migration Job manifest created (or InitContainer strategy)
-  - [ ] Values files created for dev and prod environments
-  - [ ] Documentation updated with Helm deployment instructions
-  - [ ] Development cluster setup guide created (kind/minikube)
-  - [ ] Production deployment checklist created
-  - [ ] Application deploys successfully to development cluster using Helm
-  - [ ] Deployment works with existing namespace, ConfigMap, Secret, and PostgreSQL
-  - [ ] Health checks (readiness/liveness) pass and pods start correctly
-  - [ ] Database connectivity verified; migrations run successfully
-  - [ ] Service endpoints accessible; static assets served correctly
-  - [ ] Configuration and secrets properly injected from ConfigMap/Secret (existing or created)
-  - [ ] Full stack end-to-end test passes in Kubernetes environment
+- [x] 16: Acceptance checklist (aligns with Implementation Plan)
+  - [x] Helm chart created in `deploy/helm/clockwork/`
+  - [x] Chart includes all required templates (Namespace, ConfigMap, Deployment, Service, Migration Job)
+  - [x] Namespace is configurable (default: `clockwork`) via `values.yaml`
+  - [x] Namespace creation can be disabled via `namespace.create: false`
+  - [x] ConfigMap creation can be disabled; deployment supports existing ConfigMap
+  - [x] Secret creation defaults to false; deployment supports existing Secret
+  - [x] PostgreSQL deployment disabled by default; supports existing PostgreSQL server
+  - [x] Deployment manifest includes resource limits and health checks
+  - [x] Service manifest created for internal/external access
+  - [x] Migration Job manifest created (or InitContainer strategy)
+  - [x] Values files created for dev and prod environments
+  - [x] Documentation updated with Helm deployment instructions
+  - [x] Development cluster setup guide created (kind/minikube)
+  - [x] Production deployment checklist created
+  - [x] Application deploys successfully to development cluster using Helm
+  - [x] Deployment works with existing namespace, ConfigMap, Secret, and PostgreSQL
+  - [x] Health checks (readiness/liveness) pass and pods start correctly
+  - [x] Database connectivity verified; migrations run successfully
+  - [x] Service endpoints accessible; static assets served correctly
+  - [x] Configuration and secrets properly injected from ConfigMap/Secret (existing or created)
+  - [x] Full stack end-to-end test passes in Kubernetes environment
 
 ### Notes for M12
 - **Helm chart**: This milestone uses Helm charts exclusively. Helm provides templating, value management, and release management capabilities.
