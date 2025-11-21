@@ -73,20 +73,20 @@
     - Restart: `unless-stopped`
   - [x] Ensure `postgres` service healthcheck is configured (already present)
 
-- [ ] 5: Create helper scripts (optional but recommended)
-  - [ ] Add `scripts/docker-build.ps1` (PowerShell) or `scripts/docker-build.sh` (Bash):
+- [x] 5: Create helper scripts (optional but recommended)
+  - [x] Add `scripts/docker-build.ps1` (PowerShell) or `scripts/docker-build.sh` (Bash):
     - Build Docker image: `docker build -t clockwork:latest .`
     - Optionally tag with version: `docker tag clockwork:latest clockwork:v1.0.0`
-  - [ ] Add `scripts/docker-up.ps1` or `scripts/docker-up.sh`:
+  - [x] Add `scripts/docker-up.ps1` or `scripts/docker-up.sh`:
     - Start services: `docker compose up -d`
     - Wait for health checks
     - Display logs: `docker compose logs -f`
-  - [ ] Add `scripts/docker-down.ps1` or `scripts/docker-down.sh`:
+  - [x] Add `scripts/docker-down.ps1` or `scripts/docker-down.sh`:
     - Stop services: `docker compose down`
     - Optionally remove volumes: `docker compose down -v` (with warning)
-  - [ ] Add `scripts/docker-logs.ps1` or `scripts/docker-logs.sh`:
+  - [x] Add `scripts/docker-logs.ps1` or `scripts/docker-logs.sh`:
     - View logs: `docker compose logs -f [service]`
-  - [ ] Add `scripts/docker-migrate.ps1` or `scripts/docker-migrate.sh`:
+  - [x] Add `scripts/docker-migrate.ps1` or `scripts/docker-migrate.sh`:
     - Run migrations manually if `DB_AUTO_MIGRATE=false`:
       - `docker compose exec server /app/server migrate` (if migration command exists)
       - Or use goose directly: `docker compose exec server goose -dir /app/migrations postgres "$DATABASE_URL" up`
