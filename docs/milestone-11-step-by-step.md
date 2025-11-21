@@ -1,8 +1,8 @@
 ## Milestone 11: Step-by-step implementation plan
 
-- [ ] 1: Preparations and validation
-  - [ ] Review `docs/deployment.md` for containerization requirements
-  - [ ] Confirm server configuration in `server/internal/config/config.go`:
+- [x] 1: Preparations and validation
+  - [x] Review `docs/deployment.md` for containerization requirements
+  - [x] Confirm server configuration in `server/internal/config/config.go`:
     - `DATABASE_URL` (required): Postgres connection string
     - `DB_AUTO_MIGRATE` (default `false`): Run migrations on startup
     - `MIGRATIONS_DIR` (default `server/migrations`): Path to SQL migrations
@@ -10,8 +10,8 @@
     - `ENV` (default `development`): `development` or `production`
     - `STATIC_DIR` (default `client/dist`): Path to built client assets
     - `ALLOWED_ORIGINS` (CSV): CORS allowed origins
-  - [ ] Verify `docker-compose.yml` exists with Postgres service
-  - [ ] Confirm client build output directory is `client/dist` (from `vite build`)
+  - [x] Verify `docker-compose.yml` exists with Postgres service
+  - [x] Confirm client build output directory is `client/dist` (from `vite build`)
 
 - [ ] 2: Create multi-stage Dockerfile for server
   - [ ] Add `Dockerfile` at repository root
