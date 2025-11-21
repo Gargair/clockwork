@@ -91,13 +91,13 @@
       - `docker compose exec server /app/server migrate` (if migration command exists)
       - Or use goose directly: `docker compose exec server goose -dir /app/migrations postgres "$DATABASE_URL" up`
 
-- [ ] 6: Update documentation
-  - [ ] Update `docs/development.md`:
+- [x] 6: Update documentation
+  - [x] Update `docs/development.md`:
     - Add section "Containerized Development"
     - Document `docker compose up` workflow
     - Document environment variable overrides
     - Document migration strategy (auto vs manual)
-  - [ ] Update `docs/deployment.md`:
+  - [x] Update `docs/deployment.md`:
     - Document Docker build process
     - Document docker-compose usage
     - Document image size optimization considerations
