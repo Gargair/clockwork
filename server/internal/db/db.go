@@ -16,7 +16,6 @@ func Open(ctx context.Context, databaseURL string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	// TODO: Pool settings tuned for dev; adjust later for prod if needed
 	conn.SetMaxOpenConns(10)
 	conn.SetMaxIdleConns(5)
 	conn.SetConnMaxLifetime(30 * time.Minute)

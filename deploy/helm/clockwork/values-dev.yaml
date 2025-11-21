@@ -1,0 +1,62 @@
+# Development environment overrides for Clockwork Helm chart
+
+# Namespace
+namespace:
+  name: clockwork
+  create: true
+
+# ConfigMap - Development settings
+configMap:
+  create: true
+  name: clockwork-config
+  values:
+    env: "development"
+    # Allow all origins in development
+    allowedOrigins: "*"
+    # Enable auto-migrate for convenience in development
+    dbAutoMigrate: "true"
+
+# Secret - Assume existing (create manually)
+secret:
+  create: false
+  name: clockwork-secrets
+
+# PostgreSQL - Assume existing (for development, can use in-cluster)
+postgresql:
+  enabled: false
+  existingSecret: clockwork-secrets
+
+# Deployment - Development settings
+deployment:
+  name: clockwork-server
+  # Single replica for development
+  replicas: 1
+  image:
+    repository: clockwork
+    tag: v0.11.1
+    pullPolicy: IfNotPresent
+  # Lower resource requirements for development
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# Service - ClusterIP for development
+service:
+  name: clockwork-service
+  type: ClusterIP
+  port: 80
+  sessionAffinity: None
+
+# Migration - Disabled (using auto-migrate in development)
+migration:
+  enabled: false
+  strategy: job
+
+# Ingress - Disabled for development (use port-forward)
+ingress:
+  enabled: false
+

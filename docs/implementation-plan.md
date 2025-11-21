@@ -137,11 +137,35 @@ See the detailed guide for this milestone: [milestone-11-step-by-step.md](milest
 
 ## Milestone 12: Kubernetes deployment (dev/prod)
 
-- **Scope**: Manifests/Helm, configuration, secrets, migration strategy.
+- **Scope**: Create Kubernetes manifests and deployment strategy for development and production environments. Establish configuration management, secrets handling, and database migration workflows in Kubernetes.
 - **Deliverables**:
-  - `deploy/` with Deployment, Service, ConfigMap/Secret; migration Job or init strategy
-  - Instructions for dev (kind/minikube) and prod
-- **Acceptance**: App deploys to a dev cluster; health checks pass; DB connectivity verified.
+  - `deploy/` directory with Kubernetes manifests:
+    - Deployment for server application with resource limits, health checks, and readiness/liveness probes
+    - Service for internal and external access (ClusterIP/NodePort/LoadBalancer as appropriate)
+    - ConfigMap for non-sensitive configuration (ports, environment, CORS origins)
+    - Secret template/instructions for sensitive data (DATABASE_URL, etc.)
+    - Migration Job manifest for running database migrations
+    - Optional: InitContainer strategy for migrations or separate Job approach
+    - Optional: Helm chart for templated deployments
+  - PostgreSQL deployment strategy:
+    - Option 1: StatefulSet with PersistentVolumeClaim for in-cluster database
+    - Option 2: Instructions for connecting to managed PostgreSQL service
+  - Documentation:
+    - `docs/deployment.md` updates with Kubernetes sections
+    - Development cluster setup guide (kind/minikube)
+    - Production deployment checklist and considerations
+    - Secrets management best practices
+- **Acceptance**: 
+  - Application deploys successfully to a local development cluster (kind or minikube)
+  - Health checks (readiness/liveness) pass and pods start correctly
+  - Database connectivity verified; migrations run successfully via Job or InitContainer
+  - Service endpoints accessible; static assets served correctly
+  - Configuration and secrets properly injected from ConfigMap/Secret
+  - Production deployment guide reviewed and validated
+
+### Step-by-step implementation plan
+
+See the detailed guide for this milestone: [milestone-12-step-by-step.md](milestone-12-step-by-step.md).
 
 ## Milestone 13: Observability and security hardening (MVP scope)
 

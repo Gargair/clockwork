@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name | default "clockwork-service" }}
+  namespace: {{ .Values.namespace.name | default "clockwork" }}
+  labels:
+    app.kubernetes.io/name: clockwork
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: clockwork
+    component: server
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: clockwork
+    component: server
+  ports:
+  - name: http
+    port: {{ .Values.service.port }}
+    targetPort: 8080
+    protocol: TCP
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+

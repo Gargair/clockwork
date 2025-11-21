@@ -1,0 +1,103 @@
+# Production environment overrides for Clockwork Helm chart
+
+# Namespace
+namespace:
+  name: clockwork
+  create: true
+
+# ConfigMap - Production settings
+configMap:
+  create: true
+  name: clockwork-config
+  values:
+    env: "production"
+    # Specify exact origins in production (replace with your domains)
+    allowedOrigins: "https://app.example.com,https://api.example.com"
+    # Disable auto-migrate (use migration Job instead)
+    dbAutoMigrate: "false"
+
+# Secret - Assume existing (create manually with production DATABASE_URL)
+secret:
+  create: false
+  name: clockwork-secrets
+
+# PostgreSQL - Use managed service in production
+postgresql:
+  enabled: false
+  existingSecret: clockwork-secrets
+  # Configure for managed PostgreSQL service
+  # host: your-managed-postgres-host.example.com
+  # port: 5432
+  # database: clockwork
+
+# Deployment - Production settings
+deployment:
+  name: clockwork-server
+  # Multiple replicas for high availability
+  replicas: 2
+  image:
+    # Update with your container registry
+    repository: clockwork
+    # Use semantic versioning or commit hash (avoid 'latest' in production)
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  # Production resource requirements
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  # Node selector (optional, for dedicated nodes)
+  nodeSelector: {}
+  # Tolerations (optional, for tainted nodes)
+  tolerations: []
+  # Affinity rules (optional, for pod distribution)
+  affinity: {}
+
+# Service - ClusterIP for production (use Ingress for external access)
+service:
+  name: clockwork-service
+  type: ClusterIP
+  port: 80
+  sessionAffinity: None
+
+# Migration - Enable Job for production
+migration:
+  enabled: true
+  strategy: job
+  jobName: clockwork-migrate
+  restartPolicy: OnFailure
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  image:
+    repository: clockwork
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+
+# Ingress - Enable for external access (configure with your domain)
+ingress:
+  enabled: true
+  name: clockwork-ingress
+  class: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  tls: []
+    # - secretName: clockwork-tls
+    #   hosts:
+    #     - clockwork.example.com
+  rules: []
+    # - host: clockwork.example.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: clockwork-service
+    #             port:
+    #               number: 80
+
