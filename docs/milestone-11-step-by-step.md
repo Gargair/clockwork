@@ -13,8 +13,8 @@
   - [x] Verify `docker-compose.yml` exists with Postgres service
   - [x] Confirm client build output directory is `client/dist` (from `vite build`)
 
-- [ ] 2: Create multi-stage Dockerfile for server
-  - [ ] Add `Dockerfile` at repository root
+- [x] 2: Create multi-stage Dockerfile for server
+  - [x] Add `Dockerfile` at repository root
     - Stage 1: Build Go server (statically linked)
       - Use `golang:1.25-alpine` as base
       - Set working directory
