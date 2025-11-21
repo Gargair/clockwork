@@ -1,9 +1,9 @@
 ## Milestone 12: Step-by-step implementation plan
 
-- [ ] 1: Preparations and validation
-  - [ ] Review `docs/deployment.md` for Kubernetes deployment requirements
-  - [ ] Verify Docker image is built and tagged: `clockwork:latest`
-  - [ ] Confirm server configuration requirements:
+- [x] 1: Preparations and validation
+  - [x] Review `docs/deployment.md` for Kubernetes deployment requirements
+  - [x] Verify Docker image is built and tagged: `clockwork:latest`
+  - [x] Confirm server configuration requirements:
     - `DATABASE_URL` (required): Postgres connection string
     - `DB_AUTO_MIGRATE` (default `false`): Run migrations on startup
     - `MIGRATIONS_DIR` (default `server/migrations`): Path to SQL migrations
@@ -11,19 +11,19 @@
     - `ENV` (default `development`): `development` or `production`
     - `STATIC_DIR` (default `client/dist`): Path to built client assets
     - `ALLOWED_ORIGINS` (CSV): CORS allowed origins
-  - [ ] Choose deployment strategy:
+  - [x] Choose deployment strategy:
     - Development: kind or minikube for local testing
     - Production: Managed Kubernetes (GKE, EKS, AKS) or self-hosted
-  - [ ] Decide on PostgreSQL deployment:
+  - [x] Decide on PostgreSQL deployment:
     - Option 1: Managed PostgreSQL service (recommended for production)
     - Option 2: In-cluster StatefulSet with PersistentVolumeClaim (for development/testing)
 
-- [ ] 2: Create deploy directory structure
-  - [ ] Create `deploy/` directory at repository root
-  - [ ] Create Helm chart directory structure:
+- [x] 2: Create deploy directory structure
+  - [x] Create `deploy/` directory at repository root
+  - [x] Create Helm chart directory structure:
     - `deploy/helm/clockwork/` for Helm chart
     - `deploy/helm/clockwork/templates/` for Kubernetes manifest templates
-  - [ ] Create `deploy/README.md` with deployment instructions
+  - [x] Create `deploy/README.md` with deployment instructions
 
 - [ ] 3: Create Helm chart structure
   - [ ] Create `deploy/helm/clockwork/Chart.yaml`:

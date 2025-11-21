@@ -99,18 +99,155 @@ docker compose down
 - Metrics: Add Prometheus metrics endpoint if needed
 - Tracing: Consider distributed tracing for production debugging
 
-## Kubernetes
-- Deployment + Service for the server
-- ConfigMap/Secret for configuration (include `DATABASE_URL`)
-- PostgreSQL database
-  - Prefer managed PostgreSQL in production
-  - Alternatively run in-cluster via StatefulSet with PersistentVolumeClaim
+## Kubernetes Deployment
 
-## Database migrations
-- Apply schema migrations on startup or via a separate job/tool
-- Store migration state in the PostgreSQL database
+### Prerequisites
 
-## Environments
-- dev: local cluster (kind/minikube)
-- prod: managed Kubernetes
+**Required:**
+- Kubernetes cluster (v1.24+)
+- `kubectl` configured to access the cluster
+- Helm 3.x installed
+- Docker image `clockwork:latest` built and available (or pushed to container registry)
+
+**For development:**
+- Local Kubernetes cluster: kind or minikube
+- Image loaded into cluster (kind: `kind load docker-image clockwork:latest`, minikube: `minikube image load clockwork:latest`)
+
+**For production:**
+- Managed Kubernetes cluster (GKE, EKS, AKS) or self-hosted
+- Container registry access (Docker Hub, GCR, ECR, ACR)
+- Image pushed to registry with appropriate tags
+
+### Server Configuration Requirements
+
+The application requires the following environment variables:
+
+**Required:**
+- `DATABASE_URL` (required): PostgreSQL connection string
+  - Format: `postgres://user:password@host:port/database`
+  - Must be provided via Kubernetes Secret (never in ConfigMap)
+
+**Optional (with defaults):**
+- `DB_AUTO_MIGRATE` (default `false`): Run migrations on startup
+  - Set to `true` for automatic migrations (convenient but less control)
+  - Set to `false` for manual migrations via Job (recommended for production)
+- `MIGRATIONS_DIR` (default `server/migrations`): Path to SQL migrations
+  - In container: `/app/migrations` (set by Dockerfile)
+- `PORT` (default `8080`): HTTP port to bind
+  - Container exposes port 8080
+- `ENV` (default `development`): Environment mode
+  - Values: `development` or `production`
+  - Set to `production` for production deployments
+- `STATIC_DIR` (default `client/dist`): Path to built client assets
+  - In container: `/app/static` (set by Dockerfile)
+- `ALLOWED_ORIGINS` (CSV): CORS allowed origins
+  - Default: `*` in development when not set
+  - In production: Specify exact origins (e.g., `https://app.example.com,https://api.example.com`)
+
+### Deployment Strategy
+
+**Development:**
+- **kind (Kubernetes in Docker)**: Recommended for local testing
+  - Install: `choco install kind` (Windows) or `brew install kind` (Mac)
+  - Create cluster: `kind create cluster --name clockwork`
+  - Load image: `kind load docker-image clockwork:latest --name clockwork`
+- **minikube**: Alternative local cluster option
+  - Install minikube
+  - Start: `minikube start`
+  - Load image: `minikube image load clockwork:latest`
+
+**Production:**
+- **Managed Kubernetes** (recommended):
+  - Google Kubernetes Engine (GKE)
+  - Amazon Elastic Kubernetes Service (EKS)
+  - Azure Kubernetes Service (AKS)
+- **Self-hosted Kubernetes**: For organizations with existing infrastructure
+
+### PostgreSQL Deployment Options
+
+**Option 1: Managed PostgreSQL Service (Recommended for Production)**
+- Use cloud-managed PostgreSQL:
+  - Google Cloud SQL
+  - Amazon RDS for PostgreSQL
+  - Azure Database for PostgreSQL
+- Benefits:
+  - Automated backups and point-in-time recovery
+  - High availability and automatic failover
+  - Managed updates and patches
+  - Monitoring and alerting
+  - SSL/TLS encryption
+- Configuration:
+  - Create Kubernetes Secret with `DATABASE_URL` pointing to managed service
+  - Configure network policies/security groups for cluster access
+  - Use connection pooling for high-traffic scenarios
+
+**Option 2: In-Cluster StatefulSet (For Development/Testing)**
+- Deploy PostgreSQL as StatefulSet with PersistentVolumeClaim
+- Benefits:
+  - Self-contained cluster (no external dependencies)
+  - Useful for development and testing environments
+- Considerations:
+  - Requires persistent storage
+  - Manual backup and maintenance
+  - Not recommended for production workloads
+- Can use Bitnami PostgreSQL Helm chart or similar
+
+**Decision:**
+- **Development**: Option 2 (in-cluster) for simplicity
+- **Production**: Option 1 (managed service) for reliability and operational excellence
+
+### Kubernetes Resources
+
+**Required resources:**
+- **Namespace**: Isolated environment for the application (default: `clockwork`)
+- **ConfigMap**: Non-sensitive configuration (PORT, ENV, MIGRATIONS_DIR, STATIC_DIR, ALLOWED_ORIGINS)
+- **Secret**: Sensitive configuration (DATABASE_URL)
+- **Deployment**: Application pods with replicas, resource limits, health checks
+- **Service**: Internal/external access to the application
+
+**Optional resources:**
+- **Job**: Database migration execution (if not using auto-migrate)
+- **Ingress**: External access with TLS/SSL termination
+- **HorizontalPodAutoscaler**: Automatic scaling based on metrics
+- **PodDisruptionBudget**: Ensure availability during cluster maintenance
+
+### Database Migrations
+
+**Strategy options:**
+1. **Auto-migrate** (`DB_AUTO_MIGRATE=true`):
+   - Migrations run automatically on pod startup
+   - Convenient but less control
+   - Risk of multiple pods running migrations simultaneously
+   - Suitable for development or single-replica deployments
+
+2. **Migration Job** (recommended for production):
+   - Set `DB_AUTO_MIGRATE=false`
+   - Run migrations as separate Kubernetes Job before deployment
+   - Ensures migrations run once, with proper error handling
+   - Can be integrated into CI/CD pipeline
+
+3. **InitContainer** (alternative):
+   - Run migrations in InitContainer before main container starts
+   - Automatic but less control over migration execution
+   - Migrations run on every pod start (inefficient for multiple replicas)
+
+**Migration state:**
+- Stored in PostgreSQL database via goose migration tool
+- Tracks applied migrations in `goose_db_version` table
+
+### Environments
+
+**Development:**
+- Local Kubernetes cluster (kind/minikube)
+- Single replica for resource efficiency
+- Auto-migrate enabled for convenience
+- Development configuration values
+
+**Production:**
+- Managed Kubernetes cluster
+- Multiple replicas for high availability (minimum 2)
+- Manual migrations via Job
+- Production configuration values
+- Resource limits and requests configured
+- Monitoring and alerting enabled
 
