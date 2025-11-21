@@ -32,7 +32,7 @@ WORKDIR /build
 
 # Copy dependency files first for better layer caching
 COPY client/package.json client/package-lock.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # Copy client source code
 COPY client/ ./
